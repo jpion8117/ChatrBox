@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿#nullable disable
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatrBox.Data
@@ -9,5 +10,7 @@ namespace ChatrBox.Data
             : base(options)
         {
         }
+
+        public new DbSet<Chatr> Users { get; set; }
     }
 }

@@ -2,7 +2,8 @@
 
 namespace ChatrBox.Data
 {
-    public class Chatr : ChatrBox.Data.Chatr
+    public class Chatr : IdentityUser
     {
+        public bool ActiveUser { get; set; }
     }
 }
