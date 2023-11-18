@@ -22,6 +22,178 @@ namespace ChatrBox.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("ChatrBox.Data.ChatrIcon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ChatrId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Icons");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Community", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ChatrId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IconId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OwnerId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Visibility")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatrId");
+
+                    b.HasIndex("IconId")
+                        .IsUnique();
+
+                    b.ToTable("Communities");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.CommunityIcon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CommunityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CommunityIcon");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.CommunityUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ChatrId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CommunityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatrId");
+
+                    b.HasIndex("CommunityId");
+
+                    b.ToTable("CommunityUsers");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsEdited")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MessagePlain")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderId");
+
+                    b.HasIndex("TopicId");
+
+                    b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Topic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CommunityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostPermission")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommunityId");
+
+                    b.ToTable("Topic");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -233,7 +405,80 @@ namespace ChatrBox.Migrations
                     b.Property<bool>("ActiveUser")
                         .HasColumnType("bit");
 
+                    b.Property<int>("IconId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("IconId")
+                        .IsUnique()
+                        .HasFilter("[IconId] IS NOT NULL");
+
                     b.HasDiscriminator().HasValue("Chatr");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Community", b =>
+                {
+                    b.HasOne("ChatrBox.Data.Chatr", "Chatr")
+                        .WithMany()
+                        .HasForeignKey("ChatrId");
+
+                    b.HasOne("ChatrBox.Data.CommunityIcon", "Icon")
+                        .WithOne("Community")
+                        .HasForeignKey("ChatrBox.Data.Community", "IconId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chatr");
+
+                    b.Navigation("Icon");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.CommunityUser", b =>
+                {
+                    b.HasOne("ChatrBox.Data.Chatr", "Chatr")
+                        .WithMany()
+                        .HasForeignKey("ChatrId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChatrBox.Data.Community", "Community")
+                        .WithMany()
+                        .HasForeignKey("CommunityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chatr");
+
+                    b.Navigation("Community");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Message", b =>
+                {
+                    b.HasOne("ChatrBox.Data.Chatr", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChatrBox.Data.Topic", "Topic")
+                        .WithMany("Messages")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Sender");
+
+                    b.Navigation("Topic");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Topic", b =>
+                {
+                    b.HasOne("ChatrBox.Data.Community", "Community")
+                        .WithMany()
+                        .HasForeignKey("CommunityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Community");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -285,6 +530,33 @@ namespace ChatrBox.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Chatr", b =>
+                {
+                    b.HasOne("ChatrBox.Data.ChatrIcon", "Icon")
+                        .WithOne("Chatr")
+                        .HasForeignKey("ChatrBox.Data.Chatr", "IconId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Icon");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.ChatrIcon", b =>
+                {
+                    b.Navigation("Chatr");
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.CommunityIcon", b =>
+                {
+                    b.Navigation("Community")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ChatrBox.Data.Topic", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }
