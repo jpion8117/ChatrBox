@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatrBox.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231118232141_fullInitialDbConfig")]
-    partial class fullInitialDbConfig
+    [Migration("20231119054224_addedUserRoles")]
+    partial class addedUserRoles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -221,6 +221,36 @@ namespace ChatrBox.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8e1c7b6b-acfb-4b12-9537-f3a9d5645921",
+                            ConcurrencyStamp = "dd2344f3-7a56-4409-b579-d9d71a22a646",
+                            Name = "admin",
+                            NormalizedName = "admin"
+                        },
+                        new
+                        {
+                            Id = "2ef92074-2360-42d5-b143-76d4b2ac700b",
+                            ConcurrencyStamp = "93ae9b3d-69c2-4a7d-b64a-2e426dfb3841",
+                            Name = "superAdmin",
+                            NormalizedName = "superAdmin"
+                        },
+                        new
+                        {
+                            Id = "df18ae19-9142-4fee-bf98-550bda70c266",
+                            ConcurrencyStamp = "02d66c4d-2f73-483f-8602-443322231afe",
+                            Name = "moderator",
+                            NormalizedName = "moderator"
+                        },
+                        new
+                        {
+                            Id = "bc440625-2ab1-4673-a7c6-d65898cff9da",
+                            ConcurrencyStamp = "dd5e0d25-aa7d-49d1-87a4-6ba284ccb664",
+                            Name = "user",
+                            NormalizedName = "user"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -379,6 +409,28 @@ namespace ChatrBox.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
+                            RoleId = "8e1c7b6b-acfb-4b12-9537-f3a9d5645921"
+                        },
+                        new
+                        {
+                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
+                            RoleId = "2ef92074-2360-42d5-b143-76d4b2ac700b"
+                        },
+                        new
+                        {
+                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
+                            RoleId = "df18ae19-9142-4fee-bf98-550bda70c266"
+                        },
+                        new
+                        {
+                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
+                            RoleId = "bc440625-2ab1-4673-a7c6-d65898cff9da"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -407,7 +459,7 @@ namespace ChatrBox.Migrations
                     b.Property<bool>("ActiveUser")
                         .HasColumnType("bit");
 
-                    b.Property<int>("IconId")
+                    b.Property<int?>("IconId")
                         .HasColumnType("int");
 
                     b.HasIndex("IconId")
@@ -415,6 +467,24 @@ namespace ChatrBox.Migrations
                         .HasFilter("[IconId] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("Chatr");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "90ace983-0903-469d-962b-b6ab28864c42",
+                            Email = "admin@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "admin",
+                            PasswordHash = "AQAAAAEAACcQAAAAECK41qilwAx9CBa5+5NDGelD0DUtuwOKD/usa5OE1IQcH3aQZmGY3fpSpAB3+w22lQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "d9458859-0ce0-4622-aa34-ea667801a1ea",
+                            TwoFactorEnabled = false,
+                            UserName = "admin",
+                            ActiveUser = false
+                        });
                 });
 
             modelBuilder.Entity("ChatrBox.Data.Community", b =>
@@ -539,8 +609,7 @@ namespace ChatrBox.Migrations
                     b.HasOne("ChatrBox.Data.ChatrIcon", "Icon")
                         .WithOne("Chatr")
                         .HasForeignKey("ChatrBox.Data.Chatr", "IconId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Icon");
                 });

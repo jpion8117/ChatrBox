@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ChatrBox.Migrations
 {
-    public partial class fullInitialDbConfig : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -299,6 +299,11 @@ namespace ChatrBox.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ActiveUser", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "IconId", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "615a6106-c8d7-4f13-8594-e662278e8a3a", 0, false, "e48bf105-aad2-4f44-901a-46b7ea387d5c", "Chatr", "admin@example.com", true, null, false, null, null, "admin", "AQAAAAEAACcQAAAAEDp0e5AAJAjGyLwdKNKqCD1XtFa9ujVVddODORHFzSjA4Fjai1gj0tIpuX28FiMy8g==", null, false, "b8eaa6c7-e0bd-4d8d-8085-d9bb6b9648f8", false, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
