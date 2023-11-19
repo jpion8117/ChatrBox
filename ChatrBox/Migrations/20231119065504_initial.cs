@@ -24,22 +24,7 @@ namespace ChatrBox.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CommunityIcon",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CommunityId = table.Column<int>(type: "int", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Hash = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CommunityIcon", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Icons",
+                name: "ChatrIcons",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -50,7 +35,22 @@ namespace ChatrBox.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Icons", x => x.Id);
+                    table.PrimaryKey("PK_ChatrIcons", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommunityIcons",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CommunityId = table.Column<int>(type: "int", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Hash = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommunityIcons", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,9 +101,9 @@ namespace ChatrBox.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Icons_IconId",
+                        name: "FK_AspNetUsers_ChatrIcons_IconId",
                         column: x => x.IconId,
-                        principalTable: "Icons",
+                        principalTable: "ChatrIcons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -216,9 +216,9 @@ namespace ChatrBox.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Communities_CommunityIcon_IconId",
+                        name: "FK_Communities_CommunityIcons_IconId",
                         column: x => x.IconId,
-                        principalTable: "CommunityIcon",
+                        principalTable: "CommunityIcons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -301,9 +301,31 @@ namespace ChatrBox.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "144cd420-4adc-4400-807a-9007b538e38f", "41e169cd-1661-4a45-aaeb-48560362a8f8", "moderator", "moderator" },
+                    { "23ae6dde-7fa8-4ead-a3dd-f2981c1951cc", "305a56b0-e16b-4444-8e2e-3b4c40578205", "admin", "admin" },
+                    { "6fc3845f-851c-4e63-8700-9b8f0f0d8671", "c7346af7-509d-4c64-99b4-4ae9633896f0", "superAdmin", "superAdmin" },
+                    { "bc273a5d-05f5-4eeb-a846-bce0cb19c1c3", "4ea541f3-13a8-4fc1-83e9-3947b3aeb681", "user", "user" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ActiveUser", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "IconId", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "615a6106-c8d7-4f13-8594-e662278e8a3a", 0, false, "e48bf105-aad2-4f44-901a-46b7ea387d5c", "Chatr", "admin@example.com", true, null, false, null, null, "admin", "AQAAAAEAACcQAAAAEDp0e5AAJAjGyLwdKNKqCD1XtFa9ujVVddODORHFzSjA4Fjai1gj0tIpuX28FiMy8g==", null, false, "b8eaa6c7-e0bd-4d8d-8085-d9bb6b9648f8", false, "admin" });
+                values: new object[] { "fd3056c6-48de-4e13-b699-802b036209d3", 0, false, "42a8e6cc-a499-42bc-9a71-b436415292a7", "Chatr", "admin@example.com", true, null, false, null, null, "admin", "AQAAAAEAACcQAAAAED78SBiYwU5PXy2hV+/0ZhdvXQcDhxgZq7vebuMtr1IEScjyjLXwXXA0iRZvyeOS+g==", null, false, "80d3c06b-d1e0-467b-80d4-7653c9223c66", false, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { "144cd420-4adc-4400-807a-9007b538e38f", "fd3056c6-48de-4e13-b699-802b036209d3" },
+                    { "23ae6dde-7fa8-4ead-a3dd-f2981c1951cc", "fd3056c6-48de-4e13-b699-802b036209d3" },
+                    { "6fc3845f-851c-4e63-8700-9b8f0f0d8671", "fd3056c6-48de-4e13-b699-802b036209d3" },
+                    { "bc273a5d-05f5-4eeb-a846-bce0cb19c1c3", "fd3056c6-48de-4e13-b699-802b036209d3" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -424,10 +446,10 @@ namespace ChatrBox.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "CommunityIcon");
+                name: "CommunityIcons");
 
             migrationBuilder.DropTable(
-                name: "Icons");
+                name: "ChatrIcons");
         }
     }
 }

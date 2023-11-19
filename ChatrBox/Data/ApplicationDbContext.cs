@@ -15,7 +15,8 @@ namespace ChatrBox.Data
         public new DbSet<Chatr> Users { get; set; }
         public DbSet<Community> Communities { get; set; }
         public DbSet<CommunityUser> CommunityUsers { get; set; }
-        public DbSet<ChatrIcon> Icons { get; set; }
+        public DbSet<ChatrIcon> ChatrIcons { get; set; }
+        public DbSet<CommunityIcon> CommunityIcons { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Topic> Topic { get; set; }
 

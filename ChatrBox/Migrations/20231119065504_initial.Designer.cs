@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatrBox.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231119054224_addedUserRoles")]
-    partial class addedUserRoles
+    [Migration("20231119065504_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,7 +43,7 @@ namespace ChatrBox.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Icons");
+                    b.ToTable("ChatrIcons");
                 });
 
             modelBuilder.Entity("ChatrBox.Data.Community", b =>
@@ -106,7 +106,7 @@ namespace ChatrBox.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CommunityIcon");
+                    b.ToTable("CommunityIcons");
                 });
 
             modelBuilder.Entity("ChatrBox.Data.CommunityUser", b =>
@@ -225,29 +225,29 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8e1c7b6b-acfb-4b12-9537-f3a9d5645921",
-                            ConcurrencyStamp = "dd2344f3-7a56-4409-b579-d9d71a22a646",
+                            Id = "23ae6dde-7fa8-4ead-a3dd-f2981c1951cc",
+                            ConcurrencyStamp = "305a56b0-e16b-4444-8e2e-3b4c40578205",
                             Name = "admin",
                             NormalizedName = "admin"
                         },
                         new
                         {
-                            Id = "2ef92074-2360-42d5-b143-76d4b2ac700b",
-                            ConcurrencyStamp = "93ae9b3d-69c2-4a7d-b64a-2e426dfb3841",
+                            Id = "6fc3845f-851c-4e63-8700-9b8f0f0d8671",
+                            ConcurrencyStamp = "c7346af7-509d-4c64-99b4-4ae9633896f0",
                             Name = "superAdmin",
                             NormalizedName = "superAdmin"
                         },
                         new
                         {
-                            Id = "df18ae19-9142-4fee-bf98-550bda70c266",
-                            ConcurrencyStamp = "02d66c4d-2f73-483f-8602-443322231afe",
+                            Id = "144cd420-4adc-4400-807a-9007b538e38f",
+                            ConcurrencyStamp = "41e169cd-1661-4a45-aaeb-48560362a8f8",
                             Name = "moderator",
                             NormalizedName = "moderator"
                         },
                         new
                         {
-                            Id = "bc440625-2ab1-4673-a7c6-d65898cff9da",
-                            ConcurrencyStamp = "dd5e0d25-aa7d-49d1-87a4-6ba284ccb664",
+                            Id = "bc273a5d-05f5-4eeb-a846-bce0cb19c1c3",
+                            ConcurrencyStamp = "4ea541f3-13a8-4fc1-83e9-3947b3aeb681",
                             Name = "user",
                             NormalizedName = "user"
                         });
@@ -413,23 +413,23 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
-                            RoleId = "8e1c7b6b-acfb-4b12-9537-f3a9d5645921"
+                            UserId = "fd3056c6-48de-4e13-b699-802b036209d3",
+                            RoleId = "23ae6dde-7fa8-4ead-a3dd-f2981c1951cc"
                         },
                         new
                         {
-                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
-                            RoleId = "2ef92074-2360-42d5-b143-76d4b2ac700b"
+                            UserId = "fd3056c6-48de-4e13-b699-802b036209d3",
+                            RoleId = "6fc3845f-851c-4e63-8700-9b8f0f0d8671"
                         },
                         new
                         {
-                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
-                            RoleId = "df18ae19-9142-4fee-bf98-550bda70c266"
+                            UserId = "fd3056c6-48de-4e13-b699-802b036209d3",
+                            RoleId = "144cd420-4adc-4400-807a-9007b538e38f"
                         },
                         new
                         {
-                            UserId = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
-                            RoleId = "bc440625-2ab1-4673-a7c6-d65898cff9da"
+                            UserId = "fd3056c6-48de-4e13-b699-802b036209d3",
+                            RoleId = "bc273a5d-05f5-4eeb-a846-bce0cb19c1c3"
                         });
                 });
 
@@ -471,16 +471,16 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "fb18a647-aac5-4a96-9fd6-867c7beb2fec",
+                            Id = "fd3056c6-48de-4e13-b699-802b036209d3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "90ace983-0903-469d-962b-b6ab28864c42",
+                            ConcurrencyStamp = "42a8e6cc-a499-42bc-9a71-b436415292a7",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAECK41qilwAx9CBa5+5NDGelD0DUtuwOKD/usa5OE1IQcH3aQZmGY3fpSpAB3+w22lQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAED78SBiYwU5PXy2hV+/0ZhdvXQcDhxgZq7vebuMtr1IEScjyjLXwXXA0iRZvyeOS+g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d9458859-0ce0-4622-aa34-ea667801a1ea",
+                            SecurityStamp = "80d3c06b-d1e0-467b-80d4-7653c9223c66",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             ActiveUser = false
