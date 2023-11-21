@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ChatrBox.System
+namespace ChatrBox.CoreComponents
 {
     public static class ConfigManager
     {

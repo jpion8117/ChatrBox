@@ -1,4 +1,4 @@
-﻿namespace ChatrBox.System.API
+﻿namespace ChatrBox.CoreComponents.API
 {
     /// <summary>
     /// Defines general error/success conditions to be paired with ChatrBox.System.API.Error. 

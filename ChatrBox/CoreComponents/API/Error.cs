@@ -1,10 +1,10 @@
-﻿namespace ChatrBox.System.API
+﻿namespace ChatrBox.CoreComponents.API
 {
     public class Error
     {
         public static Error MakeReport(ErrorCodes error, string description)
         {
-            return new Error 
+            return new Error
             {
                 Code = error,
                 Description = description

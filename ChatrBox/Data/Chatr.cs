@@ -1,4 +1,4 @@
-﻿using ChatrBox.System;
+﻿using ChatrBox.CoreComponents;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 

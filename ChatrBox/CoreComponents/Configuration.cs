@@ -1,6 +1,6 @@
 ﻿using ChatrBox.Data;
 
-namespace ChatrBox.System
+namespace ChatrBox.CoreComponents
 {
     public class Configuration
     {
