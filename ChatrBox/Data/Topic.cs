@@ -8,6 +8,7 @@ namespace ChatrBox.Data
         public string Name { get; set; }
         public string Description { get; set; }
         public PostPermission PostPermission { get; set; }
+        public DateTime LastPost {  get; set; }
         public virtual int CommunityId { get; set; }
         public virtual Community Community { get; set; }
 

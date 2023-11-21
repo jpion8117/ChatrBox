@@ -18,7 +18,7 @@ namespace ChatrBox.Data
         public DbSet<ChatrIcon> ChatrIcons { get; set; }
         public DbSet<CommunityIcon> CommunityIcons { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<Topic> Topic { get; set; }
+        public DbSet<Topic> Topics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

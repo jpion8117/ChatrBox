@@ -41,9 +41,6 @@ namespace ChatrBox.Data
                     comUser.CanRead = false;
                     break;
                 case Visibility.Protected:
-                    comUser.CanPost = false;
-                    comUser.CanRead = true;
-                    break;
                 case Visibility.ProtectedPlus:
                     comUser.CanPost = false;
                     comUser.CanRead = true;
