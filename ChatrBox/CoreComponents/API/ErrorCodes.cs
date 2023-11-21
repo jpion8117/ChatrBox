@@ -13,6 +13,11 @@
         Success,
 
         /// <summary>
+        /// Sent when opperation is completed successfully, but reuires no action
+        /// </summary>
+        SuccessNoAction,
+
+        /// <summary>
         /// Marks the beginning of failure codes. All codes prior to this indicate success
         /// </summary>
         GeneralFailure = 100,

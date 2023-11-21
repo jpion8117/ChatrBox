@@ -24,7 +24,7 @@ namespace ChatrBox.Controllers
         }
 
         [HttpGet]
-        public JsonResult CheckMessages(int topicId)
+        public JsonResult CheckMessages(int topicId, DateTime? lastPost = null)
         {
             if (HttpContext.User.Identity != null)
             {
@@ -39,6 +39,16 @@ namespace ChatrBox.Controllers
                         error = Error.MakeReport(ErrorCodes.FailedToLocate,
                             $"Topic with id:{topicId} not found")
                     });
+
+                //check if there are any new posts on topic
+                if (lastPost != null && topic.LastPost == lastPost)
+                {
+                    return new JsonResult(new
+                    {
+                        error = Error.MakeReport(ErrorCodes.SuccessNoAction,
+                            "No new messages since last check.")
+                    });
+                }
 
                 var community = _context.Communities.Find(topic.CommunityId);
                 if (community != null)
@@ -95,6 +105,13 @@ namespace ChatrBox.Controllers
             });
         }
 
+        /// <summary>
+        /// Send a message to 
+        /// </summary>
+        /// <param name="topicId"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         [HttpPost]
         public JsonResult SendMessage(int topicId, string content)
         {
@@ -127,6 +144,7 @@ namespace ChatrBox.Controllers
             {
                 //check community content policies and perform content moderation.
 
+
                 //post message to the server.
                 var msg = new Message()
                 {
@@ -137,6 +155,9 @@ namespace ChatrBox.Controllers
                     MessagePlain = content
                 };
 
+                topic.LastPost = msg.Timestamp;
+
+                _context.Topics.Update(topic);
                 _context.Messages.Add(msg);
                 _context.SaveChanges();
 
