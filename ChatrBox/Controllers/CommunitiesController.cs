@@ -70,6 +70,13 @@ namespace ChatrBox.Controllers
                         .OrderBy(m => m.Timestamp)
                         .ToList();
 
+                    //prevents circular references
+                    for (var i = 0; i < messages.Count; ++i)
+                    {
+                        messages[i].Topic = new Topic();
+                        messages[i].Sender = new Chatr();
+                    }
+
                     return new JsonResult(new
                     {
                         error = "Success OK",
