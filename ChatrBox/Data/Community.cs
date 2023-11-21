@@ -15,9 +15,9 @@ namespace ChatrBox.Data
         /// </summary>
         public string Tags { get; set; }
         public int IconId { get; set; }
-        public CommunityIcon Icon { get; set; }
+        public virtual CommunityIcon Icon { get; set; }
         public string OwnerId { get; set; }
-        public Chatr Chatr { get; set; }
+        public virtual Chatr Chatr { get; set; }
         public Visibility Visibility { get; set; }
     }
 }

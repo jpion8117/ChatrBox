@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace ChatrBox.Models.System
+namespace ChatrBox.System
 {
     public static class ConfigManager
     {
@@ -9,7 +9,8 @@ namespace ChatrBox.Models.System
         /// <summary>
         /// Stores the currently loaded configuration profile.
         /// </summary>
-        private static Configuration _profile = new Configuration() { 
+        private static Configuration _profile = new Configuration()
+        {
             MessageUpdateRate = 30000,               //default message update rate in milliseconds
             StatusUpdateRate = 90000,                //default status update rate in milliseconds
             ActivityTimeOut = 120                    //default activity timeout in seconds
@@ -77,14 +78,14 @@ namespace ChatrBox.Models.System
 
         private static void LoadConfig()
         {
-            if(File.Exists("config.json"))
+            if (File.Exists("config.json"))
             {
                 using (var file = new FileStream("config.json", FileMode.Open))
                 {
                     _profile = JsonSerializer.Deserialize<Configuration>(file) ?? throw new ArgumentNullException();
                 }
             }
-            else 
+            else
             {
                 SaveConfig();
             }

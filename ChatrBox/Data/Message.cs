@@ -26,10 +26,10 @@ namespace ChatrBox.Data
             }
         }
 
-        public virtual string SenderId { get; set; }
+        public string SenderId { get; set; }
         public virtual Chatr Sender { get; set; }
 
-        public virtual int TopicId { get; set; }
+        public int TopicId { get; set; }
         public virtual Topic Topic { get; set; }
 
         public bool IsEdited { get; set; }

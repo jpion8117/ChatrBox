@@ -1,5 +1,6 @@
 ﻿using ChatrBox.Data;
 using ChatrBox.Models.CommunityControls;
+using ChatrBox.System.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,14 +17,14 @@ namespace ChatrBox.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetTopicList(int communityID)
+        public JsonResult GetTopicList(int communityId)
         {
-            var topics = _context.Topics.Where(t => t.CommunityId == communityID).ToList();
+            var topics = _context.Topics.Where(t => t.CommunityId == communityId).ToList();
             return new JsonResult(topics);
         }
 
         [HttpGet]
-        public JsonResult CheckMessages(int topicID)
+        public JsonResult CheckMessages(int topicId)
         {
             if (HttpContext.User.Identity != null)
             {
@@ -31,12 +32,12 @@ namespace ChatrBox.Controllers
                 var user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
                     throw new ArgumentNullException();
 
-                var topic = _context.Topics.Find(topicID);
+                var topic = _context.Topics.Find(topicId);
                 if (topic == null)
                     return new JsonResult(new
                     {
-                        error = "Topic not found",
-                        description = $"Topic with id:{topicID} not found"
+                        error = Error.MakeReport(ErrorCodes.FailedToLocate,
+                            $"Topic with id:{topicId} not found")
                     });
 
                 var community = _context.Communities.Find(topic.CommunityId);
@@ -58,13 +59,13 @@ namespace ChatrBox.Controllers
                     if (!canView && community.Visibility < Visibility.Protected)
                         return new JsonResult(new
                         {
-                            error = "Content restricted",
-                            description = "You do not have permission to view this content.",
+                            error = Error.MakeReport(ErrorCodes.ContentRestricted,
+                                "You do not have permission to view this content."),
                             visibilitySetting = community.Visibility
                         });
 
                     var messages = _context.Messages
-                        .Where(m => m.TopicId == topicID)
+                        .Where(m => m.TopicId == topicId)
                         .OrderByDescending(m => m.Timestamp)
                         .Take(250)
                         .OrderBy(m => m.Timestamp)
@@ -79,8 +80,8 @@ namespace ChatrBox.Controllers
 
                     return new JsonResult(new
                     {
-                        error = "Success OK",
-                        description = "Messages successfully fetched from server",
+                        error = Error.MakeReport(ErrorCodes.Success, 
+                            "Messages successfully fetched from server"),
                         messages
                     });
                 }
@@ -89,8 +90,75 @@ namespace ChatrBox.Controllers
             //This result will be sent if user does not have permissions to view this topic
             return new JsonResult(new
             {
-                error = "Content restricted",
-                description = "You do not have permission to view this content."
+                error = Error.MakeReport(ErrorCodes.ContentRestricted, 
+                    "You do not have permission to view this content.")
+            });
+        }
+
+        [HttpPost]
+        public JsonResult SendMessage(int topicId, string content)
+        {
+            Chatr user = new Chatr();
+            if (HttpContext.User.Identity != null)
+            {
+                var username = HttpContext.User.Identity.Name;
+                user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
+                    throw new ArgumentNullException();
+            }
+
+            //retrieve the topic
+            var topic = _context.Topics.Find(topicId);
+
+            if (topic == null)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, 
+                        $"Unable to locate the requested topic with Id:{topicId}")
+                }); 
+            }
+
+            //verify user has permissions to post
+            var communityUsers = _context.CommunityUsers
+                .Where(cu => cu.CommunityId == topic.CommunityId && cu.ChatrId == user.Id)
+                .ToList();
+
+            if (communityUsers.Count > 0)
+            {
+                //check community content policies and perform content moderation.
+
+                //post message to the server.
+                var msg = new Message()
+                {
+                    SenderId = user.Id,
+                    Timestamp = DateTime.UtcNow,
+                    TopicId = topic.Id,
+                    IsEdited = false,
+                    MessagePlain = content
+                };
+
+                _context.Messages.Add(msg);
+                _context.SaveChanges();
+
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.Success,
+                        $"Message successfully sent on topic '{topic.Name}'"),
+                    messageSummary = new
+                    {
+                        msg.Id,
+                        sender = msg.Sender.UserName,
+                        topic = msg.Topic.Name,
+                        messageContent = msg.MessagePlain
+                    }
+                });
+            }
+
+            //This result will be sent if user does not have permissions to post to this topic
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.ContentRestricted,
+                    "You do not have permission to post.")
             });
         }
     }

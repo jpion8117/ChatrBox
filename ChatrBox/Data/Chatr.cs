@@ -1,4 +1,4 @@
-﻿using ChatrBox.Models.System;
+﻿using ChatrBox.System;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,7 +8,7 @@ namespace ChatrBox.Data
     {
         public DateTime LastActive { get; set; }
         public int? IconId { get; set; }
-        public ChatrIcon Icon { get; set; }
+        public virtual ChatrIcon Icon { get; set; }
 
         /// <summary>
         /// Gets the current activity status of the user.

@@ -8,7 +8,7 @@ namespace ChatrBox.Data
     {
         public int Id { get; set; }
         public string ChatrId { get; set; }
-        public Chatr Chatr {  get; set; }
+        public virtual Chatr Chatr {  get; set; }
         public string Url { get; set; }
         public string Hash { get; set; }
 

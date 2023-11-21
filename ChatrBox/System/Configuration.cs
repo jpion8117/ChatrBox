@@ -1,6 +1,6 @@
 ﻿using ChatrBox.Data;
 
-namespace ChatrBox.Models.System
+namespace ChatrBox.System
 {
     public class Configuration
     {
