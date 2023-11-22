@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 
 namespace ChatrBox.Data
 {
-    public class ChatrIcon
+    public class ChatrIcon : IIcon
     {
         public int Id { get; set; }
         public string ChatrId { get; set; }

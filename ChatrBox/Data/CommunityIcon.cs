@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace ChatrBox.Data
 {
-    public class CommunityIcon
+    public class CommunityIcon : IIcon
     {
         public int Id { get; set; }
         public virtual int CommunityId { get; set; }
