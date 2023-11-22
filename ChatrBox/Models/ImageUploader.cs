@@ -35,7 +35,7 @@ namespace ChatrBox.Models
         {
             get
             {
-                var path = Path.Combine(HostPath, "defaultIcons");
+                var path = Path.Combine(HostPath, "Images","defaultIcons");
                 var directory = new DirectoryInfo(path);
                 var files = directory.GetFiles();
                 var filenames = new string[files.Length];
@@ -74,12 +74,16 @@ namespace ChatrBox.Models
         /// </summary>
         /// <param name="iconDbKey">Icon reference key to be saved to the database</param>
         /// <returns>true if image upload was successful</returns>
-        public bool Upload(ref IImageDbReference iconDbKey)
+        public IImageDbReference Upload(out bool? success)
         {
-            if (Image == null)
-                return false;
+            ImageBase iconDbKey = new ImageBase();
 
-            var path = Path.Combine(HostPath, "userIcons");
+            if (Image == null)
+            {
+                success = false; 
+                return AssignDefaultIcon();
+            }
+            var path = Path.Combine(HostPath, "Images","userIcons");
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -100,7 +104,9 @@ namespace ChatrBox.Models
                 }
             }
 
-            return File.Exists(iconDbKey.ImageUrl);
+            
+            success = File.Exists(iconDbKey.ImageUrl);
+            return iconDbKey;
         }
 
         /// <summary>
@@ -109,8 +115,16 @@ namespace ChatrBox.Models
         /// reference through the IIcon interface.
         /// </summary>
         /// <param name="iconDbKey">icon reference key to be saved to the database</param>
-        public static void AssignDefaultIcon(ref IImageDbReference iconDbKey)
+        public static IImageDbReference AssignDefaultIcon()
         {
+            ImageBase iconDbKey = new ImageBase();
+            
+            if(string.IsNullOrEmpty(HostPath)) 
+            {
+                iconDbKey.ImageUrl = "";
+                iconDbKey.ImageHash = "";
+            }
+            
             //grab a random icon from the default icons folder
             iconDbKey.ImageUrl = GetDefaultIconPath;
 
@@ -124,6 +138,8 @@ namespace ChatrBox.Models
                     iconDbKey.ImageHash = Convert.ToHexString(hash);
                 }
             }
+
+            return iconDbKey;
         }        
     }
 }

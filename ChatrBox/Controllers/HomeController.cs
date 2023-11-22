@@ -22,7 +22,17 @@ namespace ChatrBox.Controllers
 
         public IActionResult Index()
         {
-            var dumDum = ConfigManager.StatusUpdateRate;
+            var defaultAccount = _context.Users.FirstOrDefault(u => u.UserName == "admin");
+            if (defaultAccount != null && string.IsNullOrEmpty(defaultAccount.ImageUrl)) 
+            {
+                ImageBase imageBase = (ImageBase)ImageUploader.AssignDefaultIcon();
+
+                defaultAccount.ImageUrl = imageBase.ImageUrl;
+                defaultAccount.ImageHash = imageBase.ImageHash;
+
+                _context.Users.Update(defaultAccount);
+                _context.SaveChanges();
+            }
             return View();
         }
 
