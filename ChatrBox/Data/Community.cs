@@ -1,9 +1,10 @@
 ﻿#nullable disable
 using ChatrBox.Models.CommunityControls;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChatrBox.Data
 {
-    public class Community
+    public class Community : IImageDbReference
     {
         public int Id { get; set; } 
         public string Name { get; set; }
@@ -14,10 +15,13 @@ namespace ChatrBox.Data
         /// this community and will help users find it in their searches.
         /// </summary>
         public string Tags { get; set; }
-        public int IconId { get; set; }
-        public virtual CommunityIcon Icon { get; set; }
         public string OwnerId { get; set; }
         public virtual Chatr Chatr { get; set; }
         public Visibility Visibility { get; set; }
+        public string ImageHash { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+
+        [NotMapped]
+        public bool IsUnaltered => IntegretyVerifyer.Veryify(ImageUrl, ImageHash);
     }
 }

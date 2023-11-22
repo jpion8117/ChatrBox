@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /ChatrBox/config.json
+/ChatrBox/ChatrBox/wwwroot/images/userIcons/
+/ChatrBox/wwwroot/images/userIcons

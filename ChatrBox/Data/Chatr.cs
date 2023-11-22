@@ -4,11 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChatrBox.Data
 {
-    public class Chatr : IdentityUser
+    public class Chatr : IdentityUser, IImageDbReference
     {
         public DateTime LastActive { get; set; }
-        public int? IconId { get; set; }
-        public virtual ChatrIcon Icon { get; set; }
 
         /// <summary>
         /// Gets the current activity status of the user.
@@ -21,5 +19,11 @@ namespace ChatrBox.Data
                 return DateTime.UtcNow > LastActive.AddSeconds(ConfigManager.ActivityTimeOut);
             }
         }
+
+        public string ImageHash { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+
+        [NotMapped]
+        public bool IsUnaltered => IntegretyVerifyer.Veryify(ImageUrl, ImageHash);
     }
 }
