@@ -18,6 +18,7 @@ namespace ChatrBox.Data
         public string OwnerId { get; set; }
         public virtual Chatr Chatr { get; set; }
         public Visibility Visibility { get; set; }
+        public ContentFilter ContentFilter { get; set; }
         public string ImageHash { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
 

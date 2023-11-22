@@ -2,11 +2,6 @@
 
 namespace ChatrBox.Data
 {
-    enum ImageType
-    {
-        ChatrIcon,
-        CommnunityIcon
-    }
     public interface IImageDbReference
     {
         string ImageHash { get; set; }
