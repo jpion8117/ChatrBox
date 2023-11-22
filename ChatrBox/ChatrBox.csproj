@@ -25,9 +25,9 @@
 
   <ItemGroup>
     <Folder Include="Areas\Config\" />
-    <Folder Include="Data\" />
     <Folder Include="wwwroot\css\" />
-    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\images\defaultIcons\" />
+    <Folder Include="wwwroot\images\userIcons\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\lib\bootstrap\" />
     <Folder Include="wwwroot\lib\bootstrap\dist\js\" />

@@ -1,4 +1,5 @@
 using ChatrBox.Data;
+using ChatrBox.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+ImageUploader.HostPath = app.Environment.WebRootPath;
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

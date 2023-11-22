@@ -4,13 +4,13 @@ using System.Security.Cryptography;
 
 namespace ChatrBox.Data
 {
-    public class ChatrIcon : IIcon
+    public class ChatrIcon : IImageDbReference
     {
         public int Id { get; set; }
         public string ChatrId { get; set; }
         public virtual Chatr Chatr {  get; set; }
-        public string Url { get; set; }
-        public string Hash { get; set; }
+        public string ImageUrl { get; set; }
+        public string ImageHash { get; set; }
 
 
         [NotMapped]
@@ -20,10 +20,10 @@ namespace ChatrBox.Data
             {
                 using (var sha = SHA256.Create()) 
                 {
-                    using (var fs = new FileStream(Url, FileMode.Open)) 
+                    using (var fs = new FileStream(ImageUrl, FileMode.Open)) 
                     {
                         var fileHash = sha.ComputeHash(fs);
-                        return Hash == Convert.ToHexString(fileHash);
+                        return ImageHash == Convert.ToHexString(fileHash);
                     }
                 }
             }
