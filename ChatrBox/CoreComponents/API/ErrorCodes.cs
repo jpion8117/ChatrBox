@@ -30,6 +30,11 @@
         /// <summary>
         /// Failed to locate content.
         /// </summary>
-        FailedToLocate
+        FailedToLocate,
+
+        /// <summary>
+        /// Failed to upload content.
+        /// </summary>
+        UploadFailed
     }
 }

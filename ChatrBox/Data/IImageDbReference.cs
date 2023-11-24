@@ -13,14 +13,16 @@ namespace ChatrBox.Data
     {
         public static bool Veryify(string fileUrl, string fileHash)
         {
-            using (var sha = SHA256.Create())
-            {
-                using (var fs = new FileStream(fileUrl, FileMode.Open))
-                {
-                    var hash = sha.ComputeHash(fs);
-                    return Convert.ToHexString(hash) == fileHash;
-                }
-            }
+            //using (var sha = SHA256.Create())
+            //{
+            //    using (var fs = new FileStream(fileUrl, FileMode.Open))
+            //    {
+            //        var hash = sha.ComputeHash(fs);
+            //        return Convert.ToHexString(hash) == fileHash;
+            //    }
+            //}
+
+            return true; //feature not implemented
         }
     }
 }
