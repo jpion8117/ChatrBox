@@ -14,11 +14,12 @@ function checkMessages() {
             //continue only if success code was sent
             if (data.error.code != undefined && data.error.code < 100) {
                 if (data.error.code === 0) {
-                    //lastPost = data.lastPost;
+                    lastPost = data.lastPost;
                     msgWindow.empty();
-                    for (let i = 0; i < data.messages.length; ++i) {
-                        msgWindow.append(data.messages);
-                    }
+                    msgWindow.append(data.messages);
+
+                    var chat = document.getElementById("msg_window");
+                    chat.scrollTop = chat.scrollHeight;
                 }
             }
     });

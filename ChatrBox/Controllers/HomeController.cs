@@ -22,17 +22,20 @@ namespace ChatrBox.Controllers
 
         public IActionResult Index()
         {
-            var defaultAccount = _context.Users.FirstOrDefault(u => u.UserName == "admin");
-            if (defaultAccount != null && string.IsNullOrEmpty(defaultAccount.ImageUrl)) 
+            var users = _context.Users.ToList();
+            foreach (var user in users)
             {
-                ImageBase imageBase = (ImageBase)ImageUploader.AssignDefaultIcon();
+                if (string.IsNullOrEmpty(user.ImageUrl))
+                {
+                    var defIcon = (ImageBase)ImageUploader.AssignDefaultIcon();
+                    user.ImageUrl = defIcon.ImageUrl;
+                    user.ImageHash = defIcon.ImageHash;
 
-                defaultAccount.ImageUrl = imageBase.ImageUrl;
-                defaultAccount.ImageHash = imageBase.ImageHash;
-
-                _context.Users.Update(defaultAccount);
-                _context.SaveChanges();
+                    _context.Users.Update(user);
+                    _context.SaveChanges();
+                }
             }
+
             return View();
         }
 

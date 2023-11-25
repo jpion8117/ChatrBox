@@ -1,7 +1,80 @@
-﻿@{
-}
-<div id="msg_window">
+﻿@section CSS {
+        <style>
+        .window, html, body {
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .pane
+        {
+            float: left;
+            background-color: aqua;
+            overflow-y: auto;
+            box-sizing: border-box;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        #pane1
+        {
+            width: 30%;
+        }
+        #msg_window
+        {
+            background-color: aquamarine;
+            width: 70%;
+        }
 
+        .userMsgIcon {
+            width: 50px;
+            height:50px;
+            float:left;
+        }
+
+        .msgDisplay {
+            border: groove 1pt black;
+        }
+
+        /* width */
+        ::-webkit-scrollbar {
+        width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 5px grey;
+        border-radius: 10px;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+        background: red;
+        border-radius: 10px;
+        }
+    </style>
+}
+
+<div class="window">
+    <div class="pane" id="pane1">
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc lacinia sed nisi sed pellentesque. Ut at ante erat. Praesent posuere nulla consectetur ex laoreet, posuere lobortis eros fringilla. Nulla maximus porttitor semper. Mauris sapien magna, molestie vitae consequat nec, rutrum eget odio. Sed varius mi ullamcorper arcu sagittis, nec sagittis risus fringilla. Vestibulum nisi erat, feugiat eget pulvinar ut, placerat sed dolor. Curabitur consequat finibus tortor ac pretium. Sed maximus ipsum orci, quis pellentesque enim ullamcorper suscipit. Aliquam erat volutpat.
+        </p>
+        <p>
+            Nulla rhoncus nisi id ipsum facilisis, eu convallis enim ornare. Morbi nunc felis, luctus nec rutrum eget, tristique quis quam. Vivamus id sodales lacus. Sed consectetur ante vel erat bibendum tincidunt. Praesent semper congue nisl, et ultricies risus mollis at. Quisque a diam tempor, iaculis ex non, placerat mauris. Donec nec sagittis arcu. Duis efficitur sem eget diam elementum, sit amet tincidunt neque porttitor. Pellentesque eu rhoncus magna. Suspendisse potenti. Aliquam feugiat, enim sit amet venenatis feugiat, sem sem pharetra nibh, sed dapibus purus nunc ut velit. Aliquam erat volutpat. Cras pulvinar nunc sed ligula malesuada egestas. Ut at ligula bibendum, consectetur quam vitae, eleifend arcu.
+        </p>
+        <p>
+            Fusce ornare mi vel justo aliquam, eget tincidunt nibh tristique. Integer pharetra convallis nunc vel auctor. Pellentesque finibus porta nibh, auctor iaculis mauris aliquam in. Proin auctor venenatis est quis egestas. Nunc blandit lacinia pellentesque. Praesent elit elit, posuere a porta vitae, commodo eu libero. Nulla lacinia massa sed augue pellentesque tempor. Phasellus eget mauris nibh. Curabitur consectetur posuere sapien at ullamcorper. Mauris lorem metus, efficitur et quam nec, posuere feugiat neque.
+        </p>
+        <p>
+            Maecenas sit amet lobortis ex. Pellentesque rhoncus dignissim ligula ac commodo. Phasellus interdum vitae lorem at facilisis. Nam faucibus est felis, sed feugiat massa bibendum vitae. Nam in tellus et turpis tincidunt rutrum at nec magna. Nullam lobortis facilisis feugiat. Sed dapibus, odio eu vehicula pulvinar, eros elit iaculis velit, id tempus erat enim id metus. Quisque interdum velit sed sodales imperdiet. Sed scelerisque luctus est, volutpat accumsan justo tincidunt a. Aliquam semper eros sed arcu vulputate interdum. Nullam odio felis, elementum vel tempus nec, aliquam eleifend neque. Aenean molestie nunc magna, mollis ornare lorem iaculis vel. Donec vel sodales nibh. Quisque lobortis convallis dui sit amet pharetra. Suspendisse vitae felis ex. Morbi est augue, malesuada non nulla vel, ornare vulputate sem.
+        </p>
+        <p>
+            Nullam volutpat tincidunt ipsum at vulputate. Nullam sed libero vel ligula sodales sollicitudin in sed purus. Cras ut orci tellus. Sed cursus risus et metus ullamcorper ultricies. Proin dapibus auctor sapien viverra gravida. Donec id pulvinar orci. Donec euismod nisi quis libero consectetur, in aliquet justo hendrerit. Ut eu sem vitae ante sollicitudin convallis.
+        </p>
+    </div>
+    <div class="pane" id="msg_window">
+    </div>
 </div>
 @section Scripts{
     <script src="~/js/msg_window.js"></script>

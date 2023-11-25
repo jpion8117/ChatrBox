@@ -19,11 +19,13 @@ namespace ChatrBox.Data
             get
             {
                 string HTML = "" +
-                    "<p>" + 
-                        $"<img src=\"{Sender.ImageUrl}\">" +
-                        Sender.UserName + "<br/> " +
-                        MessagePlain +
-                    "</p>";
+                    "<div class=\"msgDisplay\">" +
+                        $"<img src=\"{Sender.ImageUrl}\" class=\"my-auto userMsgIcon\" />" +
+                        "<div class=\"col-md-11 row\">" +
+                            $"<div class=\"fs-2 fw-bold\">{Sender.UserName}</div>" +
+                            $"<div class=\"\">{MessagePlain}</div>" +
+                        "</div>" +
+                    "</div>";
 
                 return HTML;
             }
