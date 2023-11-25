@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Config\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\defaultIcons\" />
     <Folder Include="wwwroot\lib\bootstrap\" />
