@@ -22,6 +22,7 @@ namespace ChatrBox.Data
 
         public string ImageHash { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
+        public virtual List<Message> Messages { get; set; }
 
         [NotMapped]
         public bool IsUnaltered => IntegretyVerifyer.Veryify(ImageUrl, ImageHash);

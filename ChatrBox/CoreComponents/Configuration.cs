@@ -23,5 +23,11 @@ namespace ChatrBox.CoreComponents
         /// a Chatr as "offline."
         /// </summary>
         public int ActivityTimeOut { get; set; }
+
+        /// <summary>
+        /// Defines the number of messages that will be pulled from the server and sent to the 
+        /// client machine. (does not effect archive searches)
+        /// </summary>
+        public int MessageCount { get; set; }
     }
 }

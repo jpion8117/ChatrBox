@@ -1,4 +1,5 @@
-﻿using ChatrBox.CoreComponents.API;
+﻿using ChatrBox.CoreComponents;
+using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
 using ChatrBox.Models.CommunityControls;
 using Microsoft.AspNetCore.Authorization;
@@ -74,25 +75,27 @@ namespace ChatrBox.Controllers
                             visibilitySetting = community.Visibility
                         });
 
-                    var messages = _context.Messages
+                    var messageData = _context.Messages
                         .Where(m => m.TopicId == topicId)
                         .OrderByDescending(m => m.Timestamp)
-                        .Take(250)
+                        .Take(ConfigManager.MessageCount)
                         .OrderBy(m => m.Timestamp)
                         .ToList();
 
+                    var messages = new List<string>();
+
                     //prevents circular references
-                    for (var i = 0; i < messages.Count; ++i)
+                    for (var i = 0; i < messageData.Count; ++i)
                     {
-                        messages[i].Topic = new Topic();
-                        messages[i].Sender = new Chatr();
+                        messages.Add(messageData[i].MessageHTML);
                     }
 
                     return new JsonResult(new
                     {
                         error = Error.MakeReport(ErrorCodes.Success, 
                             "Messages successfully fetched from server"),
-                        messages
+                        messages,
+                        lastPost = topic.LastPost
                     });
                 }
             }

@@ -47,6 +47,11 @@ namespace ChatrBox.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult TestJs() 
+        {
+            return View();
+        }
+
         public JsonResult UserCheckin(int topicId = -1)
         {
             if (HttpContext.User.Identity != null)

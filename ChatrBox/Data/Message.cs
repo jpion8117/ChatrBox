@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿#nullable disable
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChatrBox.Data
 {
@@ -18,9 +19,11 @@ namespace ChatrBox.Data
             get
             {
                 string HTML = "" +
-                    "<div>" +
+                    "<p>" + 
+                        $"<img src=\"{Sender.ImageUrl}\">" +
+                        Sender.UserName + "<br/> " +
                         MessagePlain +
-                    "</div>";
+                    "</p>";
 
                 return HTML;
             }

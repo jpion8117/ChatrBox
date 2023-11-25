@@ -13,7 +13,8 @@ namespace ChatrBox.CoreComponents
         {
             MessageUpdateRate = 30000,               //default message update rate in milliseconds
             StatusUpdateRate = 90000,                //default status update rate in milliseconds
-            ActivityTimeOut = 120                    //default activity timeout in seconds
+            ActivityTimeOut = 120,                   //default activity timeout in seconds
+            MessageCount = 50                        //default number of messages that get pulled from the server
         };
 
         /// <summary>
@@ -72,6 +73,25 @@ namespace ChatrBox.CoreComponents
             set
             {
                 _profile.ActivityTimeOut = value;
+                SaveConfig();
+            }
+        }
+
+
+        /// Defines the number of messages that will be pulled from the server and sent to the 
+        /// client machine. (does not effect archive searches)
+        public static int MessageCount
+        {
+            get
+            {
+                if (!_isInitialized)
+                    LoadConfig();
+
+                return _profile.MessageCount;
+            }
+            set
+            {
+                _profile.MessageCount = value;
                 SaveConfig();
             }
         }
