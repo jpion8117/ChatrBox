@@ -29,3 +29,55 @@ body {
     height: auto; /* Maintain the aspect ratio */
     margin-bottom: 20px; /* Add some bottom margin for spacing */
 }
+.window {
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.pane {
+    float: left;
+    background-color: aqua;
+    overflow-y: auto;
+    box-sizing: border-box;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+#user_window {
+    width: 30%;
+}
+
+#msg_window {
+    background-color: aquamarine;
+    width: 70%;
+}
+
+.userMsgIcon {
+    width: 50px;
+    height: 50px;
+    float: left;
+}
+
+.msgDisplay {
+    border: groove 1pt black;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: red;
+    border-radius: 10px;
+}

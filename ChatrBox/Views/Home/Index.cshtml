@@ -3,38 +3,57 @@
 }
 
 
-<body>
-
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar/Channel List -->
-            <div class="col-md-2 bg-dark text-light vh-100 overflow-auto">
+            <div style="background-color:#202225;" class="col-md-1 text-light vh-100 overflow-auto">
                 <!-- Logo -->
                 <div class="logo-container">
-                    <img src="~/Images/24.png" alt="Chat'r Box Logo" class="logo">
+                    <img src="~/Images/24.png" style="margin-top:4px;"alt="Chat'r Box Logo" class="logo">
                 </div>
-
-                <h2>Community Window</h2>
                 <!-- Add your channel list here -->
             </div>
            
-                <div class="col-md-2 bg-dark text-light vh-100 overflow-auto solid-left-right-border position-relative">
+                <div style="background-color:#2f3136;"class="col-md-2 text-light vh-100 overflow-auto solid-left-right-border position-relative">
                     <h2>Topic Window</h2>
                     <!--Add your topic list here-->
                 </div>
 
-                <div class="col-md-6 bg-dark text-light vh-100">
-                <button type="button" class="btn btn-primary float-end m-3">Message Archive</button>  
-                <h2>Message Center</h2>
-                <div style="width:85%; height:85%;" class="mx-auto contain-fluid border-bottom border-start border-end border-top border-white m-4 col-md-10">
-                    <h2>Your message contents go here</h2>
-                </div>
+            <div style="background-color:#36393f;" class="col-md-7 text-light vh-100">
+
+                    <button type="button" class="btn btn-primary float-end m-3">Message Archive</button>  
+                    <h2 class="text-center m-3">Message Center</h2>
+                    <div style="width:85%; height:65%;" class="mx-auto container-fluid border-bottom border-start border-end border-top border-white m-4 col-md-10">
+                        <div id="msg_window">
+                            <!--User messages are updated here through JavaScript-->
+                        </div>
+                    </div>
+
+                    <!--Message Input Box-->
+                    <div class="row">
+                        <div class="container-fluid m-4 col-md-10">
+                            <!--Messages user writes go here-->
+                            <textarea class="form-control" rows="3" placeholder="Write your message here"></textarea>
+                                <!--Submit Button-->
+                            <div class="text-center col-md-2 m-2">
+                                <button type="button" class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+
+                    </div>
                 
+            </div>
+
+            <div class=" bg-dark col-md-2 text-light vh-100 solid-left-right-border">
+
+                <div id="user_window">
+                    <!--User statues are updated here through JavaScript-->
                 </div>
 
-                <div class="col-md-2 bg-dark text-light vh-100 solid-left-right-border">
-                    <h2>User Window</h2>
-                </div>
-      
+            </div>
+
+        </div>
     </div>
-</body>
+    @section Scripts {
+        <script src="~/js/updateHandler.js"></script>
+    }
