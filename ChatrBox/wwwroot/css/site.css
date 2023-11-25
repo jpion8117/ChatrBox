@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+.solid-left-right-border {
+    border-left: 2px solid #000; /* 2px solid black left border */
+    border-right: 2px solid #000; /* 2px solid black right border */
+}
+.logo-container {
+    text-align: center; /* Center the logo horizontally */
+}
+
+.logo {
+    width: 100%; /* Set the width of the logo */
+    height: auto; /* Maintain the aspect ratio */
+    margin-bottom: 20px; /* Add some bottom margin for spacing */
+}

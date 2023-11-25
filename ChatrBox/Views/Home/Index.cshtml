@@ -2,7 +2,39 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<body>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar/Channel List -->
+            <div class="col-md-2 bg-dark text-light vh-100 overflow-auto">
+                <!-- Logo -->
+                <div class="logo-container">
+                    <img src="~/Images/24.png" alt="Chat'r Box Logo" class="logo">
+                </div>
+
+                <h2>Community Window</h2>
+                <!-- Add your channel list here -->
+            </div>
+           
+                <div class="col-md-2 bg-dark text-light vh-100 overflow-auto solid-left-right-border position-relative">
+                    <h2>Topic Window</h2>
+                    <!--Add your topic list here-->
+                </div>
+
+                <div class="col-md-6 bg-dark text-light vh-100">
+                <button type="button" class="btn btn-primary float-end m-3">Message Archive</button>  
+                <h2>Message Center</h2>
+                <div style="width:85%; height:85%;" class="mx-auto contain-fluid border-bottom border-start border-end border-top border-white m-4 col-md-10">
+                    <h2>Your message contents go here</h2>
+                </div>
+                
+                </div>
+
+                <div class="col-md-2 bg-dark text-light vh-100 solid-left-right-border">
+                    <h2>User Window</h2>
+                </div>
+      
+    </div>
+</body>
