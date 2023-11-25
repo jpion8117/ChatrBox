@@ -22,7 +22,19 @@ namespace ChatrBox.Controllers
 
         public IActionResult Index()
         {
-            var users = _context.Users.ToList();
+            if (HttpContext.User.Identity != null)
+            {
+                var username = HttpContext.User.Identity.Name;
+                var user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
+                    throw new ArgumentNullException();
+
+                user.LastActive = DateTime.UtcNow;
+                _context.Users.Update(user);
+                _context.SaveChanges();
+            }
+
+
+                var users = _context.Users.ToList();
             foreach (var user in users)
             {
                 if (string.IsNullOrEmpty(user.ImageUrl))
