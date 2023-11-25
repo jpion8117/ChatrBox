@@ -47,7 +47,7 @@ namespace ChatrBox.Models
 
                 var rng = new Random();
                 var index = rng.Next(filenames.Length);
-                return Path.Combine("\\", relativePath, filenames[index]);
+                return Path.Combine(relativePath, filenames[index]);
             }
         }
 

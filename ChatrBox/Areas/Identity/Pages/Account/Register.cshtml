@@ -9,14 +9,14 @@
 <div class="row">
     <div class="col-md-4">
         <h2>Create a new account.</h2>
-        <form id="IconUploader" asp-page-handler="UpdateImage" method="post" enctype="multipart/form-data">
-            <img id="previewIcon" src="@Model.IconInfo.ImageUrl" />
-            <input asp-for="IconInfo.ImageUrl" />
-            <input asp-for="ImageUpload.Image" />
-
-        </form>
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" autocomplete="email" aria-required="true" />
+                <label asp-for="Input.Email"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
                 <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" />
