@@ -36,7 +36,7 @@ namespace ChatrBox.Controllers
                 }
             }
 
-            return View();
+            return View("TestJs");
         }
 
         public IActionResult Privacy()
@@ -55,7 +55,23 @@ namespace ChatrBox.Controllers
             return View();
         }
 
-        public JsonResult UserCheckin(int topicId = -1)
+        public IActionResult InitialCheckin(string returnUrl)
+        {
+            if (HttpContext.User.Identity != null)
+            {
+                var username = HttpContext.User.Identity.Name;
+                var user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
+                    throw new ArgumentNullException();
+
+                user.LastActive = DateTime.UtcNow;
+                _context.Users.Update(user);
+                _context.SaveChanges();
+            }
+
+            return LocalRedirect(returnUrl);
+        }
+
+        public JsonResult UserCheckin()
         {
             if (HttpContext.User.Identity != null)
             {
@@ -63,28 +79,11 @@ namespace ChatrBox.Controllers
                 var user = _context.Users.FirstOrDefault(u => u.UserName == username) ?? 
                     throw new ArgumentNullException();
 
-                //check for new messages in topic
-                bool newMessages = false;
-                if (topicId != -1)
-                {
-                    Topic? topic = null;
-                    DateTime lastPost;
-                    topic = _context.Topics.FirstOrDefault(t => t.Id == topicId);
-
-                    if (topic != null)
-                        lastPost = topic.LastPost;
-                    else
-                        lastPost = DateTime.UtcNow;
-
-                    if (user.LastActive < lastPost)
-                        newMessages = true;
-                }
-
                 user.LastActive = DateTime.UtcNow;
                 _context.Users.Update(user);
                 _context.SaveChanges();
 
-                return new JsonResult(new { status = "Recieved: Ok", newMessages, username = user.UserName, time = DateTime.UtcNow.ToString() });
+                return new JsonResult(new { status = "Recieved: Ok", username = user.UserName, time = DateTime.UtcNow.ToString() });
             }
 
             return new JsonResult(new { status = "Recieved: Failed to locate user.", time = DateTime.UtcNow.ToString() });

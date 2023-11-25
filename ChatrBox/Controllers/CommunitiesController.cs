@@ -108,6 +108,42 @@ namespace ChatrBox.Controllers
             });
         }
 
+        [HttpGet]
+        public JsonResult GetUsersOnline(int communityId)
+        {
+            var communityUsers = _context.CommunityUsers
+                .Where(cu => cu.CommunityId == communityId)
+                .ToList();
+
+            if (communityUsers.Count == 0)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, "Community not found.")
+                });
+            }
+
+            var usersOnline = new List<string>();
+            var usersOffline = new List<string>();
+
+            foreach (var user in communityUsers)
+            {
+                var online = user.Chatr.ActiveUser;
+                var statusTag = online ? "activeUser" : "inactiveUser";
+                var htmlSoup = $"<div class=\"{statusTag}\">{user.Chatr.UserName}</div>";
+
+                if(online) usersOnline.Add(htmlSoup);
+                else usersOffline.Add(htmlSoup);
+            }
+
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.Success, "User list found"),
+                usersOnline,
+                usersOffline
+            });
+        }
+
         /// <summary>
         /// Send a message to 
         /// </summary>

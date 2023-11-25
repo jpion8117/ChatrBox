@@ -16,7 +16,7 @@ namespace ChatrBox.Data
         {
             get 
             {
-                return DateTime.UtcNow > LastActive.AddSeconds(ConfigManager.ActivityTimeOut);
+                return DateTime.UtcNow < LastActive.AddSeconds(ConfigManager.ActivityTimeOut);
             }
         }
 
