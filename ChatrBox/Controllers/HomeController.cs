@@ -36,7 +36,7 @@ namespace ChatrBox.Controllers
                 }
             }
 
-            return View("TestJs");
+            return View();
         }
 
         public IActionResult Privacy()
