@@ -1,5 +1,6 @@
 ﻿#nullable disable
 using ChatrBox.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
@@ -35,8 +36,9 @@ namespace ChatrBox.Models
         {
             get
             {
-                var path = Path.Combine(HostPath, "Images","defaultIcons");
-                var directory = new DirectoryInfo(path);
+                var relativePath = Path.Combine("\\Images","defaultIcons");
+                var fullPath = Path.Combine(HostPath, "Images", "defaultIcons");
+                var directory = new DirectoryInfo(fullPath);
                 var files = directory.GetFiles();
                 var filenames = new string[files.Length];
 
@@ -45,13 +47,14 @@ namespace ChatrBox.Models
 
                 var rng = new Random();
                 var index = rng.Next(filenames.Length);
-                return Path.Combine(path, filenames[index]);
+                return Path.Combine("\\", relativePath, filenames[index]);
             }
         }
 
         /// <summary>
         /// Location of the wwwroot folder on the drive.
         /// </summary>
+        [NotMapped]
         public static string HostPath { get; set; }
 
         /// <summary>
@@ -74,7 +77,7 @@ namespace ChatrBox.Models
         /// </summary>
         /// <param name="iconDbKey">Icon reference key to be saved to the database</param>
         /// <returns>true if image upload was successful</returns>
-        public IImageDbReference Upload(out bool? success)
+        public IImageDbReference Upload(out bool success)
         {
             ImageBase iconDbKey = new ImageBase();
 
@@ -83,7 +86,7 @@ namespace ChatrBox.Models
                 success = false; 
                 return AssignDefaultIcon();
             }
-            var path = Path.Combine(HostPath, "Images","userIcons");
+            var path = Path.Combine(HostPath, "Images", "userIcons");
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -132,7 +135,8 @@ namespace ChatrBox.Models
             //displaying it to the user
             using (var sha = SHA256.Create())
             {
-                using (var fs = new FileStream(iconDbKey.ImageUrl, FileMode.Open))
+                using (var fs = new FileStream(HostPath + iconDbKey.ImageUrl, 
+                    FileMode.Open))
                 {
                     var hash = sha.ComputeHash(fs);
                     iconDbKey.ImageHash = Convert.ToHexString(hash);
