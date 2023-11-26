@@ -115,7 +115,7 @@ namespace ChatrBox.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User logged in.");
 
-                    return RedirectToAction("InitialCheckin", "Home", new { returnUrl });
+                    return RedirectToAction("InitialCheckin", "Home", new { area = "", returnUrl });
                 }
                 if (result.RequiresTwoFactor)
                 {

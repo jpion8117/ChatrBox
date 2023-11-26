@@ -37,6 +37,9 @@ namespace ChatrBox.Areas.Identity.Pages.Account.Manage
             user.ImageUrl = IconInfo.ImageUrl;
             user.ImageHash = IconInfo.ImageHash;
 
+            Uploader.AssetName = user.UserName;
+            Uploader.Type = ImageUploader.AssetType.ChatrIcon;
+
             _context.Users.Update(user);
             _context.SaveChanges();
 
