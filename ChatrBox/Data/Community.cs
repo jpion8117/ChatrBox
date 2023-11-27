@@ -16,7 +16,7 @@ namespace ChatrBox.Data
         /// </summary>
         public string Tags { get; set; }
         public string OwnerId { get; set; }
-        public virtual Chatr Chatr { get; set; }
+        public virtual Chatr Owner { get; set; }
         public Visibility Visibility { get; set; }
         public ContentFilter ContentFilter { get; set; }
         public string ImageHash { get; set; } = string.Empty;

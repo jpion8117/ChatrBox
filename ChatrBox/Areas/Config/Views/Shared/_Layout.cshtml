@@ -22,7 +22,7 @@
                 <h5>Welcome, @(User.Identity == null ? "ERROR!" : User.Identity.Name)</h5>
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item">
-                        <a class="nav-link">My Communities</a>
+                        <a class="nav-link" asp-controller="Communities" asp-action="Index">My Communities</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link">Chat'r Profile</a>
@@ -40,7 +40,7 @@
                     <h5>Moderation</h5>
                     <ul class="nav nav-pills flex-column">
                         <li class="nav-item">
-                            <a class="nav-link">All Communities</a>
+                            <a class="nav-link" asp-controller="Communities" asp-action="IndexAll">All Communities</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link">Moderation Requests</a>
