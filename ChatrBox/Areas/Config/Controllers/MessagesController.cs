@@ -25,6 +25,27 @@ namespace ChatrBox.Areas.Config.Controllers
             var user = await _userManager.GetUserAsync(User) ??
                 throw new ArgumentException("User is null.");
 
+            var topic = _context.Topics.FirstOrDefault(t => t.Id == topicId);
+
+            if (topic == null)
+            {
+                return NotFound($"The topic you requested with id:{topicId} could not be located");
+            }
+
+            var comUsers = _context.CommunityUsers
+                .Where(cu => cu.ChatrId == user.Id)
+                .Where(cu => cu.CommunityId == topic.CommunityId)
+                .ToList();
+
+            bool overridePermissions = User.IsInRole("admin") ||
+                                       User.IsInRole("superAdmin") ||
+                                       User.IsInRole("moderator");
+
+            if (comUsers.Count == 0 && !overridePermissions)
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity"});
+            }
+
             var messages = _context.Messages
                 .Where(m => m.Topic.Id == topicId)
                 .OrderByDescending(m => m.Timestamp);
