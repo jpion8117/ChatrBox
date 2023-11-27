@@ -4,6 +4,7 @@ using ChatrBox.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatrBox.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231126230406_literallyDontKnow")]
+    partial class literallyDontKnow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,31 +189,31 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "3ba6dd14-b9e9-4409-9941-793247d3071a",
-                            ConcurrencyStamp = "acc67f93-d4ae-498e-b645-3407c0c31085",
+                            Id = "2795cd94-8cc2-45cb-93b8-5a5d409c317a",
+                            ConcurrencyStamp = "0094d697-44bf-4a18-92a0-2b6ac9d1c32d",
                             Name = "admin",
-                            NormalizedName = "ADMIN"
+                            NormalizedName = "admin"
                         },
                         new
                         {
-                            Id = "94cffa0e-c44a-436a-b39c-5f8e5fd66dd3",
-                            ConcurrencyStamp = "f2b8b426-2e5c-4f1c-9f11-391ff36694e2",
+                            Id = "e48bd7da-3292-48ba-bda7-3ffe9c863c7e",
+                            ConcurrencyStamp = "2206cb43-3d7e-4012-8423-16fa73a1f590",
                             Name = "superAdmin",
-                            NormalizedName = "SUPERADMIN"
+                            NormalizedName = "superAdmin"
                         },
                         new
                         {
-                            Id = "629c15ba-ee9e-41ab-bcf6-651556ae72e2",
-                            ConcurrencyStamp = "12c054d3-7a68-40f1-96f0-f354a1d8fdd0",
+                            Id = "42173181-db4d-4df4-8146-9753e073ce22",
+                            ConcurrencyStamp = "963128fa-e686-4934-b7ed-6cd7fd9f9e2a",
                             Name = "moderator",
-                            NormalizedName = "MODERATOR"
+                            NormalizedName = "moderator"
                         },
                         new
                         {
-                            Id = "2f629ebb-ad6e-4229-bf31-96df7777d787",
-                            ConcurrencyStamp = "a57ea8bc-c64b-44e3-8efe-c97f354d5b52",
-                            Name = "InternalSystem",
-                            NormalizedName = "INTERNALSYSTEM"
+                            Id = "13ef48fc-b252-4cf1-9d9c-f53d85e76880",
+                            ConcurrencyStamp = "cc082b71-9845-4064-a0d0-d5558c7818c1",
+                            Name = "user",
+                            NormalizedName = "user"
                         });
                 });
 
@@ -375,38 +377,23 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "04ce9b7e-1005-459b-be94-fff2f7557a85",
-                            RoleId = "3ba6dd14-b9e9-4409-9941-793247d3071a"
+                            UserId = "3be47a4b-c7fe-49e8-a378-1a0a9d5d2337",
+                            RoleId = "2795cd94-8cc2-45cb-93b8-5a5d409c317a"
                         },
                         new
                         {
-                            UserId = "04ce9b7e-1005-459b-be94-fff2f7557a85",
-                            RoleId = "94cffa0e-c44a-436a-b39c-5f8e5fd66dd3"
+                            UserId = "3be47a4b-c7fe-49e8-a378-1a0a9d5d2337",
+                            RoleId = "e48bd7da-3292-48ba-bda7-3ffe9c863c7e"
                         },
                         new
                         {
-                            UserId = "04ce9b7e-1005-459b-be94-fff2f7557a85",
-                            RoleId = "629c15ba-ee9e-41ab-bcf6-651556ae72e2"
+                            UserId = "3be47a4b-c7fe-49e8-a378-1a0a9d5d2337",
+                            RoleId = "42173181-db4d-4df4-8146-9753e073ce22"
                         },
                         new
                         {
-                            UserId = "eeee8f55-4282-4821-956d-58dd1f8b9246",
-                            RoleId = "3ba6dd14-b9e9-4409-9941-793247d3071a"
-                        },
-                        new
-                        {
-                            UserId = "eeee8f55-4282-4821-956d-58dd1f8b9246",
-                            RoleId = "94cffa0e-c44a-436a-b39c-5f8e5fd66dd3"
-                        },
-                        new
-                        {
-                            UserId = "eeee8f55-4282-4821-956d-58dd1f8b9246",
-                            RoleId = "629c15ba-ee9e-41ab-bcf6-651556ae72e2"
-                        },
-                        new
-                        {
-                            UserId = "eeee8f55-4282-4821-956d-58dd1f8b9246",
-                            RoleId = "2f629ebb-ad6e-4229-bf31-96df7777d787"
+                            UserId = "3be47a4b-c7fe-49e8-a378-1a0a9d5d2337",
+                            RoleId = "13ef48fc-b252-4cf1-9d9c-f53d85e76880"
                         });
                 });
 
@@ -449,36 +436,18 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "04ce9b7e-1005-459b-be94-fff2f7557a85",
+                            Id = "3be47a4b-c7fe-49e8-a378-1a0a9d5d2337",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d38daf8c-6106-412a-b1ab-7cb13cbba0c3",
+                            ConcurrencyStamp = "88e1e5f0-09c6-419d-8e5d-3d90441969c5",
                             Email = "example@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPPb9u1EpRmfFzJtUt6u3nYiODR+voXL3M7eUzTg1eWQ/ogjoBv6cJGWqHEnQdeyNA==",
+                            NormalizedUserName = "admin",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAjmZWv/WFSNElC3j5/HbF0FbPXGNt1sYEwb/jAFOedcHxMeS/zeiNGNeoMkOgQlNQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f6f4cb94-6f53-4572-829b-c9c8f73f29c4",
+                            SecurityStamp = "498515c5-a2a6-4b14-8a58-f7796027cbec",
                             TwoFactorEnabled = false,
                             UserName = "admin",
-                            ImageHash = "",
-                            ImageUrl = "",
-                            LastActive = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = "eeee8f55-4282-4821-956d-58dd1f8b9246",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "dd2611cc-c264-43f7-b7f5-bdc342efd327",
-                            Email = "",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedUserName = "CHEDDAR_CHATR",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKrMFLiOnPHSpvmByqswoWrCtBrJ7BfQ+v7GhemjzoeVNO9tE0WnOge9qDU0Iyra5Q==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "f4a642b9-5f9f-4b90-ac49-b44eb874e2c8",
-                            TwoFactorEnabled = false,
-                            UserName = "Cheddar_Chatr",
                             ImageHash = "",
                             ImageUrl = "",
                             LastActive = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
