@@ -70,24 +70,39 @@ namespace ChatrBox.Data
 
             modelBuilder.Entity<IdentityRole>()
                 .HasData(
+                    //admin role can change site configurations and send messages
+                    //to any community. Admins can also assign moderator privilages
+                    //to other users but, cannot assign or revoke admin privilages.
                     new IdentityRole()
                     {
                         Id = adminRoleGuid,
                         Name = "admin",
                         NormalizedName = "ADMIN"
                     },
+
+                    //superAdmin role can do everything an admin can plus assign 
+                    //or revoke admin privilages.
                     new IdentityRole()
                     {
                         Id = superAdminRoleGuid,
                         Name = "superAdmin",
                         NormalizedName = "SUPERADMIN"
                     },
+
+                    //Moderators can view any community (including private) to facilitate
+                    //content moderation but cannot post without being a member of a
+                    //community. Moderators may also delete content determined as a
+                    //violation of community guidlines.
                     new IdentityRole()
                     {
                         Id = moderatorRoleGuid,
                         Name = "moderator",
                         NormalizedName = "MODERATOR"
                     },
+
+                    //This role is reserved for internal system use. Accounts assigned this
+                    //role should have login disabled to prevent abuse. No other role can
+                    //assign this role to a user.
                     new IdentityRole()
                     {
                         Id = internalSystemGuid,
