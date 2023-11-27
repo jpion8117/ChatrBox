@@ -6,8 +6,8 @@ var lastPost;
 var autoScroll = true;
 
 //These will be moved to an script tag on page that will be updated dynamically based on what community/topic the user is browsing
-var topicId = 4;
-var communityId = 5;
+var topicId = 1;
+var communityId = 1;
 
 scrollToNewest();
 

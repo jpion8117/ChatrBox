@@ -152,6 +152,47 @@ namespace ChatrBox.Data
 
             modelBuilder.Entity<Chatr>()
                 .HasData(defaultAdmin, system);
+
+            modelBuilder.Entity<Community>()
+                .HasData(new Community()
+                {
+                    Id = 1,
+                    Description = "System generated community used for testing layouts",
+                    Name = "Loreum Ipsum",
+                    OwnerId = chatrBoxAutomated,
+                    Visibility = Models.CommunityControls.Visibility.Closed,
+                    ContentFilter = Models.CommunityControls.ContentFilter.NSFW,
+                    ImageUrl = "",
+                    ImageHash = ""
+                });
+
+            modelBuilder.Entity<Topic>()
+                .HasData(new Topic
+                {
+                    Id = 1,
+                    Description = "System generated topic used for layout testing",
+                    CommunityId = 1,
+                    Name = "Testing",
+                    PostPermission = Models.CommunityControls.PostPermission.Closed,
+                    LastPost = DateTime.Parse("1/1/2000")
+                });
+
+            var testMessages = File.ReadAllLines("AutomatedMessages/TestMessages.txt");
+            var messages = new List<Message>();
+
+            for (int i = 0; i < 300; i++)
+            {
+                messages.Add(new Message
+                {
+                    Id = i + 1,
+                    MessagePlain = testMessages[rand.Next(testMessages.Length)],
+                    SenderId = chatrBoxAutomated,
+                    TopicId = 1
+                });
+            }
+
+            modelBuilder.Entity<Message>()
+                .HasData(messages);
         }
     }
 }

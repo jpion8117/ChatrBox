@@ -89,10 +89,10 @@ namespace ChatrBox.Controllers
             return new JsonResult(new { status = "Recieved: Failed to locate user.", time = DateTime.UtcNow.ToString() });
         }
 
-        private async void AssignDefaultIconsAsync()
+        private void AssignDefaultIconsAsync()
         {
 
-            var users = await _context.Users.ToListAsync();
+            var users = _context.Users.ToList();
             foreach (var user in users)
             {
                 if (string.IsNullOrEmpty(user.ImageUrl))
