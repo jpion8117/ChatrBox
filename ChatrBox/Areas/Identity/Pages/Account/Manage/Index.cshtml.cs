@@ -29,7 +29,7 @@ namespace ChatrBox.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public string Username { get; set; }
+        //public string Username { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -58,6 +58,9 @@ namespace ChatrBox.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Username")]
+            public string Username { get; set; }
         }
 
         private async Task LoadAsync(ChatrBox.Data.Chatr user)
@@ -65,11 +68,10 @@ namespace ChatrBox.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
-
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Username = userName
             };
         }
 
@@ -107,6 +109,17 @@ namespace ChatrBox.Areas.Identity.Pages.Account.Manage
                 {
                     StatusMessage = "Unexpected error when trying to set phone number.";
                     return RedirectToPage();
+                }
+            }
+
+            var username = await _userManager.GetUserNameAsync(user);
+            if (Input.Username != username)
+            {
+                var setUsernameResult = await _userManager.SetUserNameAsync(user, Input.Username);
+                if (!setUsernameResult.Succeeded)
+                {
+                    ModelState.AddModelError("Input.Username", "Username already taken. Please try again...");
+                    return Page();
                 }
             }
 

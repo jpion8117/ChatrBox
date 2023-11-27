@@ -55,7 +55,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "config",
-    pattern: "{area:exists}/{controller=Main}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=Communities}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

@@ -38,6 +38,8 @@ namespace ChatrBox.Areas.Config.Controllers
         [Authorize(Roles = "admin, superAdmin, moderator")]
         public IActionResult IndexAll()
         {
+            ViewData["ModView"] = true;
+
             return _context.Communities.ToList() != null ?
                 View("Index", _context.Communities.ToList()) :
                 Problem("No communities found!");

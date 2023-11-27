@@ -1,15 +1,5 @@
 ﻿Welcome to Chat'r Box!
 
-Hi, I'm Cheddar Chat'r! I'm Chat'r Box's internal notification system! You may 
-see me pop up here and there when automated actions happen within a community 
-or when site moderators remove content. Chat'r Box is moderated by the owner of 
-this Chat'r Box installation, dedicated moderators appointed by the owner, and 
-YOU! That's right, you control the content of your own community. As long as 
-you follow our global use guidlines, you are free to moderate your community 
-however you choose!
+Hi, I'm Cheddar Chat'r! I'm Chat'r Box's internal notification system! You may see me pop up here and there when automated actions happen within a community or when site moderators remove content. Chat'r Box is moderated by the owner of this Chat'r Box installation, dedicated moderators appointed by the owner, and YOU! That's right, you control the content of your own community. As long as you follow our global use guidlines, you are free to moderate your community however you choose!
 
-Chat'r Box is a free and open source chat service app that anyone can setup 
-on a web server for and use. Use of this software by third-parties is not 
-monitored directly by the Chat'r Box project and your experience may vary. 
-Please visit www.github.com/jpion8117/ChatrBox for more info. Enjoy your 
-chats Chat'r!
+Chat'r Box is a free and open source chat service app that anyone can setup on a web server for and use. Use of this software by third-parties is not monitored directly by the Chat'r Box project and your experience may vary. Please visit www.github.com/jpion8117/ChatrBox for more info. Enjoy your chats Chat'r!

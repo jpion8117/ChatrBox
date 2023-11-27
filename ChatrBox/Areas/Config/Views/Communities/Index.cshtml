@@ -1,10 +1,13 @@
 ﻿@model IEnumerable<ChatrBox.Data.Community>
 
 @{
-    ViewData["Title"] = "Index";
+    var username = User.Identity != null ? $"{User.Identity.Name}'s" : "";
+    var userCommunities = ViewData["ModView"] == null;
+
+    ViewData["Title"] = userCommunities ? username : "All" + " Communities";
 }
 
-<h1>Index</h1>
+<h1>@(userCommunities ? username : "All") Communities</h1>
 
 <p>
     <a asp-action="Create">Create New</a>

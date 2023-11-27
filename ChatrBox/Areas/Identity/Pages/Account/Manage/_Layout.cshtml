@@ -1,4 +1,6 @@
-﻿@{
+﻿@using ChatrBox.Data;
+@inject UserManager<Chatr> _userManager
+@{
     if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
     {
         Layout = parentLayout.ToString();
@@ -7,7 +9,11 @@
     {
         Layout = "/Areas/Identity/Pages/_Layout.cshtml";
     }
+
+    var user = await _userManager.GetUserAsync(User);
 }
+
+<img src="@(user.ImageUrl ?? "")" style="width: 75px; height:75px" class="float-start m-3" />
 
 <h1>Manage your account</h1>
 
@@ -25,5 +31,10 @@
 </div>
 
 @section Scripts {
+    <script>
+        $("#logoutLink").on("click", function () {
+            $("#logout").trigger("submit");
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 }

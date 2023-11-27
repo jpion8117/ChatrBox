@@ -3,6 +3,7 @@ using ChatrBox.Data;
 using ChatrBox.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace ChatrBox.Controllers
@@ -33,20 +34,7 @@ namespace ChatrBox.Controllers
                 _context.SaveChanges();
             }
 
-
-                var users = _context.Users.ToList();
-            foreach (var user in users)
-            {
-                if (string.IsNullOrEmpty(user.ImageUrl))
-                {
-                    var defIcon = (ImageBase)ImageUploader.AssignDefaultIcon();
-                    user.ImageUrl = defIcon.ImageUrl;
-                    user.ImageHash = defIcon.ImageHash;
-
-                    _context.Users.Update(user);
-                    _context.SaveChanges();
-                }
-            }
+            AssignDefaultIconsAsync();
 
             return View();
         }
@@ -99,6 +87,24 @@ namespace ChatrBox.Controllers
             }
 
             return new JsonResult(new { status = "Recieved: Failed to locate user.", time = DateTime.UtcNow.ToString() });
+        }
+
+        private async void AssignDefaultIconsAsync()
+        {
+
+            var users = await _context.Users.ToListAsync();
+            foreach (var user in users)
+            {
+                if (string.IsNullOrEmpty(user.ImageUrl))
+                {
+                    var defIcon = (ImageBase)ImageUploader.AssignDefaultIcon();
+                    user.ImageUrl = defIcon.ImageUrl;
+                    user.ImageHash = defIcon.ImageHash;
+
+                    _context.Users.Update(user);
+                    _context.SaveChanges();
+                }
+            }
         }
     }
 }
