@@ -12,7 +12,10 @@
     <input asp-for="Uploader.Image" />
 </form>
 <form method="post">
-
+    <input asp-for="IconInfo.ImageHash" hidden />
+    <input asp-for="IconInfo.ImageUrl" hidden />
+    <input asp-for="ChatrId" hidden />
+    <button type="submit">Save Changes</button>
 </form>
 
 @section Scripts {

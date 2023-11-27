@@ -33,6 +33,11 @@ namespace ChatrBox.Controllers
                 var user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
                     throw new ArgumentNullException();
 
+                //admins, superAdmins, and moderators are not bound by read restrictions
+                bool overridePermissions = User.IsInRole("admin") ||
+                                           User.IsInRole("superAdmin") ||
+                                           User.IsInRole("moderator");
+
                 var topic = _context.Topics.Find(topicId);
                 if (topic == null)
                     return new JsonResult(new
@@ -59,14 +64,20 @@ namespace ChatrBox.Controllers
                         .ToList();
 
                     bool canView = false;
-                    foreach (var comChatr in communityChatrs)
+                    if (overridePermissions)
+                        canView = true;
+                    else
                     {
-                        if (comChatr.ChatrId == user.Id)
+                        foreach (var comChatr in communityChatrs)
                         {
-                            canView = true; 
-                            break;
+                            if (comChatr.ChatrId == user.Id)
+                            {
+                                canView = true;
+                                break;
+                            }
                         }
                     }
+
                     if (!canView && community.Visibility < Visibility.Protected)
                         return new JsonResult(new
                         {
@@ -162,6 +173,11 @@ namespace ChatrBox.Controllers
                     throw new ArgumentNullException();
             }
 
+            //allows admins and super admins to override community permissions to send
+            //messages in any community. 
+            bool overridePermissions = User.IsInRole("admin") ||
+                                       User.IsInRole("superAdmin");
+
             //retrieve the topic
             var topic = _context.Topics.Find(topicId);
 
@@ -179,7 +195,7 @@ namespace ChatrBox.Controllers
                 .Where(cu => cu.CommunityId == topic.CommunityId && cu.ChatrId == user.Id)
                 .ToList();
 
-            if (communityUsers.Count > 0)
+            if (communityUsers.Count > 0 || overridePermissions)
             {
                 //check community content policies and perform content moderation.
 

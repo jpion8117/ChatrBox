@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ChatrBox.Data.Message>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Time Sent
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MessagePlain)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Topic)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsEdited)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Timestamp.ToLocalTime()
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MessagePlain)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sender.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Topic.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsEdited)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

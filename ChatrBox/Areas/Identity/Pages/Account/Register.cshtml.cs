@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
 using ChatrBox.Models;
+using ChatrBox.Models.CommunityControls;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -32,13 +33,15 @@ namespace ChatrBox.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ChatrBox.Data.Chatr> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<ChatrBox.Data.Chatr> userManager,
             IUserStore<ChatrBox.Data.Chatr> userStore,
             SignInManager<ChatrBox.Data.Chatr> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -46,6 +49,7 @@ namespace ChatrBox.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -147,6 +151,63 @@ namespace ChatrBox.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+
+                        //create user's default community
+                        var defaultIcon = (ImageBase)ImageUploader.AssignDefaultIcon();
+
+                        var userCom = new Community
+                        {
+                            OwnerId = user.Id,
+                            Name = $"{Input.Username}'s Community",
+                            Description = $"{Input.Username}'s personal community. NOTE: This community " +
+                                $"was automatically generated upon joining this Chat'r Box server feel free " +
+                                $"to modify or delete this community at your lesure.",
+                            Visibility = Models.CommunityControls.Visibility.Closed,
+                            ContentFilter = Models.CommunityControls.ContentFilter.Censored,
+                            ImageUrl = defaultIcon.ImageUrl,
+                            ImageHash = defaultIcon.ImageHash
+                        };
+
+                        _context.Communities.Add(userCom);
+                        _context.SaveChanges(); //required for Id assignment
+
+                        //add user to his own community. Added with Visibility.Open so user
+                        //can post in their own community, the community is set to Private
+                        //by default.
+                        var comUser = CommunityUser.Create(userCom.Id, user.Id, Visibility.Open); 
+                        
+                        _context.CommunityUsers.Add(comUser);
+
+                        var topic = new Topic
+                        {
+                            Name = "General",
+                            Description = "AUTO GENERATED",
+                            CommunityId = userCom.Id,
+                            LastPost = DateTime.UtcNow,
+                            PostPermission = Models.CommunityControls.PostPermission.Open
+                        };
+
+                        _context.Topics.Add(topic);
+                        _context.SaveChanges();
+
+                        var cheddar = _context.Users.FirstOrDefault(c => c.UserName == "Cheddar_Chatr")
+                            ?? throw new ArgumentNullException("System account not found! Consider " +
+                            "updating database.");
+
+                        var welcomeMsg = new Message
+                        {
+                            SenderId = cheddar.Id,
+                            MessagePlain = System.IO.File.ReadAllText("AutomatedMessages/welcome.txt"),
+                            Timestamp = DateTime.UtcNow,
+                            TopicId = topic.Id,
+                            IsEdited = false
+                        };
+
+                        _context.Messages.Add(welcomeMsg);
+                        _context.SaveChanges();
+
+                        //add user to announcemnet community
+
                         return LocalRedirect(returnUrl);
                     }
                 }

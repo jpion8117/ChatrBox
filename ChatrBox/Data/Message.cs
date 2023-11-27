@@ -18,6 +18,11 @@ namespace ChatrBox.Data
         { 
             get
             {
+                //add some very minor formatting ability by allowing users
+                //to use new line characters
+
+                MessagePlain = MessagePlain.Replace("\n", "<br />");
+
                 string HTML = "" +
                     "<div class=\"msgDisplay\">" +
                         $"<img src=\"{Sender.ImageUrl}\" class=\"my-auto userMsgIcon\" />" +

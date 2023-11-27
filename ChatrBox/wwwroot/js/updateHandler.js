@@ -6,7 +6,7 @@ var lastPost;
 var autoScroll = true;
 
 //These will be moved to an script tag on page that will be updated dynamically based on what community/topic the user is browsing
-var topicId = 2;
+var topicId = 1;
 var communityId = 1;
 
 scrollToNewest();
@@ -19,13 +19,20 @@ function checkMessages() {
     },
         function (data, error) {
             //continue only if success code was sent
-            if (data.error.code != undefined && data.error.code < 100) {
+            if (data.error.code != undefined) {
                 if (data.error.code === 0) {
                     lastPost = data.lastPost;
                     msgWindow.empty();
                     msgWindow.append(data.messages);
 
                     if (autoScroll) scrollToNewest();
+                }
+                else if (data.error.code === 101)
+                {
+                    msgWindow.empty();
+                    msgWindow.append("Access Denied: You do not have permission to view " +
+                        "this content. Please contact the community manager to be added to " +
+                        "this commnunity.")
                 }
             }
     });

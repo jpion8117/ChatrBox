@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ChatrBox.Data.Community>
+
+@{
+    var username = User.Identity != null ? $"{User.Identity.Name}'s" : "";
+    var userCommunities = ViewData["ModView"] == null;
+
+    ViewData["Title"] = userCommunities ? username : "All" + " Communities";
+}
+
+<h1>@(userCommunities ? username : "All") Communities</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Icon
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                Owner
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tags)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Visibility)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContentFilter)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <img src="@item.ImageUrl" style="width:50px; height:50px"/>
+            </td>
+            <td>
+                <div class="">
+                    @Html.DisplayFor(modelItem => item.Name)
+                    <i class="tooltip-arrow"></i>
+                    <span class="tooltip tooltip-inner">@Html.DisplayFor(modelItem => item.Description)</span>
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Owner.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tags)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Visibility)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContentFilter)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

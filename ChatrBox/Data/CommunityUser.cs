@@ -26,7 +26,7 @@ namespace ChatrBox.Data
         {
             var comUser = new CommunityUser()
             {
-                Id = communityId,
+                CommunityId = communityId,
                 ChatrId = chatrId,
             };
 
