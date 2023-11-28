@@ -35,7 +35,7 @@ namespace ChatrBox.Areas.Config.Controllers
 
             var applicationDbContext = _context.Topics
                 .Where(t => t.CommunityId == communityId)
-                .OrderBy(t => t.displayOrder)
+                .OrderBy(t => t.DisplayOrder)
                 .Include(t => t.Community);
 
             return View(await applicationDbContext.ToListAsync());
@@ -202,7 +202,7 @@ namespace ChatrBox.Areas.Config.Controllers
                 if(topic == null)
                     return false;
                 
-                topic.displayOrder = i;
+                topic.DisplayOrder = i;
                 _context.Topics.Update(topic);
             }
 
