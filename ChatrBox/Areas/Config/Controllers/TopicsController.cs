@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChatrBox.Data;
+using ChatrBox.Models.CommunityControls;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace ChatrBox.Areas.Config.Controllers
 {
@@ -20,9 +24,20 @@ namespace ChatrBox.Areas.Config.Controllers
         }
 
         // GET: Config/Topics
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int communityId)
         {
-            var applicationDbContext = _context.Topics.Include(t => t.Community);
+            var community = _context.Communities.Find(communityId);
+
+            if (community == null)
+                return NotFound("Community not found.");
+
+            ViewBag.CommunityName = community.Name;
+
+            var applicationDbContext = _context.Topics
+                .Where(t => t.CommunityId == communityId)
+                .OrderBy(t => t.displayOrder)
+                .Include(t => t.Community);
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -48,7 +63,8 @@ namespace ChatrBox.Areas.Config.Controllers
         // GET: Config/Topics/Create
         public IActionResult Create()
         {
-            ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Id");
+            ViewData["Permissions"] = new SelectList(Enum.GetNames(typeof(PostPermission)), Enum.GetValues(typeof(PostPermission)));
+            ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Name");
             return View();
         }
 
@@ -57,15 +73,18 @@ namespace ChatrBox.Areas.Config.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,PostPermission,LastPost,CommunityId")] Topic topic)
+        public async Task<IActionResult> Create(Topic topic)
         {
+            ModelState.Remove("Messages");
+            ModelState.Remove("Community");
             if (ModelState.IsValid)
             {
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Id", topic.CommunityId);
+            ViewData["Permissions"] = new SelectList(Enum.GetNames(typeof(PostPermission)), Enum.GetValues(typeof(PostPermission)));
+            ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Name", topic.CommunityId);
             return View(topic);
         }
 
@@ -158,6 +177,38 @@ namespace ChatrBox.Areas.Config.Controllers
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public bool SaveListOrder(string orderString)
+        {
+            int[]? topicIds = new int[0];
+            try
+            {
+                topicIds = JsonConvert.DeserializeObject<int[]>(orderString);
+            }
+            catch
+            {
+                return false;
+            }
+
+            if (topicIds == null)
+                return false;
+
+            for (int i = 0; i < topicIds.Length; i++)
+            {
+                int topicId = topicIds[i];
+                var topic = _context.Topics.Find(topicId);
+                if(topic == null)
+                    return false;
+                
+                topic.displayOrder = i;
+                _context.Topics.Update(topic);
+            }
+
+            _context.SaveChanges();
+
+            return true;
         }
 
         private bool TopicExists(int id)

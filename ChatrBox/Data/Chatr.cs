@@ -26,5 +26,11 @@ namespace ChatrBox.Data
 
         [NotMapped]
         public bool IsUnaltered => IntegretyVerifyer.Veryify(ImageUrl, ImageHash);
+
+        public void QuickAssign(IImageDbReference newImageRef)
+        {
+            ImageUrl = newImageRef.ImageUrl;
+            ImageHash = newImageRef.ImageHash;
+        }
     }
 }

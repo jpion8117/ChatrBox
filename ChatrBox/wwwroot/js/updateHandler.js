@@ -57,6 +57,10 @@ function checkUserStatus() {
         });
 }
 
+function fetchTopics() {
+    $.get("/Communities/GetTopicList")
+}
+
 function scrollToNewest() {
     var chat = document.getElementById("msg_window");
     chat.scrollTop = chat.scrollHeight;

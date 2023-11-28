@@ -4,7 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>@ViewBag.CommunityName Topics</h1>
+<h3>Drag and drop to change topic order. The top topic is the community default.</h3>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -16,28 +17,25 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.Community)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PostPermission)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastPost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Community)
+                Last Post
             </th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="sortable">
 @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.Community.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PostPermission)
@@ -46,14 +44,38 @@
                 @Html.DisplayFor(modelItem => item.LastPost)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Community.Id)
-            </td>
-            <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
+            <td class="topicId" hidden>@item.Id</td>
         </tr>
 }
     </tbody>
 </table>
+<button id="saveChanges">Save Changes</button>
+@section Scripts{
+    <script>
+        $("#sortable").sortable();
+
+        $("#saveChanges").on("click", function () {
+            var order = GetOrder();
+            $.post("/Config/Topics/SaveListOrder", { orderString: JSON.stringify(GetOrder()) }, function (data, err) {
+                if (data)
+                    window.location.replace("@Url.Action("Index", "Communities")");
+                
+            });
+        });
+
+        function GetOrder() { 
+            var topics = $("#sortable .topicId");
+            var topicOrder = [];
+            topics.each(function (i) {
+                var id = parseInt($(topics[i]).html());
+                topicOrder.push(id);
+            });
+
+            return topicOrder;
+        }
+    </script>
+}

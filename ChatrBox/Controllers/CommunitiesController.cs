@@ -3,6 +3,7 @@ using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
 using ChatrBox.Models.CommunityControls;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatrBox.Controllers
@@ -11,21 +12,25 @@ namespace ChatrBox.Controllers
     public class CommunitiesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Chatr> _userManager;
 
-        public CommunitiesController(ApplicationDbContext context)
+        public CommunitiesController(ApplicationDbContext context, UserManager<Chatr> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public JsonResult GetTopicList(int communityId)
+        public async Task<JsonResult> GetTopicList(int communityId)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
             var topics = _context.Topics.Where(t => t.CommunityId == communityId).ToList();
             return new JsonResult(topics);
         }
 
         [HttpGet]
-        public JsonResult CheckMessages(int topicId, DateTime? lastPost = null)
+        public async Task<JsonResult> CheckMessages(int topicId, DateTime? lastPost = null)
         {
             if (HttpContext.User.Identity != null)
             {
@@ -38,7 +43,7 @@ namespace ChatrBox.Controllers
                                            User.IsInRole("superAdmin") ||
                                            User.IsInRole("moderator");
 
-                var topic = _context.Topics.Find(topicId);
+                var topic = await _context.Topics.FindAsync(topicId);
                 if (topic == null)
                     return new JsonResult(new
                     {
