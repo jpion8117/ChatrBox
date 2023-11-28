@@ -1,19 +1,21 @@
 ﻿@page
 @model ChatrBox.Areas.Identity.Pages.Account.Manage.ChangeIconModel
 
-<h1>Change User Icon</h1>
-<img id="TheFukinIcon" src="@Model.CurrentIconUrl" />
+<div class="text-center">
+    <h1 class="m-3">Change User Icon</h1>
+    <img id="TheFukinIcon" src="@Model.CurrentIconUrl" />
 
-<form method="post">
-    <select asp-for="URL">
-        <option value="" class="text-muted" selected disabled hidden>--- Select Icon ---</option>
-        @for (int i = 0; i < Model.IconNames.Count; i++)
-        {
-            <option value="@Model.IconPaths[i]">@Model.IconNames[i]</option>
-        }
-    </select>
-    <button type="submit">Save Changes</button>
-</form>
+    <form method="post" class="m-3">
+        <select asp-for="URL">
+            <option value="" class="text-muted" selected disabled hidden>--- Select Icon ---</option>
+            @for (int i = 0; i < Model.IconNames.Count; i++)
+            {
+                <option value="@Model.IconPaths[i]">@Model.IconNames[i]</option>
+            }
+        </select>
+        <button type="submit">Save Changes</button>
+    </form>
+</div>
 
 @section Scripts {
     <script>
