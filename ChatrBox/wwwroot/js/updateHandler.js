@@ -5,36 +5,31 @@ var userStatusIntervaal = setInterval(checkUserStatus, statusUpdateRate);
 var lastPost;
 var autoScroll = true;
 
-//These will be moved to an script tag on page that will be updated dynamically based on what community/topic the user is browsing
-var topicId = 1;
-var communityId = 1;
-
-scrollToNewest();
-
 function checkMessages() {
-    console.log(new Date().toString() + ": checked for new messages");
     $.get("/Communities/CheckMessages", {
         topicId: topicId,
         lastPost: lastPost
     },
-        function (data, error) {
-            //continue only if success code was sent
-            if (data.error.code != undefined) {
-                if (data.error.code === 0) {
-                    lastPost = data.lastPost;
-                    msgWindow.empty();
-                    msgWindow.append(data.messages);
+    function (data, error) {
+        //continue only if success code was sent
+        if (data.error.code != undefined)
+        {
+            if (data.error.code === 0)
+            {
+                lastPost = data.lastPost;
+                msgWindow.empty();
+                msgWindow.append(data.messages);
 
-                    if (autoScroll) scrollToNewest();
-                }
-                else if (data.error.code === 101)
-                {
-                    msgWindow.empty();
-                    msgWindow.append("Access Denied: You do not have permission to view " +
-                        "this content. Please contact the community manager to be added to " +
-                        "this commnunity.")
-                }
+                if (autoScroll) scrollToNewest();
             }
+            else if (data.error.code === 101)
+            {
+                msgWindow.empty();
+                msgWindow.append("Access Denied: You do not have permission to view " +
+                    "this content. Please contact the community manager to be added to " +
+                    "this commnunity.");
+            }
+        }
     });
 
     //perform user checkin
@@ -42,7 +37,6 @@ function checkMessages() {
 }
 
 function checkUserStatus() {
-    console.log(new Date().toString() + ": checked community users' online status");
     $.get("/Communities/GetUsersOnline", { communityId: communityId },
         function (data, error) {
             userWindow.empty();
@@ -58,7 +52,36 @@ function checkUserStatus() {
 }
 
 function fetchTopics() {
-    $.get("/Communities/GetTopicList")
+    $.get("/Communities/GetTopicList", { communityId: communityId }, function (data, err) {
+        if (data && data.error && data.error.code == 0)
+        {
+            $("#CommunityName").text(data.communityName);
+            var topics = $('#TopicList');
+            for (var i = 0; i < data.topics.length; i++)
+            {
+                var active = i === 0 ? " topic-list-active" : ""
+                var listClasses = "topic-list-item " + active;
+                topics.append("<li id=\"topicId_" + data.topics[i].key + "\" class=\"" + listClasses + "\">" + data.topics[i].value + "</li>");
+
+                $('#topicId_' + data.topics[i].key).on("click",
+                    function (event) {
+                        event.stopPropagation();
+                        var temp = event.target.attributes['id'].value;
+                        temp = temp.replace("topicId_", "");
+
+                        topicId = parseInt(temp);
+                        checkMessages();
+
+                        $('.topic-list-item').each(function (index, element)
+                        {
+                            $(element).removeClass("topic-list-active");
+                        });
+
+                        $(event.target).addClass("topic-list-active");
+                });
+            }
+        }
+    });
 }
 
 function scrollToNewest() {
@@ -68,3 +91,5 @@ function scrollToNewest() {
 
 checkMessages();
 checkUserStatus();
+fetchTopics();
+scrollToNewest();

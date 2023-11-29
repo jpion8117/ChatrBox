@@ -33,9 +33,25 @@ namespace ChatrBox.Controllers
                 user.LastActive = DateTime.UtcNow;
                 _context.Users.Update(user);
                 _context.SaveChanges();
+
+                var myCommunities = _context.CommunityUsers
+                    .Where(cu => cu.ChatrId == user.Id)
+                    .ToList();
+
+                if (myCommunities.Any())
+                {
+                    ViewBag.CommunityId = myCommunities[0].CommunityId;
+                    ViewBag.TopicId = myCommunities[0].Community.GetDefaultTopic.Id;
+                }
+                else
+                {
+                    ViewBag.CommunityId = 1;
+                    ViewBag.TopicId = 1;
+                }
             }
 
             AssignDefaultIconsAsync();
+
 
             return View();
         }

@@ -10,7 +10,8 @@ html {
 
 html {
   position: relative;
-  min-height: 100%;
+  height: 100%;
+  overflow-y:clip;
 }
 
 body {
@@ -39,7 +40,6 @@ body {
 
 .pane {
     float: left;
-    background-color: aqua;
     overflow-y: auto;
     box-sizing: border-box;
     height: 100%;
@@ -51,7 +51,6 @@ body {
 }
 
 #msg_window {
-    background-color: aquamarine;
     width: 70%;
 }
 
@@ -62,7 +61,8 @@ body {
 }
 
 .msgDisplay {
-    border: groove 1pt black;
+    border: groove 1pt white;
+    width:100%;
 }
 
 /* width */
