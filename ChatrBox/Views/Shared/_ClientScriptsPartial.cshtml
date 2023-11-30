@@ -1,0 +1,17 @@
+﻿
+    <script>
+        ChatrBoxClient.Settings.TopicId = @ViewBag.TopicId;
+        ChatrBoxClient.Settings.CommunityId = @ViewBag.CommunityId;
+
+        $('#msgArchiveBtn').on("click", function (event) {
+            event.preventDefault();
+        });
+
+        $('#SendBtn').on("click", function (event) {
+            event.preventDefault();
+            var message = $('#messageContent').val();
+            ChatrBoxClient.PostMessage(message);
+            $('#messageContent').val("");
+        })
+    </script>
+    <script src="~/js/updateHandler.js"></script>
