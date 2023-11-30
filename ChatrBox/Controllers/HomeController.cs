@@ -50,8 +50,7 @@ namespace ChatrBox.Controllers
                 }
             }
 
-            AssignDefaultIconsAsync();
-
+            AssignDefaultIcons();
 
             return View();
         }
@@ -106,7 +105,7 @@ namespace ChatrBox.Controllers
             return new JsonResult(new { status = "Recieved: Failed to locate user.", time = DateTime.UtcNow.ToString() });
         }
 
-        private void AssignDefaultIconsAsync()
+        private void AssignDefaultIcons()
         {
 
             var usersMissingIcons = _context.Users

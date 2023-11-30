@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="logs\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\defaultIcons\" />
     <Folder Include="wwwroot\lib\bootstrap\" />

@@ -73,7 +73,10 @@
 @section Scripts {
     <script>
         var topicId = @ViewBag.TopicId;
+        ChatrBoxClient.Settings.TopicId = @ViewBag.TopicId;
+
         var communityId = @ViewBag.CommunityId;
+        ChatrBoxClient.Settings.CommunityId = @ViewBag.CommunityId;
     </script>
     <script src="~/js/updateHandler.js"></script>
     }
