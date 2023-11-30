@@ -4,9 +4,10 @@
 
 @section CSS {
     <style>
-        .topic-list-item{
-             list-style: none;
+        .topic-list-item {
+            list-style: none;
         }
+
         .topic-list-active {
             list-style: disc;
         }
@@ -21,6 +22,9 @@
             <div class="logo-container">
                 <a asp-area="Config" asp-action="Index" asp-controller="Communities">
                     <img src="~/Images/24.png" style="margin-top:4px;" alt="Chat'r Box Logo" class="logo">
+                    <div class="middle">
+                        <img src="~/Images/gear.png" style="margin-top:4px;" alt="pgear" class="gear" />
+                    </div>
                 </a>
             </div>
             <!-- Add your channel list here -->
@@ -33,12 +37,12 @@
             <ul id="TopicList">
                 <!-- Populated through JS, Very important -->
             </ul>
-            
+
         </div>
 
         <div style="background-color:#36393f;" class="col-md-7 text-light vh-100">
 
-            <button type="button" class="btn btn-primary float-end m-3">Message Archive</button>
+            <a id="msgArchiveBtn" asp-area="Config" asp-controller="Messages" asp-action="Index" asp-route-topicId="@ViewBag.TopicId" class="btn btn-primary float-end m-3">Message Archive</a>
             <h2 class="text-center m-3">Message Center</h2>
             <div id="msg_window" style="width:100%; height:65%;" class="pane mx-auto border-bottom border-start border-end border-top border-white m-4 col-md-10">
             </div>
@@ -47,11 +51,11 @@
             <div class="row">
                 <div class="container-fluid col-md-12">
                     <!--Messages user writes go here-->
-                    <textarea class="form-control" rows="3" placeholder="Write your message here"></textarea>
+                    <textarea id="messageContent" class="form-control" rows="3" placeholder="Write your message here"></textarea>
 
                     <!--Submit Button-->
                     <div class="text-center my-2">
-                        <button type="button" class="btn btn-primary px-5">Send</button>
+                        <button id="SendBtn" type="button" class="btn btn-primary px-5">Send</button>
                     </div>
 
                 </div>
@@ -71,9 +75,5 @@
     </div>
 </div>
 @section Scripts {
-    <script>
-        var topicId = @ViewBag.TopicId;
-        var communityId = @ViewBag.CommunityId;
-    </script>
-    <script src="~/js/updateHandler.js"></script>
-    }
+    <partial name="_ClientScriptsPartial"></partial>
+}

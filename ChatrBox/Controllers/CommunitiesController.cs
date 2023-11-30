@@ -33,7 +33,18 @@ namespace ChatrBox.Controllers
                 }); ;
             }
 
-            if (true) { }
+            var communityUser = _context.CommunityUsers
+                .Where(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id)
+                .ToList()
+                .Any();
+
+            if (!communityUser && !OverridePermissionRestriction)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "You do not have permission to view this community")
+                });
+            }
 
             var topics = _context.Topics
                 .Where(t => t.CommunityId == communityId)
