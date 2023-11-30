@@ -7,6 +7,8 @@ namespace ChatrBox.Data
         string ImageHash { get; set; }
         string ImageUrl { get; set; }
         bool IsUnaltered { get; }
+
+        void QuickAssign(IImageDbReference newImageRef);
     }
 
     public static class IntegretyVerifyer

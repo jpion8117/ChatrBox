@@ -1,4 +1,5 @@
-﻿using ChatrBox.CoreComponents;
+﻿using Castle.Core.Internal;
+using ChatrBox.CoreComponents;
 using ChatrBox.Data;
 using ChatrBox.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -32,9 +33,24 @@ namespace ChatrBox.Controllers
                 user.LastActive = DateTime.UtcNow;
                 _context.Users.Update(user);
                 _context.SaveChanges();
+
+                var myCommunities = _context.CommunityUsers
+                    .Where(cu => cu.ChatrId == user.Id)
+                    .ToList();
+
+                if (myCommunities.Any())
+                {
+                    ViewBag.CommunityId = myCommunities[0].CommunityId;
+                    ViewBag.TopicId = myCommunities[0].Community.GetDefaultTopic.Id;
+                }
+                else
+                {
+                    ViewBag.CommunityId = 1;
+                    ViewBag.TopicId = 1;
+                }
             }
 
-            AssignDefaultIconsAsync();
+            AssignDefaultIcons();
 
             return View();
         }
@@ -89,22 +105,31 @@ namespace ChatrBox.Controllers
             return new JsonResult(new { status = "Recieved: Failed to locate user.", time = DateTime.UtcNow.ToString() });
         }
 
-        private void AssignDefaultIconsAsync()
+        private void AssignDefaultIcons()
         {
 
-            var users = _context.Users.ToList();
-            foreach (var user in users)
-            {
-                if (string.IsNullOrEmpty(user.ImageUrl))
-                {
-                    var defIcon = (ImageBase)ImageUploader.AssignDefaultIcon();
-                    user.ImageUrl = defIcon.ImageUrl;
-                    user.ImageHash = defIcon.ImageHash;
+            var usersMissingIcons = _context.Users
+                .Where(u => u.ImageUrl == "" || u.ImageUrl == null)
+                .ToList();
 
-                    _context.Users.Update(user);
-                    _context.SaveChanges();
-                }
+            var communitiesMissingIcons = _context.Communities
+                .Where(c => c.ImageUrl == "" || c.ImageUrl == null)
+                .ToList();
+
+            foreach ( var user in usersMissingIcons)
+            {
+                user.QuickAssign(ImageUploader.AssignDefaultIcon());
+                _context.Users.Update(user);
             }
+
+            foreach ( var com in communitiesMissingIcons)
+            {
+                com.QuickAssign(ImageUploader.AssignDefaultIcon());
+                _context.Communities.Update(com);
+            }
+            
+            if(usersMissingIcons.Any() || communitiesMissingIcons.Any())
+                _context.SaveChanges();
         }
     }
 }

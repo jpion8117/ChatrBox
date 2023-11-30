@@ -7,18 +7,21 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ChatrBox.styles.css" asp-append-version="true" />
-    <script>
-        var messageUpdateRate = @ChatrBox.CoreComponents.ConfigManager.MessageUpdateRate;
-        var statusUpdateRate = @ChatrBox.CoreComponents.ConfigManager.StatusUpdateRate;
-    </script>
     @RenderSection("CSS", required: false)
-    @RenderSection("JS_GlobalVariables", required: false)
 </head>
 <body>
     @RenderBody()
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/ChatrClient.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        var messageUpdateRate = @ChatrBox.CoreComponents.ConfigManager.MessageUpdateRate;
+        ChatrBoxClient.Settings.MessageCheckRate = @ChatrBox.CoreComponents.ConfigManager.MessageUpdateRate;
+        var statusUpdateRate = @ChatrBox.CoreComponents.ConfigManager.StatusUpdateRate;
+        ChatrBoxClient.Settings.StatusUpdateRate = @ChatrBox.CoreComponents.ConfigManager.StatusUpdateRate;
+    </script>
+    @RenderSection("JS_GlobalVariables", required: false)
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

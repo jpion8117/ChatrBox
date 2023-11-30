@@ -3,6 +3,7 @@ using ChatrBox.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace ChatrBox.Areas.Config.Controllers
 {
@@ -22,6 +23,8 @@ namespace ChatrBox.Areas.Config.Controllers
 
         public async Task<IActionResult> Index(int topicId, string searchString = "")
         {
+            ViewData["topicId"] = topicId;
+
             var user = await _userManager.GetUserAsync(User) ??
                 throw new ArgumentException("User is null.");
 
@@ -68,6 +71,8 @@ namespace ChatrBox.Areas.Config.Controllers
                     filter = filter.Substring(0, filter.IndexOf('\''));
 
                     var users = filter.Split(',');
+                    for (int i = 0; i < users.Length; ++i)
+                        users[i] = users[i].Trim();
 
                     messages = (IOrderedQueryable<Message>)messages.Where(m => users.Contains(m.Sender.UserName.ToLower()));
 
@@ -85,8 +90,8 @@ namespace ChatrBox.Areas.Config.Controllers
                     filter = filter.Substring(0, filter.IndexOf('\''));
 
                     //parse date
-                    DateTime.TryParse(filter, out DateTime date);
-                    date = date.ToUniversalTime().AddHours(-12);
+                    DateTime.TryParse(filter, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal , out DateTime date);
+                    date = date.ToUniversalTime();
 
                     //filter contents
                     messages = (IOrderedQueryable<Message>)messages.Where(m => m.Timestamp > date);
@@ -105,8 +110,8 @@ namespace ChatrBox.Areas.Config.Controllers
                     filter = filter.Substring(0, filter.IndexOf('\''));
 
                     //parse date
-                    DateTime.TryParse(filter, out DateTime date);
-                    date = date.ToUniversalTime().AddHours(-12);
+                    DateTime.TryParse(filter, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal , out DateTime date);
+                    date = date.ToUniversalTime();
 
                     //filter contents
                     messages = (IOrderedQueryable<Message>)messages.Where(m => m.Timestamp < date);

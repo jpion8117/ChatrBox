@@ -1,8 +1,12 @@
 using ChatrBox.Data;
 using ChatrBox.Models;
+using Markdig.Extensions.AutoLinks;
+using Markdig.Extensions.MediaLinks;
+using Markdig;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using ChatrBox.Areas.Config.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +48,27 @@ else
 }
 
 ImageUploader.HostPath = app.Environment.WebRootPath;
+AdminController.HomePath = app.Environment.ContentRootPath;
+
+//Configures the markdown pipline used to convert markdown written in messages
+//to HTML to be rendered to the user's screen
+Message.MarkdownPipeline = new MarkdownPipelineBuilder()
+    .UseAdvancedExtensions()
+    .UseBootstrap()
+    .UseMediaLinks(new MediaOptions
+    {
+        AddControlsProperty = true
+    })
+    .UseAutoLinks(new AutoLinkOptions
+    {
+        UseHttpsForWWWLinks = true
+    })
+    .EnableTrackTrivia()
+    .UseAutoIdentifiers()
+    .UseEmojiAndSmiley(true)
+    .UseGenericAttributes()
+    .UseCustomContainers()
+    .Build();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

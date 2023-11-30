@@ -22,7 +22,29 @@ namespace ChatrBox.Data
         public string ImageHash { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
 
+        public virtual List<Topic> Topics { get; set; }
+
+        [NotMapped]
+        public Topic GetDefaultTopic
+        {
+            get
+            {
+                var topic = Topics.FirstOrDefault(t => t.DisplayOrder == 0);
+                
+                if(topic != null)
+                    return topic;
+
+                return new Topic();
+            }
+        }
+
         [NotMapped]
         public bool IsUnaltered => IntegretyVerifyer.Veryify(ImageUrl, ImageHash);
+
+        public void QuickAssign(IImageDbReference newImageRef)
+        {
+            ImageUrl = newImageRef.ImageUrl;
+            ImageHash = newImageRef.ImageHash;
+        }
     }
 }
