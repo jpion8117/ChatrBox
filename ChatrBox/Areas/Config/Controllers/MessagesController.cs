@@ -22,6 +22,8 @@ namespace ChatrBox.Areas.Config.Controllers
 
         public async Task<IActionResult> Index(int topicId, string searchString = "")
         {
+            ViewData["topicId"] = topicId;
+
             var user = await _userManager.GetUserAsync(User) ??
                 throw new ArgumentException("User is null.");
 
@@ -85,7 +87,7 @@ namespace ChatrBox.Areas.Config.Controllers
                     filter = filter.Substring(0, filter.IndexOf('\''));
 
                     //parse date
-                    DateTime.TryParse(filter, out DateTime date);
+                    DateTime.TryParse(filter , out DateTime date);
                     date = date.ToUniversalTime().AddHours(-12);
 
                     //filter contents
