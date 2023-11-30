@@ -3,6 +3,10 @@ using Markdig;
 using Markdig.Extensions.MediaLinks;
 using Markdig.Extensions.AutoLinks;
 using System.ComponentModel.DataAnnotations.Schema;
+using Markdig.Renderers;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ChatrBox.Models;
 
 namespace ChatrBox.Data
 {
@@ -24,16 +28,36 @@ namespace ChatrBox.Data
         { 
             get
             {
-                string parsed = Markdown.ToHtml(MessagePlain, MarkdownPipeline);
+                string parsedMessage = Markdown.ToHtml(MessagePlain, MarkdownPipeline);
 
-                string HTML = "" +
-                    "<div class=\"msgDisplay\">" +
-                        $"<img src=\"{Sender.ImageUrl}\" class=\"my-auto userMsgIcon\" />" +
-                        "<div class=\"col-md-11 row\">" +
-                            $"<div class=\"fs-2 fw-bold\">{Sender.UserName}</div>" +
-                            $"<div class=\"\">{parsed}</div>" +
-                        "</div>" +
-                    "</div>";
+                //"<div class=\"msgDisplay\">" +
+                //    $"<img src=\"{Sender.ImageUrl}\" class=\"my-auto userMsgIcon\" />" +
+                //    "<div class=\"col-md-11 row\">" +
+                //        $"<div class=\"fs-2 fw-bold\">{Sender.UserName}</div>" +
+                //        $"<div class=\"\">{parsed}</div>" +
+                //    "</div>" +
+                //"</div>";
+
+                var userIcon = HtmlElement.Create("img")
+                    .EnableSelfClose()
+                    .AddClass("mx-auto userMsgIcon")
+                    .AddAttribute("src", Sender.ImageUrl);
+
+                var username = HtmlElement.Create("div")
+                    .SetContent(Sender.UserName)
+                    .AddClass("fs-2 fw-bold msgUsername");
+
+                var message = HtmlElement.Create("div")
+                    .SetContent(parsedMessage);
+
+                var messageContentWrap = HtmlElement.Create("div")
+                    .AddClass("col-md-11 row")
+                    .SetContent(username, message);
+
+                string HTML = HtmlElement.Create("div")
+                    .AddClass("msgDisplay")
+                    .SetContent(userIcon, messageContentWrap)
+                    .ToString();
 
                 return HTML;
             }
