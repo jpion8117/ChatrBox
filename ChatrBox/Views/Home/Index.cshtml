@@ -36,6 +36,30 @@
             
         </div>
 
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar/Channel List -->
+            <div style="background-color:#202225;" class="col-md-1 text-light vh-100 overflow-auto">
+            <!-- Logo -->
+            
+                <div class="logo-container">
+                    <a asp-area="Config" asp-controller="Communities">
+                        <img src="~/Images/24.png" style="margin-top:4px;"alt="Chat'r Box Settings'" class="logo">
+                    
+                <div class="middle">
+                    <img src="~/Images/gear.png" style="margin-top:4px;" alt="pgear" class="gear" />
+                </div>
+                </a>
+                </div>
+                <!-- Add your channel list here -->
+            </div>
+           
+                <div style="background-color:#2f3136;"class="col-md-2 text-light vh-100 overflow-auto solid-left-right-border position-relative">
+                    <h2>Topic Window</h2>
+                    <!--Add your topic list here-->
+                </div>
+
         <div style="background-color:#36393f;" class="col-md-7 text-light vh-100">
 
             <button type="button" class="btn btn-primary float-end m-3">Message Archive</button>
@@ -57,13 +81,20 @@
                 </div>
 
             </div>
-
+                    <!--Message Input Box-->
+                    <div class="row">
+                        <div class="container-fluid p-4 col-md-10">
+                            <!--Messages user writes go here-->
+                            <textarea class="form-control" rows="3" placeholder="Write your message here"></textarea>
+                                <!--Submit Button-->
+                            <div class="text-center col-md-11 m-md-2">
+                                <button type="button" class="btn btn-primary">Submit</button>
+                            </div>
         </div>
-
-        <div class=" bg-dark col-md-2 text-light vh-100 solid-left-right-border">
-
-            <div id="user_window">
-                <!--User statues are updated here through JavaScript-->
+    </div>
+    @section Scripts {
+        <script src="~/js/updateHandler.js"></script>
+    }
             </div>
 
         </div>

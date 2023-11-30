@@ -7,15 +7,27 @@ html {
     font-size: 16px;
   }
 }
-
+div {
+    padding:5px;
+    text-align: center;
+    border: 5px;
+    color: white;
+}
 html {
   position: relative;
   height: 100%;
   overflow-y:clip;
 }
-
+img {
+    display: inline-block;
+}
 body {
   margin-bottom: 60px;
+}
+.center {
+    text-align: center;
+    display: flex;
+    justify-content: center;
 }
 .solid-left-right-border {
     border-left: 2px solid #000; /* 2px solid black left border */
@@ -23,15 +35,25 @@ body {
 }
 .logo-container {
     text-align: center; /* Center the logo horizontally */
+    position: relative;
 }
 
 .logo {
     width: 100%; /* Set the width of the logo */
     height: auto; /* Maintain the aspect ratio */
-    margin-bottom: 20px; /* Add some bottom margin for spacing */
+    margin-bottom: 5px; /* Add some bottom margin for spacing */
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+.container {
+    display: flex;
 }
 .window {
-    padding: 0px;
+    padding: 1px;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -80,4 +102,101 @@ body {
 ::-webkit-scrollbar-thumb {
     background: red;
     border-radius: 10px;
+}
+/*Targets the div container surrounding the online users*/
+#onlineUsers {
+    background-color: #2f3136;
+    padding: 5px;
+    border-radius: 2px;
+}
+
+/*Targets the div container surrounding the heading for the online users*/
+.onlineUsersHeading {
+    background-color: lightseagreen;
+    padding: 5px;
+    border-radius:2px;
+    width:auto fit-content;
+}
+
+/*Targets the name of any user that is currently online*/
+.activeUser {
+    background-color: lightyellow;
+    padding: 5px;
+    border-radius: 2px;
+    width:auto fit-content;
+}
+
+/*Targets the div container surrounding the offline users*/
+#offlineUsers {
+    background-color: #2f3136;
+    padding: 5px;
+    border-radius: 2px;
+    width:auto fit-content;
+}
+
+/*Targets the div container surrounding the heading for the offline users*/
+.offlineUsersHeading {
+    background-color: indianred;
+    padding: 5px;
+    border-radius: 2px;
+    width: auto fit-content;
+}
+
+/*Targets the name of any user that is currently offline*/
+.inactiveUser {
+    background-color: lightcoral;
+    padding: 5px;
+    border-radius: 3px;
+    width:auto fit-content;
+}
+
+/*Targets one entire message within the message display container, it is the box surrounding the user icon, the username, 
+and the message itself*/
+.msgDisplay {
+    background-color: #2f3136;
+    padding: 5px;
+    border-radius: 2px;
+    width: auto;
+    margin-bottom: 15px;
+}
+
+/*Targets the user icon associated with the sender of a message being displayed.*/
+.userMsgIcon {
+    font-size: 50px; /* Adjust the size of the icon as needed */
+    transition: color 0.3s ease;
+}
+/*.image {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}*/
+
+.middle {
+    color:white;
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.logo-container:hover .image {
+    opacity: 0.3;
+}
+
+.logo-container:hover .middle {
+    opacity: 1;
+}
+
+.gear {
+    background-color: darkgrey;
+    background-size: auto;
+    height: 140px;
+    width:130px;
 }
