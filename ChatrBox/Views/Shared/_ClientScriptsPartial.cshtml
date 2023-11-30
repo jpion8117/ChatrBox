@@ -1,7 +1,15 @@
 ﻿
     <script>
+        function toggleDebugConsole()
+        {
+            ChatrBoxClient.LoggingBehavior.EnableGranular = true;
+            ChatrBoxClient.LoggingBehavior.LogToConsole = true;
+        }
+
         ChatrBoxClient.Settings.TopicId = @ViewBag.TopicId;
         ChatrBoxClient.Settings.CommunityId = @ViewBag.CommunityId;
+        ChatrBoxClient.Username = "@(User.Identity != null ? User.Identity.Name : "")";
+        ChatrBoxClient.UserId = "@ViewBag.UserId";
 
         $('#msgArchiveBtn').on("click", function (event) {
             event.preventDefault();
@@ -13,5 +21,7 @@
             ChatrBoxClient.PostMessage(message);
             $('#messageContent').val("");
         })
+
+        toggleDebugConsole();
     </script>
     <script src="~/js/updateHandler.js"></script>

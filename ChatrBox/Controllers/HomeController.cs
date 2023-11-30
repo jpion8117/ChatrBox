@@ -38,6 +38,8 @@ namespace ChatrBox.Controllers
                     .Where(cu => cu.ChatrId == user.Id)
                     .ToList();
 
+                ViewBag.UserId = user.Id;   
+
                 if (myCommunities.Any())
                 {
                     ViewBag.CommunityId = myCommunities[0].CommunityId;

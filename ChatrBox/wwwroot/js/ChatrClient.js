@@ -5,6 +5,8 @@
     //Username of the current ChatrBox User
     static Username;
 
+    static APIRoute = "/API/"
+
     /**
      * Defines how the LogActivity method behaves during runtime
      */
@@ -124,7 +126,7 @@
      */
     static GetMessages() {
         ChatrBoxClient.LogActivity("Checked Messages", true);
-        $.get("/Communities/CheckMessages", {
+        $.get(ChatrBoxClient.APIRoute + "Communities/CheckMessages", {
             topicId: ChatrBoxClient.Settings.TopicId,
             lastPost: ChatrBoxClient.Settings.LastPost
         },
@@ -158,7 +160,7 @@
      * Requests a list of topics from the user and displays them on the client window.
      */
     static GetTopics() {
-        $.get("/Communities/GetTopicList", { communityId: ChatrBoxClient.Settings.CommunityId }, function (data, err) {
+        $.get(ChatrBoxClient.APIRoute + "Communities/GetTopicList", { communityId: ChatrBoxClient.Settings.CommunityId }, function (data, err) {
             if (data && data.error && data.error.code == 0) {
                 $("#CommunityName").text(data.communityName);
                 var topics = $('#TopicList');
@@ -169,9 +171,12 @@
 
                     $('#topicId_' + data.topics[i].key).on("click",
                         function (event) {
+
                             event.stopPropagation();
                             var temp = event.target.attributes['id'].value;
                             temp = temp.replace("topicId_", "");
+
+                            ChatrBoxClient.LogActivity(`User clicked on topic#${temp}`, true);
 
                             ChatrBoxClient.Settings.TopicId = parseInt(temp);
                             ChatrBoxClient.GetMessages();
@@ -194,7 +199,7 @@
 
         var userWindow = $("#user_window");
 
-        $.get("/Communities/GetUsersOnline", { communityId: ChatrBoxClient.Settings.CommunityId },
+        $.get(ChatrBoxClient.APIRoute + "Communities/GetUsersOnline", { communityId: ChatrBoxClient.Settings.CommunityId },
             function (data, error) {
                 userWindow.empty();
 
@@ -243,7 +248,7 @@
      */
     static PostMessage(msg) {
 
-        $.post("/Communities/SendMessage",
+        $.post(ChatrBoxClient.APIRoute + "Communities/SendMessage",
             {
                 topicId: ChatrBoxClient.Settings.TopicId,
                 content: msg

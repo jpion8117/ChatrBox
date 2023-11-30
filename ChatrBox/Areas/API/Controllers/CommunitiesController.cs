@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ChatrBox.Controllers
+namespace ChatrBox.Areas.API.Controllers
 {
     [Authorize]
+    [Area("API")]
     public class CommunitiesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -147,7 +148,7 @@ namespace ChatrBox.Controllers
 
                     return new JsonResult(new
                     {
-                        error = Error.MakeReport(ErrorCodes.Success, 
+                        error = Error.MakeReport(ErrorCodes.Success,
                             "Messages successfully fetched from server"),
                         messages,
                         lastPost = topic.LastPost
@@ -158,7 +159,7 @@ namespace ChatrBox.Controllers
             //This result will be sent if user does not have permissions to view this topic
             return new JsonResult(new
             {
-                error = Error.MakeReport(ErrorCodes.ContentRestricted, 
+                error = Error.MakeReport(ErrorCodes.ContentRestricted,
                     "You do not have permission to view this content.")
             });
         }
@@ -192,7 +193,7 @@ namespace ChatrBox.Controllers
                 var statusTag = online ? "activeUser" : "inactiveUser";
                 var htmlSoup = $"<div class=\"{statusTag}\">{user.Chatr.UserName}</div>";
 
-                if(online) usersOnline.Add(htmlSoup);
+                if (online) usersOnline.Add(htmlSoup);
                 else usersOffline.Add(htmlSoup);
             }
 
@@ -236,15 +237,26 @@ namespace ChatrBox.Controllers
             {
                 return new JsonResult(new
                 {
-                    error = Error.MakeReport(ErrorCodes.FailedToLocate, 
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate,
                         $"Unable to locate the requested topic with Id:{topicId}")
-                }); 
+                });
             }
 
             //verify user has permissions to post
             var communityUsers = _context.CommunityUsers
                 .Where(cu => cu.CommunityId == topic.CommunityId && cu.ChatrId == user.Id)
                 .ToList();
+
+            //prevent null or empty messages that apparently completely bricks the ENTIRE topic!!!!
+            if (content.IsNullOrEmpty()) 
+            {
+                //I will probably come back to fix this, but this has caused me so much headache this
+                //error message is my catharsis!!!!
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.GeneralFailure, "NOT TODAY SATAN!!! Content can not be null or empty")
+                });
+            }
 
             if (communityUsers.Count > 0 || overridePermissions)
             {
@@ -296,8 +308,8 @@ namespace ChatrBox.Controllers
         /// </summary>
         private bool OverridePermissionRestriction
         {
-            get => User.IsInRole("admin") || 
-                   User.IsInRole("superAdmin") || 
+            get => User.IsInRole("admin") ||
+                   User.IsInRole("superAdmin") ||
                    User.IsInRole("moderator");
         }
     }
