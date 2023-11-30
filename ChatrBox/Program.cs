@@ -68,6 +68,7 @@ Message.MarkdownPipeline = new MarkdownPipelineBuilder()
     .UseEmojiAndSmiley(true)
     .UseGenericAttributes()
     .UseCustomContainers()
+    .DisableHtml()
     .Build();
 
 app.UseHttpsRedirection();
