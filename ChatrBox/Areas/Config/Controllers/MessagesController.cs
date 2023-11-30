@@ -23,6 +23,8 @@ namespace ChatrBox.Areas.Config.Controllers
 
         public async Task<IActionResult> Index(int topicId, string searchString = "")
         {
+            ViewData["topicId"] = topicId;
+
             var user = await _userManager.GetUserAsync(User) ??
                 throw new ArgumentException("User is null.");
 

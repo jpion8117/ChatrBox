@@ -4,7 +4,20 @@
     ViewData["Title"] = "View";
 }
 
-<h1>View</h1>
+<h1>View</h1> 
+
+
+<div class="container">
+    <!--Search Box-->
+    <form method="get" id="plsClap" asp-controller="messages" asp-action="index" asp-route-topicId="@ViewData["topicId"]">
+        <div class="input-group mb-3">
+            <input type="text" id="search" class="form-control" placeholder="Search here" />
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
 
 <table class="table">
     <thead>
@@ -22,8 +35,8 @@
                 @Html.DisplayNameFor(model => model.Topic)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsEdited)
-            </th>
+            </th>                @Html.DisplayNameFor(model => model.IsEdited)
+
         </tr>
     </thead>
     <tbody>
@@ -48,3 +61,16 @@
 }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $('#plsClap').on("submit", function (event) 
+        {
+            event.preventDefault();
+            var searchString = "searchString=" + $('#search').val() + "&topicId=@(ViewBag.topicId)";
+            var URL = "@Url.Action("Index","Messages")" + "?" + searchString;
+
+            window.location.replace(URL);
+        });
+    </script>
+}
