@@ -7,12 +7,12 @@ html {
     font-size: 16px;
   }
 }
-div {
+/*div {
     padding:5px;
     text-align: center;
     border: 5px;
     color: white;
-}
+}*/
 html {
   position: relative;
   height: 100%;
@@ -69,7 +69,7 @@ body {
 }
 
 #user_window {
-    width: 30%;
+    width: 100%;
 }
 
 #msg_window {
@@ -105,7 +105,7 @@ body {
 }
 /*Targets the div container surrounding the online users*/
 #onlineUsers {
-    background-color: #2f3136;
+    background-color: #2f3632;
     padding: 5px;
     border-radius: 2px;
 }
@@ -115,12 +115,13 @@ body {
     background-color: lightseagreen;
     padding: 5px;
     border-radius:2px;
-    width:auto fit-content;
+    width:100%;
 }
 
 /*Targets the name of any user that is currently online*/
 .activeUser {
-    background-color: lightyellow;
+    color:white;
+    background-color: rgb(35, 200, 145);
     padding: 5px;
     border-radius: 2px;
     width:auto fit-content;
@@ -139,7 +140,7 @@ body {
     background-color: indianred;
     padding: 5px;
     border-radius: 2px;
-    width: auto fit-content;
+    width: 100%;
 }
 
 /*Targets the name of any user that is currently offline*/

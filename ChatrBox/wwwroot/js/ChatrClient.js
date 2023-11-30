@@ -158,7 +158,7 @@
      * Requests a list of topics from the user and displays them on the client window.
      */
     static GetTopics() {
-        $.get("/Communities/GetTopicList", { communityId: communityId }, function (data, err) {
+        $.get("/Communities/GetTopicList", { communityId: ChatrBoxClient.Settings.CommunityId }, function (data, err) {
             if (data && data.error && data.error.code == 0) {
                 $("#CommunityName").text(data.communityName);
                 var topics = $('#TopicList');
@@ -194,7 +194,7 @@
 
         var userWindow = $("#user_window");
 
-        $.get("/Communities/GetUsersOnline", { communityId: communityId },
+        $.get("/Communities/GetUsersOnline", { communityId: ChatrBoxClient.Settings.CommunityId },
             function (data, error) {
                 userWindow.empty();
 
@@ -235,6 +235,39 @@
                 file: "clientSide.log"
             });
         }
+    }
+
+    /**
+     * Send a message in the currently active community.
+     * @param {string} msg content of the message to be sent to the server.
+     */
+    static PostMessage(msg) {
+
+        $.post("/Communities/SendMessage",
+            {
+                topicId: ChatrBoxClient.Settings.TopicId,
+                content: msg
+            },
+            function (data, err) {
+            if (data && data.error && data.error.code == 0) {
+                ChatrBoxClient.GetMessages();
+            }
+            else {
+                ChatrBoxClient.LogActivity(`User ${ChatrBoxClient.Username}'s message failed to post in topic#${ChatrBoxClient.Settings.TopicId}`);
+                ChatrBoxClient.DisplayBannerNotification(data.error.description, 5000, "bg-danger")
+            }
+        });
+    }
+
+    /**
+     * Displays a banner message at the top of the screen for a fixed amount of time.
+     * @param {string} content body of the banner notification.
+     * @param {number} time time the notification will be displayed
+     * @param {any} classes css classes to apply to the banner
+     * @param {any} styles inline styles to apply to the banner
+     */
+    static DisplayBannerNotification(content, time, classes, styles) {
+        //not implemented yet
     }
 }
 
