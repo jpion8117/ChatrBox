@@ -1,6 +1,7 @@
 #nullable disable
 using ChatrBox.Data;
 using ChatrBox.Models;
+using Markdig.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -46,7 +47,18 @@ namespace ChatrBox.Areas.Identity.Pages.Account.Manage
                 IconPaths.Add(path);
 
                 var name = icon.Name;
-                IconNames.Add(name.Remove(name.IndexOf(icon.Extension)));
+                var nameOrg = name.Remove(name.IndexOf(icon.Extension));
+                name = "" + name[0];
+
+                for (int i = 1; i < nameOrg.Length; i++)
+                {
+                    if (nameOrg[i].IsAlphaUpper())
+                        name += $" {nameOrg[i]}";
+                    else
+                        name += nameOrg[i];
+                }
+
+                IconNames.Add(name);
             }
 
             return Page();
@@ -71,7 +83,18 @@ namespace ChatrBox.Areas.Identity.Pages.Account.Manage
                     IconPaths.Add(path);
 
                     var name = icon.Name;
-                    IconNames.Add(name.Remove(name.IndexOf(icon.Extension)));
+                    var nameOrg = name.Remove(name.IndexOf(icon.Extension));
+                    name = "" + name[0];
+
+                    for (int i = 1; i < nameOrg.Length; i++)
+                    {
+                        if (nameOrg[i].IsAlphaUpper())
+                            name += $" {nameOrg[i]}";
+                        else
+                            name += nameOrg[i];
+                    }
+
+                    IconNames.Add(name);
                 }
 
                 return Page();

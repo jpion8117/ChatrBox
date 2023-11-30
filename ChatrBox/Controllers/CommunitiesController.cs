@@ -1,4 +1,5 @@
-﻿using ChatrBox.CoreComponents;
+﻿using Castle.Core.Internal;
+using ChatrBox.CoreComponents;
 using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
 using ChatrBox.Models.CommunityControls;
@@ -24,9 +25,36 @@ namespace ChatrBox.Controllers
         public async Task<JsonResult> GetTopicList(int communityId)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user == null)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "User not authenticated.")
+                }); ;
+            }
 
-            var topics = _context.Topics.Where(t => t.CommunityId == communityId).ToList();
-            return new JsonResult(topics);
+            if (true) { }
+
+            var topics = _context.Topics
+                .Where(t => t.CommunityId == communityId)
+                .OrderBy(t => t.DisplayOrder)
+                .ToList();
+
+            var queryResult = new Dictionary<int, string>();
+            string communityName = "";
+            foreach (var topic in topics)
+            {
+                queryResult.Add(topic.Id, topic.Name);
+                if (communityName.IsNullOrEmpty())
+                    communityName = topic.Community.Name;
+            }
+
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.Success, "Topics retrieved successfully."),
+                topics = queryResult.ToArray(),
+                communityName
+            });
         }
 
         [HttpGet]
@@ -124,6 +152,11 @@ namespace ChatrBox.Controllers
             });
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="communityId"></param>
+        /// <returns></returns>
         [HttpGet]
         public JsonResult GetUsersOnline(int communityId)
         {
@@ -161,12 +194,14 @@ namespace ChatrBox.Controllers
         }
 
         /// <summary>
-        /// Send a message to 
+        /// Posts a message to a specific topic provided the user has permission to do so. Upon 
+        /// completion a confirmation response will contain information related to delivery. 
+        /// error.code:0 indicates successful post, all other error codes will describe error 
+        /// details in error.description.
         /// </summary>
-        /// <param name="topicId"></param>
-        /// <param name="content"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="topicId">Id of the topic the message is intended for</param>
+        /// <param name="content">Raw text content of the message</param>
+        /// <returns>JSon object containing an error object </returns>
         [HttpPost]
         public JsonResult SendMessage(int topicId, string content)
         {
@@ -241,6 +276,18 @@ namespace ChatrBox.Controllers
                 error = Error.MakeReport(ErrorCodes.ContentRestricted,
                     "You do not have permission to post.")
             });
+
+        }
+
+        /// <summary>
+        /// Allows API endpoints to check if user can override permissions to view 
+        /// content they otherwise would be restricted from viewing for moderation purposes
+        /// </summary>
+        private bool OverridePermissionRestriction
+        {
+            get => User.IsInRole("admin") || 
+                   User.IsInRole("superAdmin") || 
+                   User.IsInRole("moderator");
         }
     }
 }
