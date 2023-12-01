@@ -177,22 +177,22 @@ namespace ChatrBox.Data
                     LastPost = DateTime.Parse("1/1/2000")
                 });
 
-            var testMessages = File.ReadAllLines("AutomatedMessages/TestMessages.txt");
-            var messages = new List<Message>();
+            //var testMessages = File.ReadAllLines("AutomatedMessages/TestMessages.txt");
+            //var messages = new List<Message>();
 
-            for (int i = 0; i < 2; i++)
-            {
-                messages.Add(new Message
-                {
-                    Id = i + 1,
-                    MessagePlain = testMessages[rand.Next(testMessages.Length)],
-                    SenderId = chatrBoxAutomated,
-                    TopicId = 1
-                });
-            }
+            //for (int i = 0; i < 2; i++)
+            //{
+            //    messages.Add(new Message
+            //    {
+            //        Id = i + 1,
+            //        MessagePlain = testMessages[rand.Next(testMessages.Length)],
+            //        SenderId = chatrBoxAutomated,
+            //        TopicId = 1
+            //    });
+            //}
 
-            modelBuilder.Entity<Message>()
-                .HasData(messages);
+            //modelBuilder.Entity<Message>()
+            //    .HasData(messages);
         }
     }
 }
