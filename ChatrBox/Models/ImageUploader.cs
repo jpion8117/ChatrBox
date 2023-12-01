@@ -133,15 +133,15 @@ namespace ChatrBox.Models
 
             //create a hash of the icon that can be used to verify file integrety before
             //displaying it to the user
-            //using (var sha = SHA256.Create())
-            //{
-            //    using (var fs = new FileStream(HostPath + iconDbKey.ImageUrl, 
-            //        FileMode.Open))
-            //    {
-            //        var hash = sha.ComputeHash(fs);
-            //        iconDbKey.ImageHash = Convert.ToHexString(hash);
-            //    }
-            //}
+            using (var sha = SHA256.Create())
+            {
+                using (var fs = new FileStream(HostPath + iconDbKey.ImageUrl,
+                    FileMode.Open))
+                {
+                    var hash = sha.ComputeHash(fs);
+                    iconDbKey.ImageHash = Convert.ToHexString(hash);
+                }
+            }
 
             return iconDbKey;
         }        
