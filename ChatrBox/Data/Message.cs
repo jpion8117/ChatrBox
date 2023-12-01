@@ -30,14 +30,6 @@ namespace ChatrBox.Data
             {
                 string parsedMessage = Markdown.ToHtml(MessagePlain, MarkdownPipeline);
 
-                //"<div class=\"msgDisplay\">" +
-                //    $"<img src=\"{Sender.ImageUrl}\" class=\"my-auto userMsgIcon\" />" +
-                //    "<div class=\"col-md-11 row\">" +
-                //        $"<div class=\"fs-2 fw-bold\">{Sender.UserName}</div>" +
-                //        $"<div class=\"\">{parsed}</div>" +
-                //    "</div>" +
-                //"</div>";
-
                 var userIcon = HtmlElement.Create("img")
                     .EnableSelfClose()
                     .AddClass("mx-auto userMsgIcon")
@@ -49,6 +41,8 @@ namespace ChatrBox.Data
 
                 var message = HtmlElement.Create("div")
                     .SetContent(parsedMessage);
+
+                var messageTray = HtmlElement.Create("div");
 
                 var messageContentWrap = HtmlElement.Create("div")
                     .AddClass("col-md-11 row")

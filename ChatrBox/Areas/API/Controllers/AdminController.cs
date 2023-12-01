@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System.Security.Policy;
 
-namespace ChatrBox.Areas.Config.Controllers
+namespace ChatrBox.Areas.API.Controllers
 {
     [Authorize]
-    [Area("Config")]
-    public class AdminController : Controller
+    [Area("API")]
+    public class AdminController : ControllerBase
     {
         private class LogRequest
         {
@@ -32,7 +32,7 @@ namespace ChatrBox.Areas.Config.Controllers
         public static string HomePath { get; set; }
 
         [HttpPost]
-        public void Log(string logMsg, string path, 
+        public void Log(string logMsg, string path,
             string file = "default.log", int retries = 0)
         {
             if (logMsg == null) return;

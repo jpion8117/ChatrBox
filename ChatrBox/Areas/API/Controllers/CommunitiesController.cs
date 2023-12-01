@@ -2,6 +2,7 @@
 using ChatrBox.CoreComponents;
 using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
+using ChatrBox.Models;
 using ChatrBox.Models.CommunityControls;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -66,6 +67,70 @@ namespace ChatrBox.Areas.API.Controllers
                 error = Error.MakeReport(ErrorCodes.Success, "Topics retrieved successfully."),
                 topics = queryResult.ToArray(),
                 communityName
+            });
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetCommunityList()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user == null)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "User not authenticated.")
+                }); ;
+            }
+
+            var userCommunitiesDbResult = _context.CommunityUsers
+                .Where(uc => uc.ChatrId == user.Id)
+                .ToList();
+
+            if (!userCommunitiesDbResult.Any())
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, "No communitites found")
+                });
+            }
+
+            var userCommunities = new List<string>();
+
+            for (int i = 0; i < userCommunitiesDbResult.Count; i++)
+            {
+                CommunityUser? userCommunity = userCommunitiesDbResult[i];
+                var communityIcon = HtmlElement.Create("div")
+                    .EnableSelfClose()
+                    .AddClass("community-list-icon")
+                    .AddStyle("width", "100%")
+                    .AddAttribute("src", userCommunity.Community.ImageUrl)
+                    .AddAttribute("alt", userCommunity.Community.Name);
+
+                var communityButton = HtmlElement.Create("button")
+                    .SetID($"communityId_{userCommunity.CommunityId}")
+                    .AddClass("community-list-btn");
+
+                var communityListItem = HtmlElement.Create("li")
+                    .AddClass("community-list-item");
+
+                //add indicators for active community
+                if (i == 0)
+                {
+                    communityListItem.AddClass("community-list-item-active");
+                    communityButton.AddClass("community-list-btn-active");
+                }
+
+                //pack down and store in community list for return to the server
+                communityButton.SetContent(communityIcon);
+                communityListItem.SetContent(communityIcon);
+                userCommunities.Add(communityListItem.ToString());
+            }
+
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.Success, "User communities retrieved"),
+                userCommunities,
+                communityId = userCommunitiesDbResult[0].CommunityId
             });
         }
 

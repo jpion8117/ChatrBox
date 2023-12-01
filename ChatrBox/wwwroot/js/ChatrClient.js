@@ -165,6 +165,9 @@
                 $("#CommunityName").text(data.communityName);
                 var topics = $('#TopicList');
                 for (var i = 0; i < data.topics.length; i++) {
+
+                    if (i === 0) ChatrBoxClient.Settings.TopicId = data.topics[i].key;
+
                     var active = i === 0 ? " topic-list-active" : ""
                     var listClasses = "topic-list-item " + active;
                     topics.append("<li id=\"topicId_" + data.topics[i].key + "\" class=\"" + listClasses + "\">" + data.topics[i].value + "</li>");
@@ -189,6 +192,23 @@
                         });
                 }
             }
+        });
+    }
+
+    static GetCommunities() {
+        ChatrBoxClient.LogActivity("Requesting community list", true);
+
+        $.get(`${ChatrBoxClient.APIRoute}Communities/GetCommunityList`, function (data, err) {
+            ChatrBoxClient.LogActivity(data.error.description, true);
+            ChatrBoxClient.Settings.CommunityId = data.communityId;
+
+            communityList = $('#community_list');
+
+            for (var i = 0; i < data.userCommunities; i++) {
+                communityList.append(data.userCommunities[i]);
+            }
+
+            $('.community-list-btn').each(f)
         });
     }
 
@@ -235,7 +255,7 @@
         }
 
         if (ChatrBoxClient.LoggingBehavior.SendToServer && !granular) {
-            $.post("/Config/Admin/Log", {
+            $.post("/API/Admin/Log", {
                 logMsg: logMsg,
                 file: "clientSide.log"
             });

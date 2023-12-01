@@ -6,7 +6,7 @@ using Markdig;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ChatrBox.Areas.Config.Controllers;
+using ChatrBox.Areas.API.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
