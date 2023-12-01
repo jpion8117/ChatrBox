@@ -180,7 +180,7 @@ namespace ChatrBox.Data
             var testMessages = File.ReadAllLines("AutomatedMessages/TestMessages.txt");
             var messages = new List<Message>();
 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 2; i++)
             {
                 messages.Add(new Message
                 {

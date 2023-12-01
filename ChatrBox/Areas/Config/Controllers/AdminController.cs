@@ -35,45 +35,45 @@ namespace ChatrBox.Areas.Config.Controllers
         public void Log(string logMsg, string path, 
             string file = "default.log", int retries = 0)
         {
-            if (logMsg == null) return;
+            //if (logMsg == null) return;
 
-            var logDir = Path.Combine(HomePath, "logs");
+            //var logDir = Path.Combine(HomePath, "logs");
 
-            if (!path.IsNullOrEmpty())
-                logDir = Path.Combine(logDir, path);
+            //if (!path.IsNullOrEmpty())
+            //    logDir = Path.Combine(logDir, path);
 
-            var logFile = Path.Combine(logDir, file);
+            //var logFile = Path.Combine(logDir, file);
 
-            //makes the directory if it does not already exist
-            if (!Directory.Exists(logDir))
-                Directory.CreateDirectory(logDir);
+            ////makes the directory if it does not already exist
+            //if (!Directory.Exists(logDir))
+            //    Directory.CreateDirectory(logDir);
 
 
-            var rand = new Random();
-            Thread.Sleep(rand.Next(1000, 3000));
-            try
-            {
-                //create the file if it does not already exist
-                if (!System.IO.File.Exists(logFile))
-                    System.IO.File.Create(logFile);
+            //var rand = new Random();
+            //Thread.Sleep(rand.Next(1000, 3000));
+            //try
+            //{
+            //    //create the file if it does not already exist
+            //    if (!System.IO.File.Exists(logFile))
+            //        System.IO.File.Create(logFile);
 
-                System.IO.File.AppendAllText(logFile, $"{logMsg}\n");
-            }
-            catch //delay than reattempt 
-            {
-                if (retries < 5)
-                {
-                    Thread.Sleep(rand.Next(10000, 40000));
-                    Log(logMsg, path, file, ++retries);
-                }
-                else if (retries < 10) 
-                {
-                    Thread.Sleep(rand.Next(10000, 120000));
-                    Log(logMsg, path, file, ++retries );
-                }
+            //    System.IO.File.AppendAllText(logFile, $"{logMsg}\n");
+            //}
+            //catch //delay than reattempt 
+            //{
+            //    if (retries < 5)
+            //    {
+            //        Thread.Sleep(rand.Next(10000, 40000));
+            //        Log(logMsg, path, file, ++retries);
+            //    }
+            //    else if (retries < 10) 
+            //    {
+            //        Thread.Sleep(rand.Next(10000, 120000));
+            //        Log(logMsg, path, file, ++retries );
+            //    }
 
-                return;
-            }
+            //    return;
+            //}
         }
     }
 }

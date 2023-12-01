@@ -10,7 +10,7 @@ using System.Diagnostics;
 namespace ChatrBox.Controllers
 {
 
-    [Authorize]
+    
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,7 +21,7 @@ namespace ChatrBox.Controllers
             _logger = logger;
             _context = context;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             if (HttpContext.User.Identity != null)
@@ -73,6 +73,7 @@ namespace ChatrBox.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult InitialCheckin(string returnUrl)
         {
             if (HttpContext.User.Identity != null)
@@ -88,7 +89,7 @@ namespace ChatrBox.Controllers
 
             return LocalRedirect(returnUrl);
         }
-
+        [Authorize]
         public JsonResult UserCheckin()
         {
             if (HttpContext.User.Identity != null)
