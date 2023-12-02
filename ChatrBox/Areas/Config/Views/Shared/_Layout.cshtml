@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ChatrBox</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ChatrBox.styles.css" asp-append-version="true" />
     <script>
         var messageUpdateRate = @ChatrBox.CoreComponents.ConfigManager.MessageUpdateRate;
@@ -15,8 +14,8 @@
     @RenderSection("JS_GlobalVariables", required: false)
 </head>
 <body>
-    <main class="row flex-nowrap">
-        <nav class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+    <main class="window row">
+        <nav class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark pane">
             <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
                 <!--Menu options for all users-->
                 <h5>Welcome, @(User.Identity == null ? "ERROR!" : User.Identity.Name)</h5>
@@ -79,7 +78,7 @@
                 }
             </div>
         </nav>
-        <div class="col-md-9">
+        <div class="col-md-9 pane">
             @RenderBody()
         </div>
     </main>

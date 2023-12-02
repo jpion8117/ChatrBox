@@ -16,7 +16,8 @@ html {
 html {
   position: relative;
   height: 100%;
-  overflow-y:clip;
+  overflow-y:hidden;
+  overflow-x:hidden;
 }
 img {
     display: inline-block;
@@ -200,4 +201,9 @@ and the message itself*/
     background-size: auto;
     height: 140px;
     width:130px;
+}
+
+.scrollable {
+    overflow:scroll!important;
+    height:100%;
 }

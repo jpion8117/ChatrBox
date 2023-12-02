@@ -42,7 +42,11 @@ namespace ChatrBox.Data
                 var message = HtmlElement.Create("div")
                     .SetContent(parsedMessage);
 
-                var messageTray = HtmlElement.Create("div");
+                var messageTray = HtmlElement.Create("div")
+                    .AddClass("text-muted message-tray")
+                    .AddStyle("width", "100%")
+                    .AddStyle("height", "20px")
+                    .SetContent("");
 
                 var messageContentWrap = HtmlElement.Create("div")
                     .AddClass("col-md-11 row")
