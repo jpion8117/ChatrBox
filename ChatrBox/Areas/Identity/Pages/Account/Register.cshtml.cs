@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using ChatrBox.Areas.API.Controllers;
 using ChatrBox.Areas.Config.Controllers;
 using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
@@ -195,17 +196,16 @@ namespace ChatrBox.Areas.Identity.Pages.Account
                             ?? throw new ArgumentNullException("System account not found! Consider " +
                             "updating database.");
 
-                        //disabled welcome message due to security conflicts on myASP.net
-                        //var welcomeMsg = new Message
-                        //{
-                        //    SenderId = cheddar.Id,
-                        //    MessagePlain = System.IO.File.ReadAllText(Path.Combine(AdminController.HomePath, "AutomatedMessages", "welcome.txt")),
-                        //    Timestamp = DateTime.UtcNow,
-                        //    TopicId = topic.Id,
-                        //    IsEdited = false
-                        //};
-                        //_context.Messages.Add(welcomeMsg);
-                        
+                        var welcomeMsg = new Message
+                        {
+                            SenderId = cheddar.Id,
+                            MessagePlain = System.IO.File.ReadAllText(Path.Combine(AdminController.HomePath, "AutomatedMessages", "welcome.txt")),
+                            Timestamp = DateTime.UtcNow,
+                            TopicId = topic.Id,
+                            IsEdited = false
+                        };
+
+                        _context.Messages.Add(welcomeMsg);
                         _context.SaveChanges();
 
                         //add user to announcemnet community
