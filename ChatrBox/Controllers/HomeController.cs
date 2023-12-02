@@ -22,28 +22,28 @@ namespace ChatrBox.Controllers
             _context = context;
         }
         [Authorize]
-        public IActionResult Index(/*int communityId, string topicName, bool directLink = false*/)
+        public IActionResult Index(int communityId, string topicName, bool directLink = false)
         {
-            //if (directLink)
-            //{
-            //ViewBag.CommunityId = communityId;
+            if (directLink)
+            {
+                ViewBag.CommunityId = communityId;
 
-            //var topic = _context.Topics
-            //    .FirstOrDefault(t => t.CommunityId == communityId && t.Name == topicName);
+                var topic = _context.Topics
+                    .FirstOrDefault(t => t.CommunityId == communityId && t.Name == topicName);
 
-            //if (topic == null)
-            //{
-            //    topic = _context.Topics
-            //        .FirstOrDefault(t => t.CommunityId == communityId);
+                if (topic == null)
+                {
+                    topic = _context.Topics
+                        .FirstOrDefault(t => t.CommunityId == communityId);
 
-            //    if (topic == null) 
-            //        return NotFound("The community/topic could not be located");
-            //}
+                    if (topic == null)
+                        return NotFound("The community/topic could not be located");
+                }
 
-            //ViewBag.TopicId = topic.Id;
+                ViewBag.TopicId = topic.Id;
 
-            //return View();
-            //}
+                return View();
+            }
 
             if (HttpContext.User.Identity != null)
             {
@@ -78,32 +78,10 @@ namespace ChatrBox.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult Index(int communityId,  string topicName)
-        {
-            ViewBag.CommunityId = communityId;
-
-            var topic = _context.Topics
-                .FirstOrDefault(t => t.CommunityId == communityId && t.Name == topicName);
-
-            if (topic == null)
-            {
-                topic = _context.Topics
-                    .FirstOrDefault(t => t.CommunityId == communityId);
-
-                if (topic == null) 
-                    return NotFound("The community/topic could not be located");
-            }
-
-            ViewBag.TopicId = topic.Id;
-
-            return View();
-        }
-
         [Route("/Share/CommunityTopic/{communityId:int}/{topicName}")]
         public IActionResult ShareUrl(int communityId, string topicName)
         {
-            return RedirectToAction("Index", new { communityId, topicName });
+            return RedirectToAction("Index", new { communityId, topicName, directLink = true });
         }
 
         public IActionResult Privacy()
