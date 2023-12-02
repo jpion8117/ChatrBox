@@ -1,15 +1,41 @@
 ﻿
     <script>
-        function toggleDebugConsole()
-        {
-            ChatrBoxClient.LoggingBehavior.EnableGranular = true;
-            ChatrBoxClient.LoggingBehavior.LogToConsole = true;
-        }
+        // ChatrBoxClient.Username = "@(User.Identity != null ? User.Identity.Name : "")";
+        // ChatrBoxClient.UserId = "@ViewBag.UserId";
 
-        ChatrBoxClient.Settings.TopicId = @ViewBag.TopicId;
-        ChatrBoxClient.Settings.CommunityId = @ViewBag.CommunityId;
-        ChatrBoxClient.Username = "@(User.Identity != null ? User.Identity.Name : "")";
-        ChatrBoxClient.UserId = "@ViewBag.UserId";
+        // function toggleDebugConsole()
+        // {
+        //     ChatrBoxClient.LoggingBehavior.EnableGranular = true;
+        //     ChatrBoxClient.LoggingBehavior.LogToConsole = true;
+        // }
+        // ChatrBoxClient.Settings.CommunityId = @ViewBag.CommunityId;
+
+        // ChatrBoxClient.GetCommunities();
+        // ChatrBoxClient.GetTopics(@ViewBag.TopicId);
+
+        // ChatrBoxClient.Settings.TopicId = @ViewBag.TopicId;
+
+
+        // ChatrBoxClient.GetMessages();
+        // ChatrBoxClient.GetUserStatuses();
+        // ChatrBoxClient.Settings.MessageCheckRate = 5000;
+        // ChatrBoxClient.Interval.Set(
+        //     "messageChecker",
+        //     ChatrBoxClient.Settings.MessageCheckRate,
+        //     ChatrBoxClient.GetMessages
+        // );
+        // ChatrBoxClient.Interval.Set(
+        //     "userStatusUpdater",
+        //     ChatrBoxClient.Settings.StatusUpdateRate,
+        //     ChatrBoxClient.GetUserStatuses
+        // );
+
+        // toggleDebugConsole();
+
+        // setTimeout(function () { ChatrBoxClient.UpdateTopicIdentifier(); }, 2000);
+
+        ChatrBoxClient.InitializeClient(@ViewBag.CommunityId, @ViewBag.TopicId, 
+            "@ViewBag.UserId", "@(User.Identity != null ? User.Identity.Name : "")", true);
 
         $('#msgArchiveBtn').on("click", function (event) {
             event.preventDefault();
@@ -21,7 +47,4 @@
             ChatrBoxClient.PostMessage(message);
             $('#messageContent').val("");
         })
-
-        toggleDebugConsole();
     </script>
-    <script src="~/js/updateHandler.js"></script>

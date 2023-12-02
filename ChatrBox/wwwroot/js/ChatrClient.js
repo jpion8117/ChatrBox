@@ -68,6 +68,53 @@
         LastPost: Date.now()
     }
 
+    static SetUserDetails(name, id) {
+        ChatrBoxClient.Settings.UserId = id;
+        ChatrBoxClient.Settings.Username = name;
+
+        return ChatrBoxClient
+    }
+    static SetCommunity(commnunityId) {
+        ChatrBoxClient.Settings.CommunityId = commnunityId;
+        return ChatrBoxClient;
+    }
+
+    static SetTopic(topicId) {
+        ChatrBoxClient.Settings.TopicId = topicId;
+        return ChatrBoxClient;
+    }
+
+    static InitializeClient(communityId, topicId, userId, username, debugMode = false) {
+        if (debugMode) {
+            ChatrBoxClient.LoggingBehavior.EnableGranular = true;
+            ChatrBoxClient.LoggingBehavior.LogToConsole = true;
+            ChatrBoxClient.LogActivity(`User: ${ChatrBoxClient.Username} initialized client in debugMode.`);
+        }
+
+        ChatrBoxClient.SetUserDetails(username, userId)
+            .SetCommunity(communityId)
+            .GetTopics()
+            .GetUserStatuses()
+            .GetCommunities()
+            .Interval.Set(
+                "messageChecker",
+                ChatrBoxClient.Settings.MessageCheckRate,
+                ChatrBoxClient.GetMessages)
+            .Interval.Set(
+                "userStatusUpdater",
+                ChatrBoxClient.Settings.StatusUpdateRate,
+                ChatrBoxClient.GetUserStatuses);
+
+        setTimeout(function () {
+            ChatrBoxClient
+                .SetTopic(topicId)
+                .GetMessages()
+                .UpdateTopicIdentifier();
+        }, 2500);
+
+        return ChatrBoxClient;
+    }
+
     /**
      * Handles all functions that need to be run on a fixed schedule (wrapper for setInterval and clearInterval 
      * functionality).
@@ -89,9 +136,9 @@
             let interval = setInterval(handler, time);
             this.keys.push(new DictionaryEntry(key, interval));
 
-            ChatrBoxClient.LogActivity(`User ${this.Username} configured ChatrBoxClient.Interval with key:${key} and delay of ${time} milliseconds`);
+            ChatrBoxClient.LogActivity(`User ${ChatrBoxClient.Username} configured ChatrBoxClient.Interval with key:${key} and delay of ${time} milliseconds`);
 
-            return true;
+            return ChatrBoxClient;
         }
 
         //locate and stop an action timer. key: name of the timer to recall. Returns 
@@ -109,7 +156,7 @@
                     this.keys = this.keys.splice(index, 1);
 
                     //return true to indicate success
-                    return true;
+                    return ChatrBoxClient;
                 }
             }
 
@@ -126,6 +173,8 @@
      */
     static GetMessages(force) {
         ChatrBoxClient.LogActivity("Checked Messages", true);
+
+        if (force) ChatrBoxClient.Settings.LastPost = Date.now;
 
         $.get(ChatrBoxClient.APIRoute + "Communities/CheckMessages", {
             topicId: ChatrBoxClient.Settings.TopicId,
@@ -153,14 +202,13 @@
                 }
             });
 
-        //perform user checkin
-        $.get("/Home/UserCheckIn");
+        return ChatrBoxClient;
     }
 
     /**
      * Requests a list of topics from the user and displays them on the client window.
      */
-    static GetTopics() {
+    static GetTopics(explicitTopic) {
         $.get(ChatrBoxClient.APIRoute + "Communities/GetTopicList", { communityId: ChatrBoxClient.Settings.CommunityId }, function (data, err) {
             if (data && data.error && data.error.code == 0) {
                 $("#CommunityName").text(data.communityName);
@@ -168,9 +216,10 @@
                 topics.empty();
                 for (var i = 0; i < data.topics.length; i++) {
 
-                    if (i === 0) ChatrBoxClient.Settings.TopicId = data.topics[i].key;
+                    if (i === 0 && !explicitTopic) ChatrBoxClient.Settings.TopicId = data.topics[i].key;
+                    else ChatrBoxClient.Settings.TopicId = explicitTopic;
 
-                    var active = i === 0 ? " topic-list-active" : ""
+                    var active = data.topics[i].key === ChatrBoxClient.Settings.TopicId ? " topic-list-active" : ""
                     var listClasses = "topic-list-item " + active;
                     topics.append("<li id=\"topicId_" + data.topics[i].key + "\" class=\"" + listClasses + "\">" + data.topics[i].value + "</li>");
 
@@ -186,15 +235,24 @@
                             ChatrBoxClient.Settings.TopicId = parseInt(temp);
                             ChatrBoxClient.GetMessages();
 
-                            $('.topic-list-item').each(function (index, element) {
-                                $(element).removeClass("topic-list-active");
-                            });
-
-                            $(event.target).addClass("topic-list-active");
+                            ChatrBoxClient.UpdateTopicIdentifier();
                         });
                 }
             }
         });
+
+        return ChatrBoxClient;
+    }
+
+    static UpdateTopicIdentifier() {
+        ChatrBoxClient.LogActivity("updating topic identifier", true);
+        $('.topic-list-item').each(function (index, element) {
+            $(element).removeClass("topic-list-active");
+        });
+
+        $(`#topicId_${ChatrBoxClient.Settings.TopicId}`).addClass("topic-list-active");
+
+        return ChatrBoxClient;
     }
 
     static GetCommunities() {
@@ -220,6 +278,8 @@
                 })
             });
         });
+
+        return ChatrBoxClient;
     }
 
     /**
@@ -241,6 +301,12 @@
                 $("#offlineUsers").append("<div class=\"offlineUsersHeading\">Offline:</div>");
                 $("#offlineUsers").append(data.usersOffline);
             });
+
+        //perform user checkin
+        $.get("/Home/UserCheckIn");
+
+
+        return ChatrBoxClient;
     }
 
     static ScrollMessages() {
@@ -270,6 +336,8 @@
                 file: "clientSide.log"
             });
         }
+
+        return ChatrBoxClient;
     }
 
     /**
@@ -292,6 +360,8 @@
                 ChatrBoxClient.DisplayBannerNotification(data.error.description, 5000, "bg-danger")
             }
         });
+
+        return ChatrBoxClient;
     }
 
     /**
@@ -303,6 +373,9 @@
      */
     static DisplayBannerNotification(content, time, classes, styles) {
         //not implemented yet
+
+
+        return ChatrBoxClient;
     }
 }
 
