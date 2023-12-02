@@ -124,8 +124,9 @@
     /**
      * checks for messages in the given community/topic combination
      */
-    static GetMessages() {
+    static GetMessages(force) {
         ChatrBoxClient.LogActivity("Checked Messages", true);
+
         $.get(ChatrBoxClient.APIRoute + "Communities/CheckMessages", {
             topicId: ChatrBoxClient.Settings.TopicId,
             lastPost: ChatrBoxClient.Settings.LastPost
@@ -164,6 +165,7 @@
             if (data && data.error && data.error.code == 0) {
                 $("#CommunityName").text(data.communityName);
                 var topics = $('#TopicList');
+                topics.empty();
                 for (var i = 0; i < data.topics.length; i++) {
 
                     if (i === 0) ChatrBoxClient.Settings.TopicId = data.topics[i].key;
@@ -202,13 +204,21 @@
             ChatrBoxClient.LogActivity(data.error.description, true);
             ChatrBoxClient.Settings.CommunityId = data.communityId;
 
-            communityList = $('#community_list');
-
-            for (var i = 0; i < data.userCommunities; i++) {
+            var communityList = $('#community_list');
+            for (var i = 0; i < data.userCommunities.length; i++) {
                 communityList.append(data.userCommunities[i]);
             }
 
-            $('.community-list-btn').each(f)
+            $('.community-list-btn').each(function (index, element) {
+                $(element).on("click", function (event) {
+                    event.stopPropagation();
+                    var id = event.target.attributes['id'].value.replace("communityId_", "");
+                    ChatrBoxClient.Settings.CommunityId = id;
+                    ChatrBoxClient.GetTopics();
+                    ChatrBoxClient.Settings.LastPost = new Date(2000, 1, 1, 0, 0, 0, 0);
+                    ChatrBoxClient.GetMessages(true);
+                })
+            });
         });
     }
 

@@ -1,6 +1,7 @@
 ﻿ChatrBoxClient.GetMessages();
 ChatrBoxClient.GetTopics();
 ChatrBoxClient.GetUserStatuses();
+ChatrBoxClient.GetCommunities();
 ChatrBoxClient.Interval.Set(
     "messageChecker",
     ChatrBoxClient.Settings.MessageCheckRate,

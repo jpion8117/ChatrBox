@@ -99,14 +99,12 @@ namespace ChatrBox.Areas.API.Controllers
             for (int i = 0; i < userCommunitiesDbResult.Count; i++)
             {
                 CommunityUser? userCommunity = userCommunitiesDbResult[i];
-                var communityIcon = HtmlElement.Create("div")
+                var communityIcon = HtmlElement.Create("img")
                     .EnableSelfClose()
                     .AddClass("community-list-icon")
                     .AddStyle("width", "100%")
                     .AddAttribute("src", userCommunity.Community.ImageUrl)
-                    .AddAttribute("alt", userCommunity.Community.Name);
-
-                var communityButton = HtmlElement.Create("button")
+                    .AddAttribute("title", userCommunity.Community.Name)
                     .SetID($"communityId_{userCommunity.CommunityId}")
                     .AddClass("community-list-btn");
 
@@ -117,11 +115,9 @@ namespace ChatrBox.Areas.API.Controllers
                 if (i == 0)
                 {
                     communityListItem.AddClass("community-list-item-active");
-                    communityButton.AddClass("community-list-btn-active");
                 }
 
                 //pack down and store in community list for return to the server
-                communityButton.SetContent(communityIcon);
                 communityListItem.SetContent(communityIcon);
                 userCommunities.Add(communityListItem.ToString());
             }

@@ -81,7 +81,7 @@ namespace ChatrBox.Models
 
                 foreach (var attr in _additionalAttributes.Keys)
                 {
-                    attrib += $"{attr}=\"{_additionalAttributes[attr]}\"";
+                    attrib += $" {attr}=\"{_additionalAttributes[attr]}\"";
                 }
 
                 return attrib;
