@@ -15,16 +15,6 @@
 
         // ChatrBoxClient.Settings.TopicId = @ViewBag.TopicId;
 
-        // $('#msgArchiveBtn').on("click", function (event) {
-        //     event.preventDefault();
-        // });
-
-        // $('#SendBtn').on("click", function (event) {
-        //     event.preventDefault();
-        //     var message = $('#messageContent').val();
-        //     ChatrBoxClient.PostMessage(message);
-        //     $('#messageContent').val("");
-        // })
 
         // ChatrBoxClient.GetMessages();
         // ChatrBoxClient.GetUserStatuses();
@@ -44,6 +34,17 @@
 
         // setTimeout(function () { ChatrBoxClient.UpdateTopicIdentifier(); }, 2000);
 
-        ChatrBoxClient.InitializeClient(@ViewBag.CommunityId, @ViewBag.TopicId, "@ViewBag.UserId", "@(User.Identity != null ? User.Identity.Name : "")", true);
+        ChatrBoxClient.InitializeClient(@ViewBag.CommunityId, @ViewBag.TopicId, 
+            "@ViewBag.UserId", "@(User.Identity != null ? User.Identity.Name : "")", true);
 
+        $('#msgArchiveBtn').on("click", function (event) {
+            event.preventDefault();
+        });
+
+        $('#SendBtn').on("click", function (event) {
+            event.preventDefault();
+            var message = $('#messageContent').val();
+            ChatrBoxClient.PostMessage(message);
+            $('#messageContent').val("");
+        })
     </script>
