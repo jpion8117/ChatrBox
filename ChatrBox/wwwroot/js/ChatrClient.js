@@ -200,6 +200,16 @@
                             "this commnunity.");
                     }
                 }
+
+                $('.edit-msg-link').on("click", function (event) {
+                    event.preventDefault();
+                    var id = event.target.attributes['id'].value.replace("messageId_", "");
+                    id = parseInt(id);
+                    var contentSelector = `#${event.target.attributes['id'].value}_Content`;
+                    $('#EditMessage').val($(contentSelector).val());
+                    $('#EditMessageId').val(id);
+                    $('#EditModal').dialog("open");
+                });
             });
 
         return ChatrBoxClient;
@@ -356,12 +366,37 @@
                 ChatrBoxClient.GetMessages();
             }
             else {
-                ChatrBoxClient.LogActivity(`User ${ChatrBoxClient.Username}'s message failed to post in topic#${ChatrBoxClient.Settings.TopicId}`);
+                ChatrBoxClient.LogActivity(`User ${ChatrBoxClient.Username}'s message failed to post in topic#${ChatrBoxClient.Settings.TopicId} with description ${data.error.description}`);
                 ChatrBoxClient.DisplayBannerNotification(data.error.description, 5000, "bg-danger")
             }
         });
 
         return ChatrBoxClient;
+    }
+
+    static EditMessage(messageId, messageContent) {
+        $.post(ChatrBoxClient.APIRoute + "Communities/EditMessage",
+            {
+                topicId: ChatrBoxClient.Settings.TopicId,
+                messageId: messageId,
+                content: messageContent
+            },
+            function (data, err) {
+                if (data && data.error && data.error.code == 0) {
+                    ChatrBoxClient.GetMessages(true);
+                }
+                else {
+                    ChatrBoxClient.LogActivity(`User ${ChatrBoxClient.Username}'s message failed to post in topic#${ChatrBoxClient.Settings.TopicId} with description ${data.error.description}`);
+                    ChatrBoxClient.DisplayBannerNotification(data.error.description, 5000, "bg-danger")
+                }
+            }
+        );
+
+        return ChatrBoxClient;
+    }
+
+    static DeleteMessage(messageId) {
+
     }
 
     /**

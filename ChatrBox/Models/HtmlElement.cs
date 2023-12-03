@@ -8,6 +8,7 @@ namespace ChatrBox.Models
     {
         private Dictionary<string, string> _styles = new Dictionary<string, string>();
         private Dictionary<string, string> _additionalAttributes = new Dictionary<string, string>();
+        private List<string> _booleanAttributes = new List<string>();   
         
         /// <summary>
         /// Used to make a tag that self closes ex. <img />, <br />, etc.
@@ -82,6 +83,10 @@ namespace ChatrBox.Models
                 foreach (var attr in _additionalAttributes.Keys)
                 {
                     attrib += $" {attr}=\"{_additionalAttributes[attr]}\"";
+                }
+                foreach (var attr in _booleanAttributes)
+                {
+                    attrib += $" {attr}";
                 }
 
                 return attrib;
@@ -189,6 +194,17 @@ namespace ChatrBox.Models
         }
 
         /// <summary>
+        /// Adds any additional html boolean attribute to the element
+        /// </summary>
+        /// <param name="attribute">name of the boolean attribute</param>
+        /// <returns>Itself for the purpose fo chaining</returns>
+        public HtmlElement AddAttribute(string attribute)
+        {
+            _booleanAttributes.Add(attribute);
+            return this;
+        }
+
+        /// <summary>
         /// Set the content of the current html element
         /// </summary>
         /// <param name="htmlContent">Content to be placed inside the element tags</param>
@@ -202,14 +218,39 @@ namespace ChatrBox.Models
         /// <summary>
         /// Embed one or more html elements in another html element.
         /// </summary>
-        /// <param name="innerElement">Element to embed</param>
+        /// <param name="innerElements">Element(s) to embed</param>
         /// <returns>Itself for the purpose of chaining</returns>
-        public HtmlElement SetContent (params HtmlElement[] innerElements)
+        public HtmlElement AddContent (params HtmlElement[] innerElements)
         {
             foreach (var innerElement in innerElements)
             {
-                InnerHTML += innerElement.ToString();
+                InnerHTML += innerElement;
             }
+            return this;
+        }
+
+        public HtmlElement AddContent(string htmlContent, bool toBeginning = false)
+        {
+            if (toBeginning)
+                InnerHTML = $"{htmlContent} {InnerHTML}";
+            else
+                InnerHTML += " " + htmlContent;
+
+            return this;
+        }
+        public HtmlElement AddContent(HtmlElement htmlElement, bool toBeginning = false)
+        {
+            if (toBeginning)
+                InnerHTML = $"{htmlElement} {InnerHTML}";
+            else
+                InnerHTML += " " + htmlElement;
+
+            return this;
+        }
+
+        public HtmlElement ChangeTag(string tag)
+        {
+            Tag = tag;
             return this;
         }
 

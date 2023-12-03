@@ -7,16 +7,36 @@ using Markdig.Renderers;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ChatrBox.Models;
+using Castle.Core.Internal;
 
 namespace ChatrBox.Data
 {
 
     public class Message
     {
+        private string _messagePlain;
         public int Id { get; set; }
         public DateTime Timestamp { get; set; }
-        public string MessagePlain { get; set; }
+        public string MessagePlain 
+        {
+            get => _messagePlain; 
+            set
+            {
+                //blocks null assignments that break entire topics! That was a fun evening!!!!
+                if (value.IsNullOrEmpty())
+                    return;
 
+                //the message previously had content, it will be marked as edited
+                if (!_messagePlain.IsNullOrEmpty())
+                    IsEdited = true;
+
+                //stores the new value of the message's plaintext content
+                _messagePlain = value;
+                
+            }
+        }
+
+        [NotMapped]
         public static MarkdownPipeline MarkdownPipeline { get; set; }
         
         /// <summary>
@@ -42,22 +62,18 @@ namespace ChatrBox.Data
                 var message = HtmlElement.Create("div")
                     .SetContent(parsedMessage);
 
-                var messageTray = HtmlElement.Create("div")
-                    .AddClass("text-muted message-tray")
-                    .AddStyle("width", "100%")
-                    .AddStyle("height", "20px")
-                    .SetContent("");
+                var messagePlain = HtmlElement.Create("input")
+                    .EnableSelfClose()
+                    .AddAttribute ("type", "text")
+                    .AddAttribute("value", MessagePlain)
+                    .AddAttribute("hidden")
+                    .SetID($"messageId_{Id}_Content");
 
                 var messageContentWrap = HtmlElement.Create("div")
                     .AddClass("col-md-11 row")
-                    .SetContent(username, message);
+                    .AddContent(username, message, messagePlain);
 
-                string HTML = HtmlElement.Create("div")
-                    .AddClass("msgDisplay")
-                    .SetContent(userIcon, messageContentWrap)
-                    .ToString();
-
-                return HTML;
+                return userIcon.ToString() + messageContentWrap.ToString();
             }
         }
 
@@ -68,6 +84,8 @@ namespace ChatrBox.Data
         public virtual Topic Topic { get; set; }
 
         public bool IsEdited { get; set; }
+        public bool IsHidden { get; set; }
+        public bool IsFlaged { get; set; }
 
     }
 }

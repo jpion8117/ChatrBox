@@ -7,6 +7,7 @@ using ChatrBox.Models.CommunityControls;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Differencing;
 
 namespace ChatrBox.Areas.API.Controllers
 {
@@ -118,7 +119,7 @@ namespace ChatrBox.Areas.API.Controllers
                 }
 
                 //pack down and store in community list for return to the server
-                communityListItem.SetContent(communityIcon);
+                communityListItem.AddContent(communityIcon);
                 userCommunities.Add(communityListItem.ToString());
             }
 
@@ -192,19 +193,100 @@ namespace ChatrBox.Areas.API.Controllers
                             visibilitySetting = community.Visibility
                         });
 
-                    var messageData = _context.Messages
-                        .Where(m => m.TopicId == topicId)
-                        .OrderByDescending(m => m.Timestamp)
-                        .Take(ConfigManager.MessageCount)
-                        .OrderBy(m => m.Timestamp)
-                        .ToList();
+                    var messageDataRaw = _context.Messages;
+                    messageDataRaw.Where(m => m.TopicId == topicId);
+                    messageDataRaw.OrderByDescending(m => m.Timestamp);
+                    messageDataRaw.Take(ConfigManager.MessageCount);
+                    messageDataRaw.OrderBy(m => m.Timestamp);
+                        
+                    var messageData = messageDataRaw.ToList();
 
                     var messages = new List<string>();
 
                     //prevents circular references
                     for (var i = 0; i < messageData.Count; ++i)
                     {
-                        messages.Add(messageData[i].MessageHTML);
+                        HtmlElement msgControls = HtmlElement.Create("span")
+                            .AddClass("float-end");
+
+                        if (messageData[i].Sender.UserName == user.UserName)
+                        {
+                            var editLink = HtmlElement.Create("a")
+                                .SetContent("edit")
+                                .AddClass("text-muted edit-msg-link")
+                                .SetID($"messageId_{messageData[i].Id}")
+                                .AddAttribute("href", "");
+
+                            var deleteLink = HtmlElement.Create("a")
+                                .SetContent("delete")
+                                .AddClass("text-muted delete-msg-link")
+                                .AddAttribute("href", "");
+
+                            msgControls.SetContent($"{editLink} | {deleteLink}");
+                        }
+                        else if (OverridePermissionRestriction)
+                        {
+                            var deleteLink = HtmlElement.Create("a")
+                                .SetContent("hide")
+                                .AddClass("text-muted hide-msg-link")
+                                .AddAttribute("href", "");
+
+                            msgControls.SetContent($"{deleteLink}");
+                        }
+                        else
+                        {
+                            var flag = HtmlElement.Create("a");
+                            if (messageData[i].IsFlaged)
+                            {
+                                flag.SetContent("flagged for review!")
+                                    .AddClass("text-danger")
+                                    .ChangeTag("span");
+                            }
+                            else
+                            {
+                                flag.SetContent("flag for mods")
+                                    .AddClass("text-muted flag-msg-link")
+                                    .AddAttribute("href", "");
+                            }
+
+                            msgControls.SetContent($"{flag}");
+                        }
+
+                        var edited = HtmlElement.Create("span")
+                            .AddClass("float-start")
+                            .SetContent(messageData[i].IsEdited ? "(edited)" : "");
+
+                        var messageTray = HtmlElement.Create("div")
+                            .AddClass("text-muted message-tray")
+                            .AddStyle("width", "100%")
+                            .AddStyle("height", "20px")
+                            .AddContent(edited, msgControls);
+
+                        var message = HtmlElement.Create("div")
+                            .AddClass("msgDisplay")
+                            .SetContent(messageData[i].MessageHTML)
+                            .AddContent(messageTray);
+
+                        if (messageData[i].IsHidden)
+                        {
+                            if (user.Id != messageData[i].SenderId)
+                                message.AddAttribute("hidden");
+                            else
+                            {
+                                var linkToContentPolicy = HtmlElement.Create("a")
+                                    .SetContent("find out why")
+                                    .AddAttribute("href", "");
+
+                                var warning = HtmlElement.Create("p")
+                                    .SetContent($"Only you can see this message {linkToContentPolicy}")
+                                    .AddClass("text-danger");
+
+                                message.AddClass("text-muted")
+                                    .AddContent(warning, true);
+                            }
+                        }
+
+                        messages.Add(message.ToString());
                     }
 
                     return new JsonResult(new
@@ -361,6 +443,46 @@ namespace ChatrBox.Areas.API.Controllers
                     "You do not have permission to post.")
             });
 
+        }
+
+        [HttpPost]
+        public JsonResult EditMessage(int topicId, int messageId, string content)
+        {
+            Chatr user = new Chatr();
+            if (HttpContext.User.Identity != null)
+            {
+                var username = HttpContext.User.Identity.Name;
+                user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
+                    throw new ArgumentNullException();
+            }
+
+            var message = _context.Messages.Find(messageId);
+            if (message == null)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, "Failed to locate message")
+                });
+            }
+
+            if (user.Id != message.SenderId)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "You do not have permission to edit this message")
+                });
+            }
+            message.Topic.LastPost = DateTime.Now;
+            message.MessagePlain = content;
+
+            _context.Messages.Update(message);
+            _context.Topics.Update(message.Topic);
+            _context.SaveChanges();
+
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.Success, "Message successfully edited")
+            });
         }
 
         /// <summary>
