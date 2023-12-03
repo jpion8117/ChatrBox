@@ -193,13 +193,12 @@ namespace ChatrBox.Areas.API.Controllers
                             visibilitySetting = community.Visibility
                         });
 
-                    var messageDataRaw = _context.Messages;
-                    messageDataRaw.Where(m => m.TopicId == topicId);
-                    messageDataRaw.OrderByDescending(m => m.Timestamp);
-                    messageDataRaw.Take(ConfigManager.MessageCount);
-                    messageDataRaw.OrderBy(m => m.Timestamp);
-                        
-                    var messageData = messageDataRaw.ToList();
+                    var messageData = _context.Messages
+                        .Where(m => m.TopicId == topicId)
+                        .OrderByDescending(m => m.Timestamp)
+                        .Take(ConfigManager.MessageCount)
+                        .OrderBy(m => m.Timestamp)
+                        .ToList();
 
                     var messages = new List<string>();
 
