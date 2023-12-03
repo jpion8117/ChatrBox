@@ -132,7 +132,38 @@ namespace ChatrBox.Areas.API.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> CheckMessages(int topicId, DateTime? lastPost = null)
+        public JsonResult CheckForNewMessages(int topicId, DateTime lastMessagesPulled)
+        {
+            var topic = _context.Topics.Find(topicId);
+            if (topic == null)
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, $"Topic#{topicId} not found!")
+                });
+
+            if (topic.LastPost > lastMessagesPulled)
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.Success, "New messages available")
+                });
+
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.SuccessNoAction, "Up to date, no new messages")
+            });
+        }
+
+        [HttpGet]
+        public int GetFirstTopicId(int communityId)
+        {
+            var topic = _context.Topics.FirstOrDefault(t => t.CommunityId == communityId);
+            if(topic == null) return 0;
+
+            return topic.Id;
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetMessages(int topicId, DateTime? lastPost = null)
         {
             if (HttpContext.User.Identity != null)
             {
@@ -152,16 +183,6 @@ namespace ChatrBox.Areas.API.Controllers
                         error = Error.MakeReport(ErrorCodes.FailedToLocate,
                             $"Topic with id:{topicId} not found")
                     });
-
-                //check if there are any new posts on topic
-                if (lastPost != null && topic.LastPost == lastPost)
-                {
-                    return new JsonResult(new
-                    {
-                        error = Error.MakeReport(ErrorCodes.SuccessNoAction,
-                            "No new messages since last check.")
-                    });
-                }
 
                 var community = _context.Communities.Find(topic.CommunityId);
                 if (community != null)

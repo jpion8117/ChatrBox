@@ -62,10 +62,9 @@ namespace ChatrBox.Data
                 var message = HtmlElement.Create("div")
                     .SetContent(parsedMessage);
 
-                var messagePlain = HtmlElement.Create("input")
-                    .EnableSelfClose()
+                var messagePlain = HtmlElement.Create("textarea")
                     .AddAttribute ("type", "text")
-                    .AddAttribute("value", MessagePlain)
+                    .SetContent(MessagePlain)
                     .AddAttribute("hidden")
                     .SetID($"messageId_{Id}_Content");
 

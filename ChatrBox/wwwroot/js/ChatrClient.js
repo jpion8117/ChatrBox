@@ -99,7 +99,7 @@
             .Interval.Set(
                 "messageChecker",
                 ChatrBoxClient.Settings.MessageCheckRate,
-                ChatrBoxClient.GetMessages)
+                ChatrBoxClient.CheckMessages)
             .Interval.Set(
                 "userStatusUpdater",
                 ChatrBoxClient.Settings.StatusUpdateRate,
@@ -168,15 +168,40 @@
         static keys = [];
     }
 
+    static CheckMessages() {
+        ChatrBoxClient.LogActivity("Checking server for new messages", true);
+
+        $.get(`${ChatrBoxClient.APIRoute}Communities/CheckForNewMessages`,
+            {
+                topicId: ChatrBoxClient.Settings.TopicId,
+                lastMessagesPulled: ChatrBoxClient.Settings.LastPost
+            },
+            function (data, err) {
+                if (data) {
+                    if (data.error.code === 1) {
+                        ChatrBoxClient.LogActivity("No new messages on server.", true)
+                    }
+                    else if (data.error.code === 0) {
+                        ChatrBoxClient.GetMessages()
+                        document.getElementById("NewMessageNotification").play();
+                    }
+                    else {
+                        ChatrBoxClient.LogActivity(`Server responded to message check request submitted by ${ChatrBoxClient.Username} with error \"${data.error.description}\"`);
+                    }
+                }
+                else {
+                    ChatrBoxClient.LogActivity(`Server failed to respond to message check request submitted by ${ChatrBoxClient.Username}`);
+                }
+            });
+    }
+
     /**
      * checks for messages in the given community/topic combination
      */
-    static GetMessages(force) {
-        ChatrBoxClient.LogActivity("Checked Messages", true);
+    static GetMessages() {
+        ChatrBoxClient.LogActivity("Fetching messages from server", true);
 
-        if (force) ChatrBoxClient.Settings.LastPost = Date.now;
-
-        $.get(ChatrBoxClient.APIRoute + "Communities/CheckMessages", {
+        $.get(ChatrBoxClient.APIRoute + "Communities/GetMessages", {
             topicId: ChatrBoxClient.Settings.TopicId,
             lastPost: ChatrBoxClient.Settings.LastPost
         },
@@ -190,7 +215,6 @@
                         ChatrBoxClient.Settings.LastPost = data.lastPost;
                         msgWindow.empty();
                         msgWindow.append(data.messages);
-
                         if (true) ChatrBoxClient.ScrollMessages();
                     }
                     else if (data.error.code === 101) {
@@ -219,37 +243,43 @@
      * Requests a list of topics from the user and displays them on the client window.
      */
     static GetTopics(explicitTopic) {
-        $.get(ChatrBoxClient.APIRoute + "Communities/GetTopicList", { communityId: ChatrBoxClient.Settings.CommunityId }, function (data, err) {
-            if (data && data.error && data.error.code == 0) {
-                $("#CommunityName").text(data.communityName);
-                var topics = $('#TopicList');
-                topics.empty();
-                for (var i = 0; i < data.topics.length; i++) {
+        if (explicitTopic)
+            ChatrBoxClient.Settings.TopicId = explicitTopic;
+        else
+            $.get(`${ChatrBoxClient.APIRoute}Communities/GetFirstTopicId`, { communityId : ChatrBoxClient.Settings.CommunityId },
+                function (data) {
+                    ChatrBoxClient.Settings.TopicId = data;
+                    $.get(ChatrBoxClient.APIRoute + "Communities/GetTopicList", { communityId: ChatrBoxClient.Settings.CommunityId }, function (data, err) {
+                        if (data && data.error && data.error.code == 0) {
+                            $("#CommunityName").text(data.communityName);
+                            var topics = $('#TopicList');
+                            topics.empty();
 
-                    if (i === 0 && !explicitTopic) ChatrBoxClient.Settings.TopicId = data.topics[i].key;
-                    else ChatrBoxClient.Settings.TopicId = explicitTopic;
-
-                    var active = data.topics[i].key === ChatrBoxClient.Settings.TopicId ? " topic-list-active" : ""
-                    var listClasses = "topic-list-item " + active;
-                    topics.append("<li id=\"topicId_" + data.topics[i].key + "\" class=\"" + listClasses + "\">" + data.topics[i].value + "</li>");
-
-                    $('#topicId_' + data.topics[i].key).on("click",
-                        function (event) {
-
-                            event.stopPropagation();
-                            var temp = event.target.attributes['id'].value;
-                            temp = temp.replace("topicId_", "");
-
-                            ChatrBoxClient.LogActivity(`User clicked on topic#${temp}`, true);
-
-                            ChatrBoxClient.Settings.TopicId = parseInt(temp);
                             ChatrBoxClient.GetMessages();
 
-                            ChatrBoxClient.UpdateTopicIdentifier();
-                        });
-                }
-            }
-        });
+                            for (var i = 0; i < data.topics.length; i++) {
+                                var active = data.topics[i].key === ChatrBoxClient.Settings.TopicId ? " topic-list-active" : ""
+                                var listClasses = "topic-list-item " + active;
+                                topics.append("<li id=\"topicId_" + data.topics[i].key + "\" class=\"" + listClasses + "\">" + data.topics[i].value + "</li>");
+
+                                $('#topicId_' + data.topics[i].key).on("click",
+                                    function (event) {
+
+                                        event.stopPropagation();
+                                        var temp = event.target.attributes['id'].value;
+                                        temp = temp.replace("topicId_", "");
+
+                                        ChatrBoxClient.LogActivity(`User clicked on topic#${temp}`, true);
+
+                                        ChatrBoxClient.Settings.TopicId = parseInt(temp);
+                                        ChatrBoxClient.GetMessages();
+
+                                        ChatrBoxClient.UpdateTopicIdentifier();
+                                    });
+                            }
+                        }
+                    });
+            })
 
         return ChatrBoxClient;
     }
@@ -283,8 +313,6 @@
                     var id = event.target.attributes['id'].value.replace("communityId_", "");
                     ChatrBoxClient.Settings.CommunityId = id;
                     ChatrBoxClient.GetTopics();
-                    ChatrBoxClient.Settings.LastPost = new Date(2000, 1, 1, 0, 0, 0, 0);
-                    ChatrBoxClient.GetMessages(true);
                 })
             });
         });
@@ -363,7 +391,7 @@
             },
             function (data, err) {
             if (data && data.error && data.error.code == 0) {
-                ChatrBoxClient.GetMessages();
+                ChatrBoxClient.GetMessages(true);
             }
             else {
                 ChatrBoxClient.LogActivity(`User ${ChatrBoxClient.Username}'s message failed to post in topic#${ChatrBoxClient.Settings.TopicId} with description ${data.error.description}`);
