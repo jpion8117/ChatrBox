@@ -27,7 +27,6 @@
   <ItemGroup>
 	<Folder Include="logs\" />
 	<Folder Include="AutomatedMessages\" />
-    <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\images\defaultIcons\" />
     <Folder Include="wwwroot\lib\bootstrap\" />
     <Folder Include="wwwroot\lib\bootstrap\dist\js\" />

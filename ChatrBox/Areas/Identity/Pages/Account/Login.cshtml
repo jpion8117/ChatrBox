@@ -5,6 +5,7 @@
     ViewData["Title"] = "Log in";
 }
 
+
 <div class="d-flex justify-content-center align-items-center vh-100 bg-dark text-light">
     <div class="col-md-6">
         <section>
@@ -48,7 +49,14 @@
         </section>
     </div>
 </div>
-
+<div class="interaction-blocker visually-hidden">
+    <img src="~/images/loading.gif" title="Loading, Please wait..." class="loadingImg" />
+</div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $("form").on("submit", function (event) {
+            $('.interaction-blocker').removeClass('visually-hidden');
+        });
+    </script>
 }

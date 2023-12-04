@@ -21,7 +21,7 @@ namespace ChatrBox.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ChatrBox.Data.Chatr> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-
+        
         public LoginModel(SignInManager<ChatrBox.Data.Chatr> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
@@ -114,7 +114,6 @@ namespace ChatrBox.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-
                     return RedirectToAction("InitialCheckin", "Home", new { area = "", returnUrl });
                 }
                 if (result.RequiresTwoFactor)

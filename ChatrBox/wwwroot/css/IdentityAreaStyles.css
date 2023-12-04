@@ -1,0 +1,16 @@
+﻿.interaction-blocker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: darkslateblue;
+    opacity: 0.5;
+    display:flex;
+    justify-content:center;
+}
+.loadingImg {
+    width: 30%;
+    align-self:center;
+    margin: auto;
+}
