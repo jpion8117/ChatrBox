@@ -312,10 +312,24 @@
                     event.stopPropagation();
                     var id = event.target.attributes['id'].value.replace("communityId_", "");
                     ChatrBoxClient.Settings.CommunityId = id;
-                    ChatrBoxClient.GetTopics();
+
+                    ChatrBoxClient.GetTopics().UpdateCommunityIndicator();
+
+
                 })
             });
         });
+
+        return ChatrBoxClient;
+    }
+
+    static UpdateCommunityIndicator() {
+        var communityListBtns = $(".community-list-item");
+        communityListBtns.each(function (index, element) {
+            $(element).removeClass("community-list-item-active");
+        });
+
+        $(`#communityId_${ChatrBoxClient.Settings.CommunityId}`).parent().addClass("community-list-item-active");
 
         return ChatrBoxClient;
     }
