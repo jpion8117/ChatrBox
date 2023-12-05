@@ -190,6 +190,7 @@ namespace ChatrBox.Areas.API.Controllers
                         .Where(c => c.CommunityId == community.Id)
                         .ToList();
 
+                    bool moderator = community.OwnerId == user.Id || overridePermissions;
                     bool canView = false;
                     if (overridePermissions)
                         canView = true;
@@ -200,12 +201,15 @@ namespace ChatrBox.Areas.API.Controllers
                             if (comChatr.ChatrId == user.Id)
                             {
                                 canView = true;
+
+                                if (comChatr.IsModerator) moderator = true;
+
                                 break;
                             }
                         }
                     }
 
-                    if (!canView && community.Visibility < Visibility.Protected)
+                    if (!canView && community.Visibility < Visibility.Protected && topic.Name != "public")
                         return new JsonResult(new
                         {
                             error = Error.MakeReport(ErrorCodes.ContentRestricted,
@@ -240,18 +244,26 @@ namespace ChatrBox.Areas.API.Controllers
                             var deleteLink = HtmlElement.Create("a")
                                 .SetContent("delete")
                                 .AddClass("text-muted delete-msg-link")
+                                .SetID($"messageIdDelete_{messageData[i].Id}")
                                 .AddAttribute("href", "");
 
                             msgControls.SetContent($"{editLink} | {deleteLink}");
                         }
                         else if (OverridePermissionRestriction || community.OwnerId == user.Id)
                         {
-                            var deleteLink = HtmlElement.Create("a")
+                            var hideLink = HtmlElement.Create("a")
                                 .SetContent("hide")
                                 .AddClass("text-muted hide-msg-link")
+                                .SetID($"messageIdHide_{messageData[i].Id}")
                                 .AddAttribute("href", "");
 
-                            msgControls.SetContent($"{deleteLink}");
+                            var deleteLink = HtmlElement.Create("a")
+                                .SetContent("delete")
+                                .AddClass("text-muted delete-msg-link")
+                                .SetID($"messageIdDelete_{messageData[i].Id}")
+                                .AddAttribute("href", "");
+
+                            msgControls.SetContent($"{hideLink} | {deleteLink}");
                         }
                         else
                         {
@@ -266,6 +278,7 @@ namespace ChatrBox.Areas.API.Controllers
                             {
                                 flag.SetContent("flag for mods")
                                     .AddClass("text-muted flag-msg-link")
+                                    .SetID($"messageIdFlag_{messageData[i].Id}")
                                     .AddAttribute("href", "");
                             }
 
@@ -289,7 +302,7 @@ namespace ChatrBox.Areas.API.Controllers
 
                         if (messageData[i].IsHidden)
                         {
-                            if (user.Id != messageData[i].SenderId)
+                            if (user.Id != messageData[i].SenderId && !moderator)
                                 message.AddAttribute("hidden");
                             else
                             {
@@ -298,7 +311,8 @@ namespace ChatrBox.Areas.API.Controllers
                                     .AddAttribute("href", "");
 
                                 var warning = HtmlElement.Create("p")
-                                    .SetContent($"Only you can see this message {linkToContentPolicy}")
+                                    .SetContent($"Only you, the community manager, or moderators can " +
+                                        $"see this message {linkToContentPolicy}")
                                     .AddClass("text-danger");
 
                                 message.AddClass("text-muted")
@@ -553,7 +567,7 @@ namespace ChatrBox.Areas.API.Controllers
                 });
 
             //message owner deletes
-            if(owner)
+            if(true)
             {
                 actionTaken = "deleted";
                 _context.Messages.Remove(message);

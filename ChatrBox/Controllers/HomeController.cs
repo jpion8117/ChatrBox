@@ -73,8 +73,6 @@ namespace ChatrBox.Controllers
                 }
             }
 
-            AssignDefaultIcons();
-
             return View();
         }
 
@@ -133,33 +131,6 @@ namespace ChatrBox.Controllers
             }
 
             return new JsonResult(new { status = "Recieved: Failed to locate user.", time = DateTime.UtcNow.ToString() });
-        }
-
-        private void AssignDefaultIcons()
-        {
-
-            var usersMissingIcons = _context.Users
-                .Where(u => u.ImageUrl == "" || u.ImageUrl == null)
-                .ToList();
-
-            var communitiesMissingIcons = _context.Communities
-                .Where(c => c.ImageUrl == "" || c.ImageUrl == null)
-                .ToList();
-
-            foreach ( var user in usersMissingIcons)
-            {
-                user.QuickAssign(ImageUploader.AssignDefaultIcon());
-                _context.Users.Update(user);
-            }
-
-            foreach ( var com in communitiesMissingIcons)
-            {
-                com.QuickAssign(ImageUploader.AssignDefaultIcon());
-                _context.Communities.Update(com);
-            }
-            
-            if(usersMissingIcons.Any() || communitiesMissingIcons.Any())
-                _context.SaveChanges();
         }
     }
 }

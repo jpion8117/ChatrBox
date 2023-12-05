@@ -37,6 +37,10 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 var app = builder.Build();
 
+
+ImageUploader.HostPath = app.Environment.WebRootPath;
+AdminController.HomePath = app.Environment.ContentRootPath;
+
 //database housekeeping tasks
 var context = app.Services.CreateScope().ServiceProvider.GetService<ApplicationDbContext>();
 
@@ -47,6 +51,7 @@ var usersWithoutIcon = context.Users
 foreach (var user in usersWithoutIcon)
 {
     user.QuickAssign(ImageUploader.AssignDefaultIcon());
+    context.Users.Update(user);
 }
 
 var communitiesWithoutIcon = context.Communities
@@ -56,7 +61,10 @@ var communitiesWithoutIcon = context.Communities
 foreach (var community in communitiesWithoutIcon)
 {
     community.QuickAssign(ImageUploader.AssignDefaultIcon());
+    context.Communities.Update(community);
 }
+
+context.SaveChanges();
 
 var communities = context.Communities
     .ToList();
@@ -68,6 +76,8 @@ foreach (var community in communities)
 
 var cheddar = context.Users.FirstOrDefault(u => u.UserName == "Cheddar_Chatr") ?? 
     throw new ArgumentNullException("System accound missing from database!");
+
+Cheddar.SystemUserId = cheddar.Id;
 
 foreach (var community in communitiesWithoutSystemTopics)
 {
@@ -188,10 +198,6 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-ImageUploader.HostPath = app.Environment.WebRootPath;
-AdminController.HomePath = app.Environment.ContentRootPath;
-Cheddar.SystemUserId = cheddar.Id;
 
 //Configures the markdown pipline used to convert markdown written in messages
 //to HTML to be rendered to the user's screen

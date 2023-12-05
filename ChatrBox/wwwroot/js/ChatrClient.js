@@ -69,8 +69,8 @@
     }
 
     static SetUserDetails(name, id) {
-        ChatrBoxClient.Settings.UserId = id;
-        ChatrBoxClient.Settings.Username = name;
+        ChatrBoxClient.UserId = id;
+        ChatrBoxClient.Username = name;
 
         return ChatrBoxClient
     }
@@ -85,14 +85,15 @@
     }
 
     static InitializeClient(communityId, topicId, userId, username, debugMode = false) {
+        ChatrBoxClient.SetUserDetails(username, userId)
+
         if (debugMode) {
             ChatrBoxClient.LoggingBehavior.EnableGranular = true;
             ChatrBoxClient.LoggingBehavior.LogToConsole = true;
             ChatrBoxClient.LogActivity(`User: ${ChatrBoxClient.Username} initialized client in debugMode.`);
         }
 
-        ChatrBoxClient.SetUserDetails(username, userId)
-            .SetCommunity(communityId)
+            ChatrBoxClient.SetCommunity(communityId)
             .GetTopics()
             .GetUserStatuses()
             .GetCommunities()
@@ -233,6 +234,13 @@
                     $('#EditMessage').val($(contentSelector).val());
                     $('#EditMessageId').val(id);
                     $('#EditModal').dialog("open");
+                });
+
+                $('.delete-msg-link').on("click", function (event) {
+                    event.preventDefault();
+                    var id = event.target.attributes['id'].value.replace("messageIdDelete_", "");
+                    id = parseInt(id);
+                    ChatrBoxClient.DeleteMessage(id);
                 });
             });
 
@@ -438,7 +446,19 @@
     }
 
     static DeleteMessage(messageId) {
-
+        ChatrBoxClient.LogActivity(`Request to delete message #${messageId} submitted`, true);
+        $.post(`${ChatrBoxClient.APIRoute}Communities/DeleteMessage`, {
+            messageId: messageId
+        },
+        function (data, err) {
+            if (data && data.error && data.error.code < 100) {
+                ChatrBoxClient.LogActivity(`User ${ChatrBoxClient.Username} deleted message #${messageId} from server.`)
+                ChatrBoxClient.GetMessages();
+            }
+            else {
+                ChatrBoxClient.DisplayBannerNotification(`Failed to delete message. Reason: ${data.error.description}`);
+            }
+        });
     }
 
     /**
