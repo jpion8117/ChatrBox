@@ -217,13 +217,14 @@ namespace ChatrBox.Areas.API.Controllers
                             visibilitySetting = community.Visibility
                         });
 
-                    var messageData = _context.Messages
+                    var messageDataRaw = _context.Messages
                         .Where(m => m.TopicId == topicId)
                         .OrderByDescending(m => m.Timestamp)
                         .Take(ConfigManager.MessageCount)
-                        .OrderBy (m => m.IsSticky)
-                        .ThenBy(m => m.Timestamp)
-                        .ToList();
+                        .OrderBy(m => m.IsSticky)
+                        .ThenBy(m => m.Timestamp);
+                        
+                    var messageData = messageDataRaw.ToList();
 
                     var messages = new List<string>();
 
@@ -303,7 +304,9 @@ namespace ChatrBox.Areas.API.Controllers
                         if (messageData[i].IsHidden)
                         {
                             if (user.Id != messageData[i].SenderId && !moderator)
-                                message.AddAttribute("hidden");
+                                message.AddAttribute("hidden")
+                                    .SetContent("[ Hidden Message ] <br /> Nothing to see " +
+                                    "here, move along and stop snooping through our html you creep!!!");
                             else
                             {
                                 var linkToContentPolicy = HtmlElement.Create("a")
