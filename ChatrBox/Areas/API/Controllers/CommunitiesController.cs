@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Differencing;
+using System.Threading.Channels;
 
 namespace ChatrBox.Areas.API.Controllers
 {
@@ -587,6 +588,61 @@ namespace ChatrBox.Areas.API.Controllers
             {
                 error = Error.MakeReport(ErrorCodes.Success, $"Message #{messageId} {actionTaken}.")
             });
+        }
+
+
+        [HttpPost]
+        public JsonResult JoinCommunity(int communityId)
+        {
+            //Get user profile from the database
+            Chatr user = new Chatr();
+            if (HttpContext.User.Identity != null)
+            {
+                var username = HttpContext.User.Identity.Name;
+                user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
+                    throw new ArgumentNullException();
+
+                //Get community information from the database
+                var communityUser = _context.CommunityUsers
+                    .FirstOrDefault(c => c.CommunityId== communityId);
+
+                //Check if user is already a member of the community
+                 var isMember = _context.CommunityUsers
+                .Where(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id)
+                .ToList().Any();
+
+                //If user is already a member of the community, return error
+                if(isMember)
+                {
+                    return new JsonResult(new
+                    {
+                        error = Error.MakeReport(ErrorCodes.ContentRestricted, "Unable to join community because you are already a member of this community.")
+                    });
+                }
+
+                //Check to see if community is joinable
+                var community = _context.Communities
+                    .FirstOrDefault(c => c.Id == communityId);
+
+                if(community.Visibility == Visibility.Closed)
+                {
+                    //Enter stuff here
+                }
+
+                if(community.Visibility > Visibility.Closed && community.Visibility < Visibility.Public)
+                {
+                    //Enter more stuff here
+                }
+
+                
+            }
+
+
+           return new JsonResult(new
+               {
+               error = Error.MakeReport(ErrorCodes.Success, "Successfully joined community.")
+           });
+            
         }
 
         /// <summary>
