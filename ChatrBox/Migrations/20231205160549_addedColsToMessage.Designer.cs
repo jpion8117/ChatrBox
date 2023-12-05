@@ -4,6 +4,7 @@ using ChatrBox.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChatrBox.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231205160549_addedColsToMessage")]
+    partial class addedColsToMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,7 +71,7 @@ namespace ChatrBox.Migrations
                             ImageHash = "",
                             ImageUrl = "",
                             Name = "Loreum Ipsum",
-                            OwnerId = "855265ba-34f4-44da-8d1d-75056f0dda12",
+                            OwnerId = "bb81e7ed-160c-47e8-a449-1e1a51b15176",
                             Visibility = 0
                         });
                 });
@@ -94,9 +96,6 @@ namespace ChatrBox.Migrations
 
                     b.Property<int>("CommunityId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsModerator")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -227,29 +226,29 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6765cc18-01aa-4997-8c1a-afaa1176b29e",
-                            ConcurrencyStamp = "ace5e8dc-96d1-4828-b077-8955ed38f67b",
+                            Id = "15f7a3c0-b1d4-4cc2-b148-109472eafad6",
+                            ConcurrencyStamp = "a839bf79-1f7f-466f-ac16-b82ba10b410d",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6a8ea8e9-4d8a-4173-b895-1472c8ffe5fb",
-                            ConcurrencyStamp = "c01663af-81d5-4b74-bb54-7169b8371063",
+                            Id = "71c17f65-277a-4c5b-a8d6-3a4142625157",
+                            ConcurrencyStamp = "b8bf497f-33f8-458c-a92d-65de52247bcb",
                             Name = "superAdmin",
                             NormalizedName = "SUPERADMIN"
                         },
                         new
                         {
-                            Id = "e07ad83f-37b3-4c21-a925-4461aa0b7b4b",
-                            ConcurrencyStamp = "3e3efc7c-4b24-48cc-b9c3-7da9f2abafd0",
+                            Id = "5e7a7d2f-45ee-42fc-bc19-656b4f3833c0",
+                            ConcurrencyStamp = "e06eb7d7-8f0c-47bf-8fe7-1936b9dab8ca",
                             Name = "moderator",
                             NormalizedName = "MODERATOR"
                         },
                         new
                         {
-                            Id = "d8bb6696-fe73-44bd-9304-2f523081efbb",
-                            ConcurrencyStamp = "d06f667a-9163-4739-b746-677e89384f69",
+                            Id = "97d99d27-9e98-4878-a927-dc4c7054e1c6",
+                            ConcurrencyStamp = "134026c5-95ca-4eeb-8d0f-37ed277e0ade",
                             Name = "InternalSystem",
                             NormalizedName = "INTERNALSYSTEM"
                         });
@@ -415,38 +414,38 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "99b5b947-5e8b-49bc-80d1-db8dd3543a93",
-                            RoleId = "6765cc18-01aa-4997-8c1a-afaa1176b29e"
+                            UserId = "5a306c7a-f255-4a9a-b35a-e78d953511b8",
+                            RoleId = "15f7a3c0-b1d4-4cc2-b148-109472eafad6"
                         },
                         new
                         {
-                            UserId = "99b5b947-5e8b-49bc-80d1-db8dd3543a93",
-                            RoleId = "6a8ea8e9-4d8a-4173-b895-1472c8ffe5fb"
+                            UserId = "5a306c7a-f255-4a9a-b35a-e78d953511b8",
+                            RoleId = "71c17f65-277a-4c5b-a8d6-3a4142625157"
                         },
                         new
                         {
-                            UserId = "99b5b947-5e8b-49bc-80d1-db8dd3543a93",
-                            RoleId = "e07ad83f-37b3-4c21-a925-4461aa0b7b4b"
+                            UserId = "5a306c7a-f255-4a9a-b35a-e78d953511b8",
+                            RoleId = "5e7a7d2f-45ee-42fc-bc19-656b4f3833c0"
                         },
                         new
                         {
-                            UserId = "855265ba-34f4-44da-8d1d-75056f0dda12",
-                            RoleId = "6765cc18-01aa-4997-8c1a-afaa1176b29e"
+                            UserId = "bb81e7ed-160c-47e8-a449-1e1a51b15176",
+                            RoleId = "15f7a3c0-b1d4-4cc2-b148-109472eafad6"
                         },
                         new
                         {
-                            UserId = "855265ba-34f4-44da-8d1d-75056f0dda12",
-                            RoleId = "6a8ea8e9-4d8a-4173-b895-1472c8ffe5fb"
+                            UserId = "bb81e7ed-160c-47e8-a449-1e1a51b15176",
+                            RoleId = "71c17f65-277a-4c5b-a8d6-3a4142625157"
                         },
                         new
                         {
-                            UserId = "855265ba-34f4-44da-8d1d-75056f0dda12",
-                            RoleId = "e07ad83f-37b3-4c21-a925-4461aa0b7b4b"
+                            UserId = "bb81e7ed-160c-47e8-a449-1e1a51b15176",
+                            RoleId = "5e7a7d2f-45ee-42fc-bc19-656b4f3833c0"
                         },
                         new
                         {
-                            UserId = "855265ba-34f4-44da-8d1d-75056f0dda12",
-                            RoleId = "d8bb6696-fe73-44bd-9304-2f523081efbb"
+                            UserId = "bb81e7ed-160c-47e8-a449-1e1a51b15176",
+                            RoleId = "97d99d27-9e98-4878-a927-dc4c7054e1c6"
                         });
                 });
 
@@ -489,16 +488,16 @@ namespace ChatrBox.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "99b5b947-5e8b-49bc-80d1-db8dd3543a93",
+                            Id = "5a306c7a-f255-4a9a-b35a-e78d953511b8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e0a7f245-1972-403c-83b4-9d84c487e1be",
+                            ConcurrencyStamp = "130763be-d2bf-4d26-ac9b-410bcb29ae67",
                             Email = "example@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEZKpxrNS6HcNGpfdl297xLRatYOWfJM+inw6cvX31FITEWdoHmupHW49AwUdIgiQA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHYe/bokkl+db5uPnvzGV8pWrPy0ydwyd0q2X9pL6xoeQx1EJCgDBL5IG9ft0RsHFA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "85dfed56-be4a-497b-87b6-2f65e05e8c4a",
+                            SecurityStamp = "eaa1d4e0-6a99-4370-9a4c-0b7697fade16",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             ImageHash = "",
@@ -507,16 +506,16 @@ namespace ChatrBox.Migrations
                         },
                         new
                         {
-                            Id = "855265ba-34f4-44da-8d1d-75056f0dda12",
+                            Id = "bb81e7ed-160c-47e8-a449-1e1a51b15176",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dc1a3503-4d0a-4623-9416-d113e2dcd1b7",
+                            ConcurrencyStamp = "21b0c843-ab35-4644-b8d8-45b1fd4bc064",
                             Email = "",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "CHEDDAR_CHATR",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFOY+kBOInVfkXRAPvpnobOiHFJNC7s3qfZTupAIbNbQBwMW2Y5GUFX3hjoJ3fewLg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKNRxNdKcO/BjWpn9ulO89jfQuvYB35zeVSoObGkihfAAIOs+2DPwedqG7u7NX0qmQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2366fe72-69bd-4e20-aca5-8479f6062517",
+                            SecurityStamp = "275a5ef2-e051-4b35-af6a-d702e55c7105",
                             TwoFactorEnabled = false,
                             UserName = "Cheddar_Chatr",
                             ImageHash = "",

@@ -8,6 +8,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ChatrBox.Models;
 using Castle.Core.Internal;
+using ChatrBox.CoreComponents.API;
 
 namespace ChatrBox.Data
 {
@@ -30,9 +31,28 @@ namespace ChatrBox.Data
                 if (!_messagePlain.IsNullOrEmpty())
                     IsEdited = true;
 
+                var lines = value.Split('\n');
+                var content = "";
+                foreach (var line in lines)
+                    content += line + " \n ";
+
                 //stores the new value of the message's plaintext content
-                _messagePlain = value;
+                _messagePlain = content;
                 
+            }
+        }
+
+        [NotMapped]
+        public string Quote
+        {
+            get
+            {
+                var lines = MessagePlain.Split('\n');
+                var quote = $"> replying to {Sender.UserName}";
+                foreach (var line in lines)
+                    quote += "> " + line;
+
+                return quote;
             }
         }
 
@@ -48,7 +68,17 @@ namespace ChatrBox.Data
         { 
             get
             {
+
                 string parsedMessage = Markdown.ToHtml(MessagePlain, MarkdownPipeline);
+
+                //allow system messages to contain raw html
+                if (IsSystem)
+                {
+                    parsedMessage = parsedMessage
+                        .Replace("&gt;", ">")
+                        .Replace("&lt;", "<")
+                        .Replace("&quot;", "\"");
+                }
 
                 var userIcon = HtmlElement.Create("img")
                     .EnableSelfClose()
@@ -85,6 +115,8 @@ namespace ChatrBox.Data
         public bool IsEdited { get; set; }
         public bool IsHidden { get; set; }
         public bool IsFlaged { get; set; }
+        public bool IsSticky { get; set; }
+        public bool IsSystem {  get; set; }
 
     }
 }

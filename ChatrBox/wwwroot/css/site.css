@@ -207,3 +207,11 @@ and the message itself*/
     overflow:scroll!important;
     height:100%;
 }
+
+blockquote {
+    font-size: .9rem!important;
+    padding: 5px;
+    padding-left: 15px;
+    border-radius:3px;
+    background-color:darkslategrey;
+}

@@ -46,5 +46,28 @@ namespace ChatrBox.Data
             ImageUrl = newImageRef.ImageUrl;
             ImageHash = newImageRef.ImageHash;
         }
+
+        public List<string> MissingSystemTopics()
+        {
+            var missingSystemTopics = new List<string>();
+            
+            var topicNames = new List<string>();
+
+            foreach (var topic in Topics)
+            {
+                topicNames.Add(topic.Name);
+            }
+
+            foreach (var systemTopic in Topic.SystemTopics) 
+            {
+
+                if (!topicNames.Contains(systemTopic))
+                {
+                    missingSystemTopics.Add(systemTopic);
+                } 
+            }
+
+            return missingSystemTopics;
+        }
     }
 }

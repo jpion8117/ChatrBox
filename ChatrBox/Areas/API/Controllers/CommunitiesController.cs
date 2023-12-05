@@ -1,4 +1,5 @@
 ﻿using Castle.Core.Internal;
+using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using ChatrBox.CoreComponents;
 using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
@@ -37,9 +38,7 @@ namespace ChatrBox.Areas.API.Controllers
             }
 
             var communityUser = _context.CommunityUsers
-                .Where(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id)
-                .ToList()
-                .Any();
+                .FirstOrDefault(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id) != null;
 
             if (!communityUser && !OverridePermissionRestriction)
             {
@@ -50,7 +49,7 @@ namespace ChatrBox.Areas.API.Controllers
             }
 
             var topics = _context.Topics
-                .Where(t => t.CommunityId == communityId)
+                .Where(t => t.CommunityId == communityId && (t.Name != "community-notifications" || t.Community.OwnerId == user.Id))
                 .OrderBy(t => t.DisplayOrder)
                 .ToList();
 
@@ -218,7 +217,8 @@ namespace ChatrBox.Areas.API.Controllers
                         .Where(m => m.TopicId == topicId)
                         .OrderByDescending(m => m.Timestamp)
                         .Take(ConfigManager.MessageCount)
-                        .OrderBy(m => m.Timestamp)
+                        .OrderBy (m => m.IsSticky)
+                        .ThenBy(m => m.Timestamp)
                         .ToList();
 
                     var messages = new List<string>();
@@ -244,7 +244,7 @@ namespace ChatrBox.Areas.API.Controllers
 
                             msgControls.SetContent($"{editLink} | {deleteLink}");
                         }
-                        else if (OverridePermissionRestriction)
+                        else if (OverridePermissionRestriction || community.OwnerId == user.Id)
                         {
                             var deleteLink = HtmlElement.Create("a")
                                 .SetContent("hide")
@@ -425,6 +425,16 @@ namespace ChatrBox.Areas.API.Controllers
             {
                 //check community content policies and perform content moderation.
 
+                //verify user isn't posting in system topic if they are not allowed to post there
+                if (topic.SystemTopic() && (user.Id != topic.Community.OwnerId || communityUsers[0].IsModerator))
+                {
+                    return new JsonResult(new
+                    {
+                        error = Error.MakeReport(ErrorCodes.ContentRestricted,
+                            "You do not have permission to post. This is a restricted topic that only " +
+                            "community managers/moderators can post in")
+                    });
+                }
 
                 //post message to the server.
                 var msg = new Message()
@@ -502,6 +512,66 @@ namespace ChatrBox.Areas.API.Controllers
             return new JsonResult(new
             {
                 error = Error.MakeReport(ErrorCodes.Success, "Message successfully edited")
+            });
+        }
+
+        [HttpPost]
+        public JsonResult DeleteMessage(int messageId)
+        {
+            var actionTaken = "";
+
+            //locate message
+            var message = _context.Messages.Find(messageId);
+            if (message == null)
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, $"Message #{messageId} not found.")
+                });
+
+            //check identity of user making request
+            if (User.Identity == null)
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, $"User not authenticated.")
+                });
+
+            var user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null)
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, "Lord help you if you get this error! It should " +
+                        "be theoretically impossible, but just in case here it is. Somehow, User.Identity is valid and " +
+                        "User.Identity.Name does not exist in the Users Table in the database... Don't know how that " +
+                        "happens and may God have mercy on your forsaken soul!!!!")
+                });
+            var owner = user.Id == message.SenderId;
+
+            if (!owner && !OverridePermissionRestriction)
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "You do not have permission to delete/hide this message.")
+                });
+
+            //message owner deletes
+            if(owner)
+            {
+                actionTaken = "deleted";
+                _context.Messages.Remove(message);
+            }
+
+            //moderator hides
+            else
+            {
+                actionTaken = "hidden";
+                message.IsHidden = true;
+                _context.Messages.Update(message);
+            }
+
+            _context.SaveChanges();
+
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.Success, $"Message #{messageId} {actionTaken}.")
             });
         }
 
