@@ -23,6 +23,7 @@ namespace ChatrBox.Data
         public string ImageUrl { get; set; } = string.Empty;
 
         public virtual List<Topic> Topics { get; set; }
+        public virtual List<CommunityUser> CommunityUsers { get; set; } 
 
         [NotMapped]
         public Topic GetDefaultTopic

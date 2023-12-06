@@ -1,73 +1,279 @@
-﻿@model IEnumerable<ChatrBox.Data.Community>
+﻿@using ChatrBox.Areas.Config.Models
+@model CommunityIndexViewModel
 
 @{
     var username = User.Identity != null ? $"{User.Identity.Name}'s" : "";
     var userCommunities = ViewData["ModView"] == null;
 
+    var myCommunities = Model.GetCommunity("user");
+    var allCommunities = Model.GetCommunity("all");
+    var joinedCommunities = Model.GetCommunity("joined");
+    var modCommunities = Model.GetCommunity("mod");
+
     ViewData["Title"] = userCommunities ? username : "All" + " Communities";
 }
 
-<h1>@(userCommunities ? username : "All") Communities</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Icon
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                Owner
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tags)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Visibility)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContentFilter)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <img src="@item.ImageUrl" style="width:50px; height:50px"/>
-            </td>
-            <td>
-                <div class="">
-                    @Html.DisplayFor(modelItem => item.Name)
-                    <i class="tooltip-arrow"></i>
-                    <span class="tooltip tooltip-inner">@Html.DisplayFor(modelItem => item.Description)</span>
-                </div>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Owner.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tags)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Visibility)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContentFilter)
-            </td>
-                <td>
-                <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> |
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@if (myCommunities.Any())
+{
+    <h1>My Communities</h1>
+    <h3>Here you will find any communities you manage</h3>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Icon
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Owner
+                </th>
+                <th>
+                    Tags
+                </th>
+                <th>
+                    Visibility
+                </th>
+                <th>
+                    ContentFilter
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in myCommunities)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.ImageUrl" style="width:50px; height:50px" />
+                    </td>
+                    <td>
+                        <div class="">
+                            @Html.DisplayFor(modelItem => item.Name)
+                            <i class="tooltip-arrow"></i>
+                            <span class="tooltip tooltip-inner">@Html.DisplayFor(modelItem => item.Description)</span>
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Owner.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tags)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Visibility)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContentFilter)
+                    </td>
+                    <td>
+                        <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+@if (allCommunities.Any())
+{
+    <h1>All Communities</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Icon
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Owner
+                </th>
+                <th>
+                    Tags
+                </th>
+                <th>
+                    Visibility
+                </th>
+                <th>
+                    ContentFilter
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in allCommunities)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.ImageUrl" style="width:50px; height:50px" />
+                    </td>
+                    <td>
+                        <div class="">
+                            @Html.DisplayFor(modelItem => item.Name)
+                            <i class="tooltip-arrow"></i>
+                            <span class="tooltip tooltip-inner">@Html.DisplayFor(modelItem => item.Description)</span>
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Owner.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tags)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Visibility)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContentFilter)
+                    </td>
+                    <td>
+                        <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (joinedCommunities.Any())
+{
+    <h1>Joined Communities</h1>
+    <h3>Here you will find any communities you have joined</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Icon
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Owner
+                </th>
+                <th>
+                    Tags
+                </th>
+                <th>
+                    Visibility
+                </th>
+                <th>
+                    ContentFilter
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in joinedCommunities)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.ImageUrl" style="width:50px; height:50px" />
+                    </td>
+                    <td>
+                        <div class="">
+                            @Html.DisplayFor(modelItem => item.Name)
+                            <i class="tooltip-arrow"></i>
+                            <span class="tooltip tooltip-inner">@Html.DisplayFor(modelItem => item.Description)</span>
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Owner.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tags)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Visibility)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContentFilter)
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (modCommunities.Any())
+{
+    <h1>Moderated Communities</h1>
+    <h3>Here you will find any communities you are allowed to moderate</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Icon
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Owner
+                </th>
+                <th>
+                    Tags
+                </th>
+                <th>
+                    Visibility
+                </th>
+                <th>
+                    ContentFilter
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in modCommunities)
+            {
+                <tr>
+                    <td>
+                        <img src="@item.ImageUrl" style="width:50px; height:50px" />
+                    </td>
+                    <td>
+                        <div class="">
+                            @Html.DisplayFor(modelItem => item.Name)
+                            <i class="tooltip-arrow"></i>
+                            <span class="tooltip tooltip-inner">@Html.DisplayFor(modelItem => item.Description)</span>
+                        </div>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Owner.UserName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tags)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Visibility)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ContentFilter)
+                    </td>
+                    <td>
+                        <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> |
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+

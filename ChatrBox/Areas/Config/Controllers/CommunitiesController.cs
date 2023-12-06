@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChatrBox.Data;
 using Microsoft.AspNetCore.Authorization;
+using ChatrBox.Areas.Config.Models;
 
 namespace ChatrBox.Areas.Config.Controllers
 {
@@ -24,15 +25,39 @@ namespace ChatrBox.Areas.Config.Controllers
         // GET: Config/Communities
         public IActionResult Index()
         {
-            var communities = _context.Communities.ToList();
-            var myCommunities = new List<Community>();
-
-            foreach (var community in communities)
+            Chatr user = new Chatr();
+            if (User.Identity != null)
             {
-                if (CanView(community)) myCommunities.Add(community);
+                user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name) ??
+                    throw new ArgumentNullException();
             }
+
+            var viewModel = new CommunityIndexViewModel();
             
-            return View(myCommunities);
+            var myCommunities = _context.Communities
+                .Where(c => c.OwnerId == user.Id)
+                .ToList();
+
+            var communitiesImIn = _context.CommunityUsers
+                .Where(cu => cu.ChatrId == user.Id && cu.Community.OwnerId != user.Id)
+                .ToList();
+
+            var joinedCommunities = new List<Community>();
+            var modCommunitiess = new List<Community>();
+
+            foreach (var comUser in communitiesImIn)
+            {
+                joinedCommunities.Add(comUser.Community);
+
+                if (comUser.IsModerator)
+                    modCommunitiess.Add(comUser.Community);
+            }
+
+            viewModel.AddGroup("user", myCommunities);
+            viewModel.AddGroup("joined", joinedCommunities);
+            viewModel.AddGroup("mod", modCommunitiess);
+
+            return View(viewModel);
         }
 
         [Authorize(Roles = "admin, superAdmin, moderator")]
@@ -40,9 +65,11 @@ namespace ChatrBox.Areas.Config.Controllers
         {
             ViewData["ModView"] = true;
 
-            return _context.Communities.ToList() != null ?
-                View("Index", _context.Communities.ToList()) :
-                Problem("No communities found!");
+            var viewModel = new CommunityIndexViewModel();
+
+            viewModel.AddGroup("all", _context.Communities.ToList());
+
+            return View(viewModel);
         }
 
         // GET: Config/Communities/Details/5
