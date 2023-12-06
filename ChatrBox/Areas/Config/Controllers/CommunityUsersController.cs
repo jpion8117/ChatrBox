@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChatrBox.Areas.Config.Controllers
 {
     [Authorize]
+    [Area("Config")]
     public class CommunityUsersController : Controller
     {
         private readonly ApplicationDbContext _context;
