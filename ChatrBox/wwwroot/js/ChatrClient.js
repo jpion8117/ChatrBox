@@ -242,6 +242,15 @@
                     id = parseInt(id);
                     ChatrBoxClient.DeleteMessage(id);
                 });
+
+                $('.btn-join-community').on("click", function (event) {
+                    ChatrBoxClient.JoinCommunity(ChatrBoxClient.Settings.CommunityId);
+                });
+
+                $('.btn-accept-join').on("click", function (event) {
+                    var id = event.target.attributes['id'].value.replace("userJoinReq_", "")
+                    ChatrBoxClient.AcceptJoin(id);
+                });
             });
 
         return ChatrBoxClient;
@@ -321,9 +330,9 @@
                     var id = event.target.attributes['id'].value.replace("communityId_", "");
                     ChatrBoxClient.Settings.CommunityId = id;
 
-                    ChatrBoxClient.GetTopics().UpdateCommunityIndicator();
-
-
+                    ChatrBoxClient.GetTopics()
+                        .UpdateCommunityIndicator()
+                        .GetUserStatuses();
                 })
             });
         });
@@ -471,9 +480,42 @@
     static DisplayBannerNotification(content, time, classes, styles) {
         //not implemented yet
 
-
         return ChatrBoxClient;
     }
+
+    static JoinCommunity(communityId) {
+        $.post(`${ChatrBoxClient.APIRoute}Communities/JoinCommunity`,
+            {
+                communityId: communityId
+            },
+            function (data, err) {
+                if (data && data.error && data.error.code == 0) {
+                    ChatrBoxClient.DisplayBannerNotification(data.error.description, 7000, "bg-success");
+                    if (data.error.description === "Successfully Successfully joined community.") {
+                        ChatrBoxClient.GetCommunities();
+                    }
+                }
+                else {
+                    ChatrBoxClient.LogActivity(`Failed to join community with error: ${data.error.description}`, true);
+                    ChatrBoxClient.DisplayBannerNotification(`Failed to join community! ${data.error.description}`, 7000, "bg-danger");
+                }
+            });
+    }
+
+    static AcceptJoin(userId) {
+        $.post(`${ChatrBoxClient.APIRoute}Communities/AcceptJoin`,
+        {
+            userId: userId
+        },
+        function(data, err) {
+            if (data && data.error && data.error.code < 100) {
+                ChatrBoxClient.DisplayBannerNotification("User request accepted!", 7000, "bg-success");
+                ChatrBoxClient.GetUserStatuses();
+            }
+        });
+    }
+
+
 }
 
 class DictionaryEntry {
