@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ChatrBox.Data;
 using Microsoft.AspNetCore.Authorization;
 using ChatrBox.Areas.Config.Models;
+using ChatrBox.Models.CommunityControls;
+using ChatrBox.Models;
 
 namespace ChatrBox.Areas.Config.Controllers
 {
@@ -93,7 +95,23 @@ namespace ChatrBox.Areas.Config.Controllers
         // GET: Config/Communities/Create
         public IActionResult Create()
         {
-            return View();
+            Chatr user = new Chatr();
+            if (User.Identity == null)
+            {
+                return NotFound("User not logged in");
+            }
+
+            user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name) ??
+                throw new InvalidOperationException();
+
+            var community = new Community()
+            {
+                OwnerId = user.Id,
+            };
+
+            community.QuickAssign(ImageUploader.AssignDefaultIcon());
+
+            return View(community);
         }
 
         // POST: Config/Communities/Create
