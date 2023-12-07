@@ -674,19 +674,17 @@ namespace ChatrBox.Areas.API.Controllers
                         .AddAttribute("data-userId", user.Id);
 
                     var messageHtmlElement = HtmlElement.Create("div")
-                         .SetContent($"{messageContent} {acceptButton} {declineButton}");
+                         .AddContent($"{messageContent} {acceptButton} {declineButton}");
 
                     var systemMessage = new Message
                     {
-                        SenderId = "Cheddar_Chatr", 
+                        SenderId = Cheddar.SystemUserId, 
                         TopicId = notificationTopicId,
                         Timestamp = DateTime.UtcNow,
                         IsEdited = false,
-                        MessagePlain = messageContent,
-                        MessageHTML = messageHtmlElement.ToString()
+                        IsSystem = true,
+                        MessagePlain = messageHtmlElement.ToString()
                     };
-
-
 
                     _context.Messages.Add(systemMessage);
                     _context.SaveChanges();
@@ -697,13 +695,26 @@ namespace ChatrBox.Areas.API.Controllers
                     });
                 }
             }
+            else
+            {
+                //No approval needed, create a database entry for the community user
+                var newCommunityUser = CommunityUser.Create(user.Id, communityId);
+                _context.CommunityUsers.Add(newCommunityUser);
+                _context.SaveChanges();
+
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.Success, "Successfully joined community")
+                });
+
+            }
 
 
 
-
+            //If the end of the action method is reached, the user is not authorized to join the community
             return new JsonResult(new
             {
-                error = Error.MakeReport(ErrorCodes.Success, "Successfully joined community.")
+                error = Error.MakeReport(ErrorCodes.ContentRestricted, "You do not have permission to join this community.")
             });
 
 
