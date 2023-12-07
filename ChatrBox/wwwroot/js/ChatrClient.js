@@ -244,7 +244,8 @@
                 });
 
                 $('.btn-join-community').on("click", function (event) {
-                    ChatrBoxClient.JoinCommunity(ChatrBoxClient.Settings.CommunityId);
+                    var id = event.target.attributes['id'].value.replace("JoinCommunity_", "")
+                    ChatrBoxClient.JoinCommunity(id);
                 });
 
                 $('.btn-accept-join').on("click", function (event) {

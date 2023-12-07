@@ -615,11 +615,12 @@ namespace ChatrBox.Areas.API.Controllers
 
             //Check if user is already a member of the community
             var isMember = _context.CommunityUsers
-                .Any(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id);
+                .Where(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id)
+                .ToList();
 
 
             //If user is already a member of the community, return error
-            if (isMember)
+            if (isMember.Any())
             {
                 return new JsonResult(new
                 {
@@ -662,22 +663,29 @@ namespace ChatrBox.Areas.API.Controllers
 
                 if (notificationTopicId != 0)
                 {
-                    var messageContent = $"User {user.UserName} wants to join the community.";
+                    var messageContent = $"User {user.UserName} wants to join the community. \n ";
+
                     var acceptButton = HtmlElement.Create("button")
                         .SetContent("Accept")
-                        .AddClass("btn btn-success")
+                        .AddClass("btn btn-success w-50 btn-acceptJoin")
                         .AddAttribute("data-action", "accept")
                         .AddAttribute("data-communityId", communityId.ToString())
                         .AddAttribute("data-userId", user.Id);
+
                     var declineButton = HtmlElement.Create("button")
                         .SetContent("Decline")
-                        .AddClass("btn btn-danger")
+                        .AddClass("btn btn-danger w-50 btn-declineJoin")
                         .AddAttribute("data-action", "decline")
                         .AddAttribute("data-communityId", communityId.ToString())
                         .AddAttribute("data-userId", user.Id);
 
+                    var buttons = HtmlElement.Create("div")
+                        .AddContent(acceptButton, declineButton)
+                        .AddClass("w-75 my-2 mx-auto");
+
                     var messageHtmlElement = HtmlElement.Create("div")
-                         .AddContent($"{messageContent} {acceptButton} {declineButton}");
+                         .AddContent($"{messageContent} {buttons}")
+                         .AddClass("text-center");
 
                     var systemMessage = new Message
                     {
@@ -701,7 +709,7 @@ namespace ChatrBox.Areas.API.Controllers
             else
             {
                 //No approval needed, create a database entry for the community user
-                var newCommunityUser = CommunityUser.Create(user.Id, communityId);
+                var newCommunityUser = CommunityUser.Create(community, user.Id);
                 _context.CommunityUsers.Add(newCommunityUser);
                 _context.SaveChanges();
 
