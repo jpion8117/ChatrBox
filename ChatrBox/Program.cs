@@ -42,7 +42,8 @@ ImageUploader.HostPath = app.Environment.WebRootPath;
 AdminController.HomePath = app.Environment.ContentRootPath;
 
 //database housekeeping tasks
-var context = app.Services.CreateScope().ServiceProvider.GetService<ApplicationDbContext>();
+var context = app.Services.CreateScope().ServiceProvider.GetService<ApplicationDbContext>() ?? 
+    throw new InvalidOperationException("Failed to retrieve database context.");
 
 var usersWithoutIcon = context.Users
     .Where(u => string.IsNullOrEmpty(u.ImageUrl))

@@ -616,11 +616,12 @@ namespace ChatrBox.Areas.API.Controllers
             //Check if user is already a member of the community
             var isMember = _context.CommunityUsers
                 .Where(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id)
-                .ToList();
+                .ToList()
+                .Any();
 
 
             //If user is already a member of the community, return error
-            if (isMember.Any())
+            if (isMember)
             {
                 return new JsonResult(new
                 {
@@ -628,22 +629,19 @@ namespace ChatrBox.Areas.API.Controllers
                 });
             }
 
-            //Get community information from the database
-            var communityUser = _context.CommunityUsers
-                .FirstOrDefault(c => c.CommunityId == communityId);
+            //Get community information from the database 
+            var community = _context.Communities
+            .FirstOrDefault(c => c.Id == communityId);
 
-            if (communityUser == null)
+            if (community == null)
             {
                 return new JsonResult(new
                 {
-                    error = Error.MakeReport(ErrorCodes.FailedToLocate, "Community not found.")
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, "Community not found!")
                 });
             }
 
             //Check to see if community is joinable
-            var community = _context.Communities
-            .FirstOrDefault(c => c.Id == communityId);
-
             //If the community requires approval to join
             if (community.Visibility == Visibility.Closed)
             {
