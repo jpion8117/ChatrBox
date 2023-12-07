@@ -3,14 +3,14 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<div style ="background-color: #36393f; color:antiquewhite;">
 <h1>@ViewBag.CommunityName Topics</h1>
 <h3>Drag and drop to change topic order. The top topic is the community default.</h3>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+    <table class="table" style="background-color: #36393f; color:antiquewhite;">
     <thead>
         <tr>
             <th>
@@ -78,4 +78,5 @@
             return topicOrder;
         }
     </script>
-}
+    }
+</div>

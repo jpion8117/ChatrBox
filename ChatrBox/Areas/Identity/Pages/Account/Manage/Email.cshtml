@@ -4,12 +4,12 @@
     ViewData["Title"] = "Manage Email";
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
-
-<h3>@ViewData["Title"]</h3>
+<div style="background-color: #36393f; color: white; float:left;">
+    <h3 style="background-color: #36393f; color: white; float:left;">@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
+<div class="col-md-9">
     <img src="~/Images/24.png" width="400px;" height="400px;">
-    <div class="col-md-6">
+    <div class="col-md-40">
         <form id="email-form" method="post">
             <div asp-validation-summary="All" class="text-danger"></div>
             @if (Model.IsEmailConfirmed)
@@ -42,3 +42,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+</div>

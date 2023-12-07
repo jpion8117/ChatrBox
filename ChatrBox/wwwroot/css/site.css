@@ -7,12 +7,13 @@ html {
     font-size: 16px;
   }
 }
-/*div {
+div {
+    background-color: #36393f;
     padding:5px;
     text-align: center;
     border: 5px;
     color: white;
-}*/
+}
 html {
   position: relative;
   height: 100%;

@@ -3,12 +3,12 @@
 @{
     ViewData["Title"] = "Create";
 }
-
+<div style="background-color: #36393f; color:antiquewhite">
 <h1>Create</h1>
 
 <h4>Community</h4>
 <hr />
-<div class="row">
+<div>
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -66,3 +66,4 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+</div>
