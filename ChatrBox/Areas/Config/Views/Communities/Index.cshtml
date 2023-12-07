@@ -71,6 +71,7 @@
                         @Html.DisplayFor(modelItem => item.ContentFilter)
                     </td>
                     <td>
+                        <a href="" class="community-link" data-communityName="@item.Name" data-communityId="@item.Id">Copy Link</a> |
                         <a asp-action="Index" asp-controller="CommunityUsers" asp-route-communityId="@item.Id">Users</a> | 
                         <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> |
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -272,6 +273,19 @@
             }
         </tbody>
     </table>
+}
+
+@section Scripts {
+    <script>
+        $(".community-link").on("click", function (event) {
+            event.preventDefault();
+            var communityId = event.target.attributes['data-communityId'].value;
+            var communityName = event.target.attributes['data-communityName'].value;
+            var shareLink = `${window.location.origin}/Share/CommunityTopic/${communityId}/public`;
+            navigator.clipboard.writeText(shareLink);
+            window.alert(`${communityName} link coppied to clipboard!`);
+        });
+    </script>
 }
 
 
