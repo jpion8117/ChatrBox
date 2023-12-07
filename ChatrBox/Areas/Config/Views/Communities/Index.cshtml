@@ -7,12 +7,13 @@
     ViewData["Title"] = userCommunities ? username : "All" + " Communities";
 }
 
+<div style="background-color: #36393f; color: white;">
 <h1>@(userCommunities ? username : "All") Communities</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+    <table class="table" style="background-color: #36393f; color:white">
     <thead>
         <tr>
             <th>
@@ -71,3 +72,4 @@
 }
     </tbody>
 </table>
+</div>

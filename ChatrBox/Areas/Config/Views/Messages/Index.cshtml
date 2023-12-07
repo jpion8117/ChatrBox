@@ -10,7 +10,7 @@
 <div class="container">
     <!--Search Box-->
     <form method="get" id="plsClap" asp-controller="messages" asp-action="index" asp-route-topicId="@ViewData["topicId"]">
-        <div class="input-group mb-3">
+        <div class="input-group mb-">
             <input type="text" id="search" class="form-control" placeholder="Search here" />
             <div class="input-group-append">
                 <button type="submit" class="btn btn-primary">Search</button>
@@ -19,7 +19,7 @@
     </form>
 </div>
 
-<table class="table">
+<table class="table" style="background-color: #36393f; color:white">
     <thead>
         <tr>
             <th>
