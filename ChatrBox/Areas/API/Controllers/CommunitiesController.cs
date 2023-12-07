@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Differencing;
+using System.Threading.Channels;
 
 namespace ChatrBox.Areas.API.Controllers
 {
@@ -591,6 +592,139 @@ namespace ChatrBox.Areas.API.Controllers
                 error = Error.MakeReport(ErrorCodes.Success, $"Message #{messageId} {actionTaken}.")
             });
         }
+
+
+        [HttpPost]
+        public JsonResult JoinCommunity(int communityId)
+        {
+            //Get user profile from the database
+            Chatr user = new Chatr();
+            if (HttpContext.User.Identity == null)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "User not authenticated.")
+                });
+            }
+
+            var username = HttpContext.User.Identity.Name;
+            user = _context.Users.FirstOrDefault(u => u.UserName == username) ??
+                throw new ArgumentNullException();
+
+
+
+            //Check if user is already a member of the community
+            var isMember = _context.CommunityUsers
+                .Any(cu => cu.CommunityId == communityId && cu.ChatrId == user.Id);
+
+
+            //If user is already a member of the community, return error
+            if (isMember)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "Unable to join community because you are already a member of this community.")
+                });
+            }
+
+            //Get community information from the database
+            var communityUser = _context.CommunityUsers
+                .FirstOrDefault(c => c.CommunityId == communityId);
+
+            if (communityUser == null)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.FailedToLocate, "Community not found.")
+                });
+            }
+
+            //Check to see if community is joinable
+            var community = _context.Communities
+            .FirstOrDefault(c => c.Id == communityId);
+
+            //If the community requires approval to join
+            if (community.Visibility == Visibility.Closed)
+            {
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.ContentRestricted, "Community is closed and not joinable.")
+                });
+            }
+
+            if (community.Visibility > Visibility.Closed && community.Visibility < Visibility.Public)
+            {
+                //Send a system message to the community's community-notifications topic
+                var notificationTopicId = _context.Topics
+                    .Where(t => t.CommunityId == communityId && t.Name == "community-notifications")
+                    .Select(t => t.Id)
+                    .FirstOrDefault();
+
+                if (notificationTopicId != 0)
+                {
+                    var messageContent = $"User {user.UserName} wants to join the community.";
+                    var acceptButton = HtmlElement.Create("button")
+                        .SetContent("Accept")
+                        .AddClass("btn btn-success")
+                        .AddAttribute("data-action", "accept")
+                        .AddAttribute("data-communityId", communityId.ToString())
+                        .AddAttribute("data-userId", user.Id);
+                    var declineButton = HtmlElement.Create("button")
+                        .SetContent("Decline")
+                        .AddClass("btn btn-danger")
+                        .AddAttribute("data-action", "decline")
+                        .AddAttribute("data-communityId", communityId.ToString())
+                        .AddAttribute("data-userId", user.Id);
+
+                    var messageHtmlElement = HtmlElement.Create("div")
+                         .AddContent($"{messageContent} {acceptButton} {declineButton}");
+
+                    var systemMessage = new Message
+                    {
+                        SenderId = Cheddar.SystemUserId, 
+                        TopicId = notificationTopicId,
+                        Timestamp = DateTime.UtcNow,
+                        IsEdited = false,
+                        IsSystem = true,
+                        MessagePlain = messageHtmlElement.ToString()
+                    };
+
+                    _context.Messages.Add(systemMessage);
+                    _context.SaveChanges();
+
+                    return new JsonResult(new
+                    {
+                        error = Error.MakeReport(ErrorCodes.Success, "Request to join community sent. Awaiting approval.")
+                    });
+                }
+            }
+            else
+            {
+                //No approval needed, create a database entry for the community user
+                var newCommunityUser = CommunityUser.Create(user.Id, communityId);
+                _context.CommunityUsers.Add(newCommunityUser);
+                _context.SaveChanges();
+
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.Success, "Successfully joined community")
+                });
+
+            }
+
+
+
+            //If the end of the action method is reached, the user is not authorized to join the community
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.ContentRestricted, "You do not have permission to join this community.")
+            });
+
+
+
+        }      
+
+        
 
         /// <summary>
         /// Allows API endpoints to check if user can override permissions to view 
