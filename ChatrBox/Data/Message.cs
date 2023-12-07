@@ -68,7 +68,6 @@ namespace ChatrBox.Data
         { 
             get
             {
-
                 string parsedMessage = Markdown.ToHtml(MessagePlain, MarkdownPipeline);
 
                 //allow system messages to contain raw html

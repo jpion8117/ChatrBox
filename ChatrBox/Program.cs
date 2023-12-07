@@ -204,21 +204,6 @@ else
 Message.MarkdownPipeline = new MarkdownPipelineBuilder()
     .UseAdvancedExtensions()
     .UseBootstrap()
-    .UseMediaLinks(new MediaOptions
-    {
-        AddControlsProperty = true,
-        Class = "media-controls"
-    })
-    .UseAutoLinks(new AutoLinkOptions
-    {
-        UseHttpsForWWWLinks = true,
-        OpenInNewWindow = true
-    })
-    .EnableTrackTrivia()
-    .UseAutoIdentifiers()
-    .UseEmojiAndSmiley(true)
-    .UseGenericAttributes()
-    .UseCustomContainers()
     .DisableHtml()
     .Build();
 

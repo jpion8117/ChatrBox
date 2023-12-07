@@ -71,6 +71,7 @@
                         @Html.DisplayFor(modelItem => item.ContentFilter)
                     </td>
                     <td>
+                        <a asp-action="Index" asp-controller="CommunityUsers" asp-route-communityId="@item.Id">Users</a> | 
                         <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> |
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -263,10 +264,9 @@
                         @Html.DisplayFor(modelItem => item.ContentFilter)
                     </td>
                     <td>
+                        <a asp-action="Index" asp-controller="CommunityUsers" asp-all-route-communityId="@item.Id">Users</a>
                         <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> |
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                     </td>
                 </tr>
             }
