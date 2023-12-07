@@ -1,5 +1,16 @@
 ﻿
 <script>
+    //Code that makes the user text area submit if the user presses 'enter'
+    const messageInput = document.getElementById('messageContent');
+    const submitButton = document.getElementById('SendBtn');
+
+    messageInput.addEventListener('keydown', function (event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault(); //Prevents default behavior
+            submitButton.click(); // Simulate click on submit button
+        }
+    });
+
     ChatrBoxClient.InitializeClient(@ViewBag.CommunityId, @ViewBag.TopicId, 
         "@ViewBag.UserId", "@(User.Identity != null ? User.Identity.Name : "")", true);
 

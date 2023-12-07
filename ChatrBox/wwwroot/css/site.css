@@ -144,6 +144,13 @@ body {
     width: 100%;
 }
 
+/*Targets the topic list in the index page*/
+.topic-list-item:hover {
+    cursor:pointer;
+    border: 3px solid #ddd; 
+    padding:2px;
+}
+
 /*Targets the name of any user that is currently offline*/
 .inactiveUser {
     background-color: lightcoral;
@@ -162,6 +169,15 @@ and the message itself*/
     margin-bottom: 15px;
 }
 
+/*Targets the user message box*/
+#messageContent.form-control {
+    background-color: transparent;
+    border-radius: 25px;
+    padding: 10px;
+    color: white;
+    resize:none;
+  
+}
 /*Targets the user icon associated with the sender of a message being displayed.*/
 .userMsgIcon {
     font-size: 50px; /* Adjust the size of the icon as needed */
@@ -199,8 +215,8 @@ and the message itself*/
 .gear {
     background-color: darkgrey;
     background-size: auto;
-    height: 140px;
-    width:130px;
+    height: 100px;
+    width:100px;
 }
 
 .scrollable {
