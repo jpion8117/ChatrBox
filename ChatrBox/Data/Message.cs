@@ -84,9 +84,20 @@ namespace ChatrBox.Data
                     .AddClass("mx-auto userMsgIcon")
                     .AddAttribute("src", Sender.ImageUrl);
 
+                var timeSent = HtmlElement.Create("div")
+                    .SetContent(DateTime.UtcNow.Date == Timestamp.Date ? 
+                        $"Sent today at {Timestamp.ToLocalTime().ToString("t")}" : 
+                        $"Sent {Timestamp.ToLocalTime().ToString("d")} at {Timestamp.ToLocalTime().ToString("t")}")
+                    .AddClass("text-muted")
+                    .AddStyle("display", "inline!important");
+
                 var username = HtmlElement.Create("div")
                     .SetContent(Sender.UserName)
-                    .AddClass("fs-2 fw-bold msgUsername");
+                    .AddClass("fs-4 fw-bold msgUsername")
+                    .AddStyle("display", "inline!important");
+
+                var messageHead = HtmlElement.Create("div")
+                    .AddContent(username, timeSent);
 
                 var message = HtmlElement.Create("div")
                     .SetContent(parsedMessage);
@@ -99,7 +110,7 @@ namespace ChatrBox.Data
 
                 var messageContentWrap = HtmlElement.Create("div")
                     .AddClass("col-md-11 row")
-                    .AddContent(username, message, messagePlain);
+                    .AddContent(messageHead, message, messagePlain);
 
                 return userIcon.ToString() + messageContentWrap.ToString();
             }
