@@ -133,16 +133,30 @@ namespace ChatrBox.Areas.Config.Controllers
         // GET: Config/Communities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            Chatr user = new Chatr();
+            if (User.Identity == null)
+            {
+                return NotFound();
+            }
+            user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name) ??
+                throw new InvalidOperationException();
+
             if (id == null || _context.Communities == null)
             {
                 return NotFound();
             }
 
-            var community = await _context.Communities.FindAsync(id);
+            var community = await _context.Communities.FindAsync(id);            
             if (community == null)
             {
                 return NotFound();
             }
+
+            if (community.OwnerId != user.Id)
+            {
+                return NotFound();
+            }
+
             return View(community);
         }
 
