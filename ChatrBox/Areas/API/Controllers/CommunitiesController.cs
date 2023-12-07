@@ -563,8 +563,16 @@ namespace ChatrBox.Areas.API.Controllers
                         "happens and may God have mercy on your forsaken soul!!!!")
                 });
             var owner = user.Id == message.SenderId;
+            var communityOwner = message.Topic.Community.OwnerId == user.Id;
+            var communityModerator = _context.CommunityUsers
+                .Where(cu => cu.CommunityId == message.Topic.CommunityId)
+                .Where(cu => cu.ChatrId == user.Id)
+                .Where(cu => cu.IsModerator)
+                .Any();
 
-            if (!owner && !OverridePermissionRestriction)
+            var canDelete = owner || communityOwner || communityModerator || OverridePermissionRestriction;
+
+            if (!canDelete)
                 return new JsonResult(new
                 {
                     error = Error.MakeReport(ErrorCodes.ContentRestricted, "You do not have permission to delete/hide this message.")
@@ -661,6 +669,20 @@ namespace ChatrBox.Areas.API.Controllers
 
                 if (notificationTopicId != 0)
                 {
+                    var systemMessage = new Message
+                    {
+                        SenderId = Cheddar.SystemUserId,
+                        TopicId = notificationTopicId,
+                        Timestamp = DateTime.UtcNow,
+                        IsEdited = false,
+                        IsSystem = true,
+                        MessagePlain = " JOIN REQUEST INCOMMING - How the hell! Are you psychic??? How did you know " +
+                            "check your notifications RIGNT now of all times!!!! "
+                    };
+
+                    _context.Messages.Add(systemMessage);
+                    _context.SaveChanges();
+
                     var messageContent = $"User {user.UserName} wants to join the community. \n ";
 
                     var acceptButton = HtmlElement.Create("button")
@@ -668,14 +690,16 @@ namespace ChatrBox.Areas.API.Controllers
                         .AddClass("btn btn-success w-50 btn-acceptJoin")
                         .AddAttribute("data-action", "accept")
                         .AddAttribute("data-communityId", communityId.ToString())
-                        .AddAttribute("data-userId", user.Id);
+                        .AddAttribute("data-userId", user.Id)
+                        .AddAttribute("data-messageId", systemMessage.Id.ToString());
 
                     var declineButton = HtmlElement.Create("button")
                         .SetContent("Decline")
                         .AddClass("btn btn-danger w-50 btn-declineJoin")
                         .AddAttribute("data-action", "decline")
                         .AddAttribute("data-communityId", communityId.ToString())
-                        .AddAttribute("data-userId", user.Id);
+                        .AddAttribute("data-userId", user.Id)
+                        .AddAttribute("data-messageId", systemMessage.Id.ToString());
 
                     var buttons = HtmlElement.Create("div")
                         .AddContent(acceptButton, declineButton)
@@ -685,17 +709,9 @@ namespace ChatrBox.Areas.API.Controllers
                          .AddContent($"{messageContent} {buttons}")
                          .AddClass("text-center");
 
-                    var systemMessage = new Message
-                    {
-                        SenderId = Cheddar.SystemUserId, 
-                        TopicId = notificationTopicId,
-                        Timestamp = DateTime.UtcNow,
-                        IsEdited = false,
-                        IsSystem = true,
-                        MessagePlain = messageHtmlElement.ToString()
-                    };
-
-                    _context.Messages.Add(systemMessage);
+                    systemMessage.MessagePlain = messageHtmlElement.ToString();
+                    systemMessage.IsEdited = false;
+                    _context.Messages.Update(systemMessage);
                     _context.SaveChanges();
 
                     return new JsonResult(new
@@ -730,7 +746,65 @@ namespace ChatrBox.Areas.API.Controllers
 
         }      
 
-        
+        public JsonResult AcceptJoinRequest(string userId, int communityId)
+        {
+            var userAccepting = GetUser();
+            var community = _context.Communities
+                .FirstOrDefault(c => c.Id == communityId);
+            var communityUsers = _context.CommunityUsers
+                .Where(cu => cu.CommunityId == communityId);
+
+            if (community != null)
+            {
+                var isOwner = community.OwnerId == userAccepting.Id;
+                var isMod = communityUsers
+                    .Where(cu => cu.ChatrId == userAccepting.Id)
+                    .Where(cu => cu.IsModerator)
+                    .Any();
+                var isAlreadyMember = communityUsers
+                    .Where(cu => cu.ChatrId == userId)
+                    .ToList()
+                    .Any();
+
+                if (isAlreadyMember)
+                {
+                    return new JsonResult(new
+                    {
+                        error = Error.MakeReport(ErrorCodes.ContentRestricted, $"User is alrady a member of {community.Name}.")
+                    });
+                }
+
+                if (!isOwner && !isMod)
+                {
+                    return new JsonResult(new
+                    {
+                        error = Error.MakeReport(ErrorCodes.ContentRestricted, $"You do not have permission to accept user join requests")
+                    });
+                }
+
+                var communityUser = CommunityUser.Create(community, userId);
+                _context.CommunityUsers.Add(communityUser);
+                _context.SaveChanges();
+
+                return new JsonResult(new
+                {
+                    error = Error.MakeReport(ErrorCodes.Success, $"User added to community.")
+                });
+            }
+
+            return new JsonResult(new
+            {
+                error = Error.MakeReport(ErrorCodes.FailedToLocate, $"Community #{communityId} not found.")
+            });            
+        }
+
+        private Chatr GetUser()
+        {
+            if (User.Identity == null)
+                throw new InvalidOperationException("No user signed in.");
+
+            return _context.Users.First(u => u.UserName == User.Identity.Name);
+        }
 
         /// <summary>
         /// Allows API endpoints to check if user can override permissions to view 

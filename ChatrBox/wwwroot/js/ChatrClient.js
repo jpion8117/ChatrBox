@@ -111,7 +111,7 @@
                 .SetTopic(topicId)
                 .GetMessages()
                 .UpdateTopicIdentifier();
-        }, 2500);
+        }, 1000);
 
         return ChatrBoxClient;
     }
@@ -248,9 +248,15 @@
                     ChatrBoxClient.JoinCommunity(id);
                 });
 
-                $('.btn-accept-join').on("click", function (event) {
-                    var id = event.target.attributes['id'].value.replace("userJoinReq_", "")
-                    ChatrBoxClient.AcceptJoin(id);
+                $('.btn-acceptJoin').on("click", function (event) {
+                    var id = event.target.attributes['data-userId'].value;
+                    var messageId = event.target.attributes['data-messageId'].value;
+                    ChatrBoxClient.AcceptJoin(id, messageId);
+                });
+
+                $('.btn-declineJoin').on("click", function (event) {
+                    var messageId = event.target.attributes['data-messageId'].value;
+                    ChatrBoxClient.DeleteMessage(messageId);
                 });
             });
 
@@ -503,20 +509,20 @@
             });
     }
 
-    static AcceptJoin(userId) {
-        $.post(`${ChatrBoxClient.APIRoute}Communities/AcceptJoin`,
+    static AcceptJoin(userId, messageId) {
+        $.post(`${ChatrBoxClient.APIRoute}Communities/AcceptJoinRequest`,
         {
-            userId: userId
+            userId: userId,
+            communityId: ChatrBoxClient.Settings.CommunityId
         },
         function(data, err) {
             if (data && data.error && data.error.code < 100) {
                 ChatrBoxClient.DisplayBannerNotification("User request accepted!", 7000, "bg-success");
+                ChatrBoxClient.DeleteMessage(messageId);
                 ChatrBoxClient.GetUserStatuses();
             }
         });
     }
-
-
 }
 
 class DictionaryEntry {
