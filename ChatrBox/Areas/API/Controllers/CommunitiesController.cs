@@ -257,6 +257,7 @@ namespace ChatrBox.Areas.API.Controllers
                                 .SetContent("hide")
                                 .AddClass("text-muted hide-msg-link")
                                 .SetID($"messageIdHide_{messageData[i].Id}")
+                                .AddAttribute("hidden")
                                 .AddAttribute("href", "");
 
                             var deleteLink = HtmlElement.Create("a")
@@ -274,6 +275,7 @@ namespace ChatrBox.Areas.API.Controllers
                             {
                                 flag.SetContent("flagged for review!")
                                     .AddClass("text-danger")
+                                    .AddAttribute("hidden")
                                     .ChangeTag("span");
                             }
                             else
@@ -281,6 +283,7 @@ namespace ChatrBox.Areas.API.Controllers
                                 flag.SetContent("flag for mods")
                                     .AddClass("text-muted flag-msg-link")
                                     .SetID($"messageIdFlag_{messageData[i].Id}")
+                                    .AddAttribute("hidden")
                                     .AddAttribute("href", "");
                             }
 
