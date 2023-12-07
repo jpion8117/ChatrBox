@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Create";
 }
-<div style="background-color: #36393f; color:antiquewhite">
+<div>
 <h1>Create</h1>
 
 <h4>Community</h4>
@@ -24,17 +24,26 @@
             </div>
             <div class="form-group">
                 <label asp-for="Tags" class="control-label"></label>
-                <input asp-for="Tags" class="form-control" />
+                <input asp-for="Tags" placeholder="Please seperate tags with commas"class="form-control" />
                 <span asp-validation-for="Tags" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="OwnerId" class="control-label"></label>
                 <input asp-for="OwnerId" class="form-control" />
                 <span asp-validation-for="OwnerId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Visibility" class="control-label"></label>
-                <select asp-for="Visibility" class="form-control"></select>
+                <select asp-for="Visibility" class="form-control">
+                    <option value="" class="text-muted" selected disabled hidden>--- Select Visibility ---</option>
+                    <option value="0">Closed</option>
+                    <option value="1">Private</option>
+                    <option value="2">Protected</option>
+                    <option value="3">ProtectedPlus</option>
+                    <option value="4">Public</option>
+                    <option value="5">Open</option>
+                </select>
+
                 <span asp-validation-for="Visibility" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -47,7 +56,7 @@
                 <input asp-for="ImageHash" class="form-control" />
                 <span asp-validation-for="ImageHash" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="ImageUrl" class="control-label"></label>
                 <input asp-for="ImageUrl" class="form-control" />
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
