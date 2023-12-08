@@ -6,7 +6,7 @@ namespace ChatrBox.Data
 {
     public class Community : IImageDbReference
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
@@ -23,16 +23,19 @@ namespace ChatrBox.Data
         public string ImageUrl { get; set; } = string.Empty;
 
         public virtual List<Topic> Topics { get; set; }
-        public virtual List<CommunityUser> CommunityUsers { get; set; } 
+        public virtual List<CommunityUser> CommunityUsers { get; set; }
 
         [NotMapped]
         public Topic GetDefaultTopic
         {
             get
             {
+                if(Topics == null)
+                    return new Topic();
+
                 var topic = Topics.FirstOrDefault(t => t.DisplayOrder == 0);
-                
-                if(topic != null)
+
+                if (topic != null)
                     return topic;
 
                 return new Topic();
@@ -51,7 +54,7 @@ namespace ChatrBox.Data
         public List<string> MissingSystemTopics()
         {
             var missingSystemTopics = new List<string>();
-            
+
             var topicNames = new List<string>();
 
             foreach (var topic in Topics)
@@ -59,13 +62,13 @@ namespace ChatrBox.Data
                 topicNames.Add(topic.Name);
             }
 
-            foreach (var systemTopic in Topic.SystemTopics) 
+            foreach (var systemTopic in Topic.SystemTopics)
             {
 
                 if (!topicNames.Contains(systemTopic))
                 {
                     missingSystemTopics.Add(systemTopic);
-                } 
+                }
             }
 
             return missingSystemTopics;

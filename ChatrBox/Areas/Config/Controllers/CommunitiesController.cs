@@ -121,12 +121,20 @@ namespace ChatrBox.Areas.Config.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Tags,OwnerId,Visibility,ContentFilter,ImageHash,ImageUrl")] Community community)
         {
+            ModelState.Remove("GetDefaultTopic.Name");
+            ModelState.Remove("GetDefaultTopic.Messages");
+            ModelState.Remove("GetDefaultTopic.Community");
+            ModelState.Remove("GetDefaultTopic.Description");
+
             if (ModelState.IsValid)
             {
                 _context.Add(community);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+
+
             return View(community);
         }
 
@@ -171,6 +179,11 @@ namespace ChatrBox.Areas.Config.Controllers
             {
                 return NotFound();
             }
+
+            ModelState.Remove("GetDefaultTopic.Name");
+            ModelState.Remove("GetDefaultTopic.Messages");
+            ModelState.Remove("GetDefaultTopic.Community");
+            ModelState.Remove("GetDefaultTopic.Description");
 
             if (ModelState.IsValid)
             {

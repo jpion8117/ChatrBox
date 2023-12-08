@@ -182,7 +182,7 @@ namespace ChatrBox.Areas.Identity.Pages.Account
 
                         var topic = new Topic
                         {
-                            Name = "General",
+                            Name = "general",
                             Description = "AUTO GENERATED",
                             CommunityId = userCom.Id,
                             LastPost = DateTime.UtcNow,
@@ -193,7 +193,7 @@ namespace ChatrBox.Areas.Identity.Pages.Account
                         _context.SaveChanges();
 
                         var cheddar = _context.Users.FirstOrDefault(c => c.UserName == "Cheddar_Chatr")
-                            ?? throw new ArgumentNullException("System account not found! Consider " +
+                            ?? throw new InvalidOperationException("System account not found! Consider " +
                             "updating database.");
 
                         var welcomeMsg = new Message
