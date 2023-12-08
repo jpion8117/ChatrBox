@@ -18,6 +18,41 @@
         .community-list-item-active {
             list-style: disc;
         }
+        .logo-container-new {
+            text-align: center; /* Center the logo horizontally */
+            position: relative;
+            width: 100%;
+            padding-bottom: 10px
+        }
+
+        .logo-new {
+            width: 100%; /* Set the width of the logo */
+            height: auto; /* Maintain the aspect ratio */
+            margin-bottom: 5px; /* Add some bottom margin for spacing */
+            opacity: 1;
+            display: block;
+            width: 100%;
+            position:absolute;
+            top: 0;
+            transition: .5s ease;
+        }
+
+        .gear-new {
+            background-color: darkslategrey;
+            background-size: auto;
+            width: 100%;
+            position: relative;
+            opacity: .75;
+            top: 0;
+            display: block;
+            visibility: hidden;
+        }
+
+        .logo-container-new:hover .gear-new {
+            visibility: visible;
+        }
+
+
     </style>
 }
 
@@ -26,12 +61,20 @@
         <!-- Sidebar/Channel List -->
         <div style="background-color:#202225;" class="col-md-1 text-light vh-100 overflow-auto">
             <!-- Logo -->
+            <!--
             <div class="logo-container">
                 <a asp-area="Config" asp-action="Index" asp-controller="Communities">
                     <img src="~/Images/24.png" style="margin-top:4px;" alt="Chat'r Box Logo" class="logo">
                     <div class="middle">
                         <img src="~/Images/gear.png" style="margin-top:4px;" alt="pgear" class="gear" />
                     </div>
+                </a>
+            </div>
+            -->
+            <div >
+                <a asp-area="Config" asp-action="Index" asp-controller="Communities" class="logo-container-new">
+                    <img src="~/Images/logo_main.png" style="margin-top:4px;" alt="Chat'r Box Logo" class="logo-new">
+                    <img src="~/Images/gear-normalized.png" style="margin-top:4px;" alt="pgear" class="gear-new" />
                 </a>
             </div>
             <ul id="community_list">
