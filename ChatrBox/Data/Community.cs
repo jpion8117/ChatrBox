@@ -45,6 +45,17 @@ namespace ChatrBox.Data
         [NotMapped]
         public bool IsUnaltered => IntegretyVerifyer.Veryify(ImageUrl, ImageHash);
 
+        [NotMapped]
+        public bool IsMissingSystemTopics
+        {
+            get
+            {
+                if (Topics == null) return true;
+
+                return !MissingSystemTopics().Any();
+            }
+        }
+
         public void QuickAssign(IImageDbReference newImageRef)
         {
             ImageUrl = newImageRef.ImageUrl;

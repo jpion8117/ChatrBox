@@ -173,40 +173,7 @@ namespace ChatrBox.Areas.Identity.Pages.Account
                         _context.Communities.Add(userCom);
                         _context.SaveChanges(); //required for Id assignment
 
-                        //add user to his own community. Added with Visibility.Open so user
-                        //can post in their own community, the community is set to Private
-                        //by default.
-                        var comUser = CommunityUser.Create(userCom.Id, user.Id, Visibility.Open); 
-                        
-                        _context.CommunityUsers.Add(comUser);
-
-                        var topic = new Topic
-                        {
-                            Name = "general",
-                            Description = "AUTO GENERATED",
-                            CommunityId = userCom.Id,
-                            LastPost = DateTime.UtcNow,
-                            PostPermission = Models.CommunityControls.PostPermission.Open
-                        };
-
-                        _context.Topics.Add(topic);
-                        _context.SaveChanges();
-
-                        var cheddar = _context.Users.FirstOrDefault(c => c.UserName == "Cheddar_Chatr")
-                            ?? throw new InvalidOperationException("System account not found! Consider " +
-                            "updating database.");
-
-                        var welcomeMsg = new Message
-                        {
-                            SenderId = cheddar.Id,
-                            MessagePlain = System.IO.File.ReadAllText(Path.Combine(AdminController.HomePath, "AutomatedMessages", "welcome.txt")),
-                            Timestamp = DateTime.UtcNow,
-                            TopicId = topic.Id,
-                            IsEdited = false
-                        };
-
-                        _context.Messages.Add(welcomeMsg);
-                        _context.SaveChanges();
+                        DbHousekeeping.Create(_context).InitializeNewCommunity(userCom, user);
 
                         //add user to announcemnet community
 

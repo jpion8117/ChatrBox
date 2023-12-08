@@ -45,27 +45,7 @@ AdminController.HomePath = app.Environment.ContentRootPath;
 var _context = app.Services.CreateScope().ServiceProvider.GetService<ApplicationDbContext>() ??
     throw new InvalidOperationException("Failed to retrieve database context.");
 
-//var usersWithoutIcon = _context.Users
-//    .Where(u => string.IsNullOrEmpty(u.ImageUrl))
-//    .ToList();
-
-//foreach (var user in usersWithoutIcon)
-//{
-//    user.QuickAssign(ImageUploader.AssignDefaultIcon());
-//    _context.Users.Update(user);
-//}
-
-//var communitiesWithoutIcon = _context.Communities
-//    .Where(c => string.IsNullOrEmpty(c.ImageUrl))
-//    .ToList();
-
-//foreach (var community in communitiesWithoutIcon)
-//{
-//    community.QuickAssign(ImageUploader.AssignDefaultIcon());
-//    _context.Communities.Update(community);
-//}
-
-//_context.SaveChanges();
+DbHousekeeping.Create(_context).RunAll();
 
 var cheddar = _context.Users.FirstOrDefault(u => u.UserName == "Cheddar_Chatr") ?? 
     throw new ArgumentNullException("System accound missing from database!");
@@ -91,7 +71,9 @@ else
 Message.MarkdownPipeline = new MarkdownPipelineBuilder()
     .UseAdvancedExtensions()
     .UseBootstrap()
+    .UseEmphasisExtras()
     .DisableHtml()
+    .UseEmojiAndSmiley(true)
     .Build();
 
 app.UseHttpsRedirection();

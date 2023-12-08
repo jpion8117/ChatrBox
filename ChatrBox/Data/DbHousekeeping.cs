@@ -1,4 +1,6 @@
-﻿using ChatrBox.CoreComponents.API;
+﻿using ChatrBox.Areas.API.Controllers;
+using ChatrBox.CoreComponents.API;
+using ChatrBox.Models;
 using ChatrBox.Models.CommunityControls;
 
 namespace ChatrBox.Data
@@ -20,8 +22,81 @@ namespace ChatrBox.Data
             return new DbHousekeeping(context);
         }
 
-        public DbHousekeeping Run()
+        public DbHousekeeping RunAll()
         {
+            var usersMissingIcons = _context.Users
+                .Where(u => u.ImageUrl == "" || u.ImageUrl == null)
+                .ToList();
+
+            foreach (var user in usersMissingIcons)
+            {
+                user.QuickAssign(ImageUploader.AssignDefaultIcon());
+                _context.Users.Update(user);
+            }
+
+            var communitiesMissingIcons = _context.Communities
+                .Where(c => c.ImageUrl == "" || c.ImageUrl == null)
+                .ToList();
+
+            foreach (var community in communitiesMissingIcons)
+            {
+                community.QuickAssign(ImageUploader.AssignDefaultIcon());
+                _context.Communities.Update(community);
+            }
+
+            _context.SaveChanges();
+
+            var communitiesMissingSystemTopics = _context.Communities
+                .ToList()
+                .Where(c => !c.IsMissingSystemTopics)
+                .ToList();
+
+            if (communitiesMissingSystemTopics.Any())
+                AddSystemTopics(communitiesMissingSystemTopics);
+
+            return this;
+        }
+
+        public DbHousekeeping InitializeNewCommunity(Community community, Chatr owner)
+        {
+            //add user to his own community. Added with Visibility.Open so user
+            //can post in their own community, the community is set to Private
+            //by default.
+            var comUser = CommunityUser.Create(community.Id, owner.Id, Visibility.Open);
+
+            _context.CommunityUsers.Add(comUser);
+
+            var topic = new Topic
+            {
+                Name = "general",
+                Description = "AUTO GENERATED",
+                CommunityId = community.Id,
+                LastPost = DateTime.UtcNow,
+                PostPermission = PostPermission.Open
+            };
+
+            _context.Topics.Add(topic);
+            _context.SaveChanges();
+
+            var cheddar = _context.Users.FirstOrDefault(c => c.UserName == "Cheddar_Chatr")
+                ?? throw new InvalidOperationException("System account not found! Consider " +
+                "updating database.");
+
+            var welcomeMsg = new Message
+            {
+                SenderId = cheddar.Id,
+                MessagePlain = File.ReadAllText(Path.Combine(AdminController.HomePath, "AutomatedMessages", "welcome.txt")),
+                Timestamp = DateTime.UtcNow,
+                TopicId = topic.Id,
+                IsEdited = false
+            };
+
+            _context.Messages.Add(welcomeMsg);
+
+            AddSystemTopics(new List<Community> { community });
+
+            _context.SaveChanges();
+
             return this;
         }
 

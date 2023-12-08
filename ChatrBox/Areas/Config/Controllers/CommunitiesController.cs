@@ -121,6 +121,15 @@ namespace ChatrBox.Areas.Config.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Tags,OwnerId,Visibility,ContentFilter,ImageHash,ImageUrl")] Community community)
         {
+            Chatr user = new Chatr();
+            if (User.Identity == null)
+            {
+                return NotFound("User not logged in");
+            }
+
+            user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name) ??
+                throw new InvalidOperationException();
+
             ModelState.Remove("GetDefaultTopic.Name");
             ModelState.Remove("GetDefaultTopic.Messages");
             ModelState.Remove("GetDefaultTopic.Community");
@@ -130,6 +139,9 @@ namespace ChatrBox.Areas.Config.Controllers
             {
                 _context.Add(community);
                 await _context.SaveChangesAsync();
+
+                DbHousekeeping.Create(_context).InitializeNewCommunity(community, user);
+
                 return RedirectToAction(nameof(Index));
             }
 
