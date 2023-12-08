@@ -1,4 +1,8 @@
-﻿.interaction-blocker {
+﻿body {
+    height: 100%;
+}
+
+.interaction-blocker {
     position: absolute;
     top: 0;
     left: 0;

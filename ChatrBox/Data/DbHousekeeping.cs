@@ -56,7 +56,15 @@ namespace ChatrBox.Data
 
             return this;
         }
-
+        
+        /// <summary>
+        /// Initialize a newly created community. NOTE: Community must be added to the database and 
+        /// saved prior to initilization!
+        /// </summary>
+        /// <param name="community">Community to initialize.</param>
+        /// <param name="owner">Community manager</param>
+        /// <returns>Itself to allow DbHouskeeping opperations to be chained</returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public DbHousekeeping InitializeNewCommunity(Community community, Chatr owner)
         {
             //add user to his own community. Added with Visibility.Open so user
@@ -100,6 +108,11 @@ namespace ChatrBox.Data
             return this;
         }
 
+        /// <summary>
+        /// Adds system topics to a community (or communities) that is missing one or more of them
+        /// </summary>
+        /// <param name="communities">List containing all the communities that are missing their system topics.</param>
+        /// <returns>A list of actions taken by the method. (not implemented)</returns>
         private List<string> AddSystemTopics(List<Community> communities)
         {
             var actionsTaken = new List<string>();
