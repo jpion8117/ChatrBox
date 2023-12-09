@@ -162,6 +162,8 @@ namespace ChatrBox.Areas.Config.Controllers
                 return NotFound();
             }
 
+            ModelState.Remove("Messages");
+            ModelState.Remove("Community");
             if (ModelState.IsValid)
             {
                 try
@@ -233,7 +235,7 @@ namespace ChatrBox.Areas.Config.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index), new { communityId = id });
+            return RedirectToAction(nameof(Index), new { communityId = topic.CommunityId });
         }
 
         [HttpPost]
