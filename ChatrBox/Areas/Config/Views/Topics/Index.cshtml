@@ -8,7 +8,7 @@
 <h3>Drag and drop to change topic order. The top topic is the community default.</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" asp-route-communityId="@ViewBag.CommunityId">Create New</a>
 </p>
     <table class="table" style="background-color: #36393f; color:antiquewhite;">
     <thead>

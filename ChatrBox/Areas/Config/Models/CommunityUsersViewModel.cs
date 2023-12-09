@@ -1,4 +1,5 @@
 ﻿#nullable disable
+using ChatrBox.CoreComponents;
 using ChatrBox.CoreComponents.API;
 using ChatrBox.Data;
 
@@ -17,6 +18,8 @@ namespace ChatrBox.Areas.Config.Models
             = new Dictionary<CommunityUserGroup, List<CommunityUser>>();
 
         public string CommunityName { get; set; }
+
+        public CommunityRole CommunityRole { get; set; }
 
         public void AddUserGroup(CommunityUserGroup group, List<CommunityUser> users)
         {

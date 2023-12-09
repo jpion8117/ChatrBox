@@ -2,11 +2,11 @@
 @model CommunityUsersViewModel
 
 <h1>
-    
+    Users of @Model.CommunityName 
 </h1>
-<p>
+@* <p>
     <a asp-action="Create">Add User</a>
-</p>
+</p> *@
 <table class="table">
     <thead>
         <tr>
@@ -23,82 +23,125 @@
         </tr>
     </thead>
     <tbody>
-@if (Model.GetUserGroup(CommunityUserGroup.Owner).Any())
-{
-    <tr>
-        <td colspan="4" class="fs-5 fw-bold bg-primary text-light">Community Owner</td>
-    </tr>
-    @foreach (var item in Model.GetUserGroup(CommunityUserGroup.Owner)) 
-    {
-        <tr>
-            <td>
-                <img src="@item.Chatr.ImageUrl" style="width:50px; height:50px" />
-            </td>
-            <td>
-                @item.Chatr.UserName
-            </td>
-            <td>
-                @(item.CanPost ? "yes" : "no")
-            </td>
-            <td>
-
-            </td>
-        </tr>
-    }
-
-    if (Model.GetUserGroup(CommunityUserGroup.Moderator).Any())
-    {
-        <tr>
-            <td colspan="4" class="fs-5 fw-bold bg-primary text-light">Community Moderators</td>
-        </tr>
-        @foreach (var item in Model.GetUserGroup(CommunityUserGroup.Moderator)) 
+        @if (Model.GetUserGroup(CommunityUserGroup.Owner).Any())
         {
             <tr>
-                <td>
-                    <img src="@item.Chatr.ImageUrl" style="width:50px; height:50px" />
-                </td>
-                <td>
-                    @item.Chatr.UserName
-                </td>
-                <td>
-                    @(item.CanPost ? "yes" : "no")
-                </td>
-                <td>
-
-                </td>
+                <td colspan="4" class="fs-5 fw-bold bg-primary text-light">Community Owner</td>
             </tr>
-        }
-    }
+            @foreach (var item in Model.GetUserGroup(CommunityUserGroup.Owner))
+            {
+                <tr>
+                    <td>
+                        <img src="@item.Chatr.ImageUrl" style="width:50px; height:50px" />
+                    </td>
+                    <td>
+                        @item.Chatr.UserName
+                    </td>
+                    <td>
+                        @(item.CanPost ? "yes" : "no")
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+            }
 
-    if (Model.GetUserGroup(CommunityUserGroup.User).Any())
-    {
-        <tr>
-            <td colspan="4" class="fs-5 fw-bold bg-primary text-light">Community Users</td>
-        </tr>
-        @foreach (var item in Model.GetUserGroup(CommunityUserGroup.User)) 
+            if (Model.GetUserGroup(CommunityUserGroup.Moderator).Any())
+            {
+                <tr>
+                    <td colspan="4" class="fs-5 fw-bold bg-primary text-light">Community Moderators</td>
+                </tr>
+                @foreach (var item in Model.GetUserGroup(CommunityUserGroup.Moderator))
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.Chatr.ImageUrl" style="width:50px; height:50px" />
+                        </td>
+                        <td>
+                            @item.Chatr.UserName
+                        </td>
+                        <td>
+                            @(item.CanPost ? "yes" : "no")
+                        </td>
+                        <td>
+                            @if (Model.CommunityRole == ChatrBox.CoreComponents.CommunityRole.Owner)
+                            {
+                                <span>
+                                    <a href="" class="mod-link" data-userId="@item.ChatrId" data-communityId="@item.CommunityId">Remove Mod</a> |
+                                    <a href="" class="kick-link" data-userId="@item.ChatrId" data-communityId="@item.CommunityId">Kick User</a>
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+
+            if (Model.GetUserGroup(CommunityUserGroup.User).Any())
+            {
+                <tr>
+                    <td colspan="4" class="fs-5 fw-bold bg-primary text-light">Community Users</td>
+                </tr>
+                @foreach (var item in Model.GetUserGroup(CommunityUserGroup.User))
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.Chatr.ImageUrl" style="width:50px; height:50px" />
+                        </td>
+                        <td>
+                            @item.Chatr.UserName
+                        </td>
+                        <td>
+                            @(item.CanPost ? "yes" : "no")
+                        </td>
+                        <td>
+                            @if (Model.CommunityRole == ChatrBox.CoreComponents.CommunityRole.Owner)
+                            {
+                                <span>
+                                    <a href="" class="mod-link" data-userId="@item.ChatrId" data-communityId="@item.CommunityId">Add Mod</a> |
+                                </span>
+                            }
+                            <a href="" class="kick-link" data-userId="@item.ChatrId" data-communityId="@item.CommunityId">Kick User</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+        else
         {
             <tr>
-                <td>
-                    <img src="@item.Chatr.ImageUrl" style="width:50px; height:50px" />
-                </td>
-                <td>
-                    @item.Chatr.UserName
-                </td>
-                <td>
-                    @(item.CanPost ? "yes" : "no")
-                </td>
-                <td>
-
-                </td>
+                <td colspan="3" class="fs-3 fw-bold bg-primary text-light">Error Loading Community Users!</td>
             </tr>
         }
-    }
-}
-else
-{
-    <tr>
-        <td colspan="3" class="fs-3 fw-bold bg-primary text-light">Error Loading Community Users!</td>
-    </tr>
-}
     </tbody>
 </table>
+<form id="mod-user-form" asp-action="ToggleUserMod" method="post" hidden>
+    <input type="text" name="communityId" id="communityIdMod" value="" />
+    <input type="text" name="targetId" id="userIdMod" value="" />
+</form>
+<form id="kick-user-form" asp-action="KickUser" method="post" hidden>
+    <input type="text" name="communityId" id="communityIdKick" value="" />
+    <input type="text" name="targetId" id="userIdKick" value="" />
+</form>
+
+
+@section Scripts {
+    <script>
+        $(".mod-link").on("click", function (event) {
+            event.preventDefault();
+            var communityId = event.target.attributes['data-communityId'].value;
+            var userId = event.target.attributes['data-userId'].value;
+
+            $('#communityIdMod').val(communityId);
+            $('#userIdMod').val(userId);
+            $('#mod-user-form').trigger("submit");
+        });
+        $(".kick-link").on("click", function (event) {
+            event.preventDefault();
+            var communityId = event.target.attributes['data-communityId'].value;
+            var userId = event.target.attributes['data-userId'].value;
+
+            $('#communityIdKick').val(communityId);
+            $('#userIdKick').val(userId);
+            $('#kick-user-form').trigger("submit");
+        });
+    </script>
+}

@@ -30,9 +30,11 @@ namespace ChatrBox.Data
             get => _name;
             set
             {
+                var normalizedName = value.ToLower().Replace(' ', '-');
+
                 //prevents users from using or changing topic names that are reserved for system use.
-                if (!_systemTopics.Contains(value) || !_systemTopics.Contains(_name))
-                    _name = value;
+                if (!_systemTopics.Contains(normalizedName) || !_systemTopics.Contains(_name))
+                    _name = normalizedName;
             } 
         }
         public string Description { get; set; }

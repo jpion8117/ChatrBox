@@ -10,6 +10,7 @@ using ChatrBox.Models.CommunityControls;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
+using ChatrBox.CoreComponents;
 
 namespace ChatrBox.Areas.Config.Controllers
 {
@@ -24,21 +25,30 @@ namespace ChatrBox.Areas.Config.Controllers
         }
 
         // GET: Config/Topics
-        public async Task<IActionResult> Index(int communityId)
+        public IActionResult Index(int communityId)
         {
+            var user = GetUser();
+            CommunityTools.Create(_context).GetCommunityUser(communityId, user.Id, out var role);
+
+            if (role < CommunityRole.Moderator)
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+
             var community = _context.Communities.Find(communityId);
 
             if (community == null)
                 return NotFound("Community not found.");
 
             ViewBag.CommunityName = community.Name;
+            @ViewBag.CommunityId = communityId;
 
             var applicationDbContext = _context.Topics
                 .Where(t => t.CommunityId == communityId)
                 .OrderBy(t => t.DisplayOrder)
-                .Include(t => t.Community);
+                .Include(t => t.Community)
+                .ToList()
+                .Where(t => !t.SystemTopic());
 
-            return View(await applicationDbContext.ToListAsync());
+            return View(applicationDbContext);
         }
 
         // GET: Config/Topics/Details/5
@@ -61,11 +71,28 @@ namespace ChatrBox.Areas.Config.Controllers
         }
 
         // GET: Config/Topics/Create
-        public IActionResult Create()
+        public IActionResult Create(int communityId)
         {
-            ViewData["Permissions"] = new SelectList(Enum.GetNames(typeof(PostPermission)), Enum.GetValues(typeof(PostPermission)));
-            ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Name");
-            return View();
+            var user = GetUser();
+            CommunityTools.Create(_context).GetCommunityUser(communityId, user.Id, out var role);
+
+            if (role < CommunityRole.Moderator)
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+
+            var displayOrder = _context.Topics
+                .Where(t => t.CommunityId == communityId)
+                .OrderBy(t => t.DisplayOrder)
+                .Last()
+                .DisplayOrder + 1;
+
+            var topic = new Topic
+            {
+                CommunityId = communityId,
+                DisplayOrder = displayOrder,
+                LastPost = DateTime.UtcNow
+            };
+
+            return View(topic);
         }
 
         // POST: Config/Topics/Create
@@ -75,13 +102,19 @@ namespace ChatrBox.Areas.Config.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Topic topic)
         {
+            var user = GetUser();
+            CommunityTools.Create(_context).GetCommunityUser(topic.CommunityId, user.Id, out var role);
+
+            if (role < CommunityRole.Moderator)
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+
             ModelState.Remove("Messages");
             ModelState.Remove("Community");
             if (ModelState.IsValid)
             {
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { communityId = topic.CommunityId });
             }
             ViewData["Permissions"] = new SelectList(Enum.GetNames(typeof(PostPermission)), Enum.GetValues(typeof(PostPermission)));
             ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Name", topic.CommunityId);
@@ -95,12 +128,18 @@ namespace ChatrBox.Areas.Config.Controllers
             {
                 return NotFound();
             }
-
             var topic = await _context.Topics.FindAsync(id);
             if (topic == null)
             {
                 return NotFound();
             }
+
+            var user = GetUser();
+            CommunityTools.Create(_context).GetCommunityUser(topic.CommunityId, user.Id, out var role);
+
+            if (role < CommunityRole.Moderator)
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" }); 
+
             ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Id", topic.CommunityId);
             return View(topic);
         }
@@ -112,6 +151,12 @@ namespace ChatrBox.Areas.Config.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,PostPermission,LastPost,CommunityId")] Topic topic)
         {
+            var user = GetUser();
+            CommunityTools.Create(_context).GetCommunityUser(topic.CommunityId, user.Id, out var role);
+
+            if (role < CommunityRole.Moderator)
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+
             if (id != topic.Id)
             {
                 return NotFound();
@@ -135,7 +180,7 @@ namespace ChatrBox.Areas.Config.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { communityId = topic.CommunityId });
             }
             ViewData["CommunityId"] = new SelectList(_context.Communities, "Id", "Id", topic.CommunityId);
             return View(topic);
@@ -157,6 +202,12 @@ namespace ChatrBox.Areas.Config.Controllers
                 return NotFound();
             }
 
+            var user = GetUser();
+            CommunityTools.Create(_context).GetCommunityUser(topic.CommunityId, user.Id, out var role);
+
+            if (role < CommunityRole.Moderator)
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+
             return View(topic);
         }
 
@@ -172,11 +223,17 @@ namespace ChatrBox.Areas.Config.Controllers
             var topic = await _context.Topics.FindAsync(id);
             if (topic != null)
             {
+                var user = GetUser();
+                CommunityTools.Create(_context).GetCommunityUser(topic.CommunityId, user.Id, out var role);
+
+                if (role < CommunityRole.Moderator)
+                    return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+
                 _context.Topics.Remove(topic);
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { communityId = id });
         }
 
         [HttpPost]
@@ -214,6 +271,20 @@ namespace ChatrBox.Areas.Config.Controllers
         private bool TopicExists(int id)
         {
           return (_context.Topics?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private Chatr GetUser()
+        {
+            Chatr chatr = new Chatr();
+
+            if (User.Identity != null)
+            {
+                return _context.Users
+                    .FirstOrDefault(u => u.UserName == User.Identity.Name) ??
+                        throw new InvalidOperationException("Failed to locate account of currently logged in user");
+            }
+
+            return chatr;
         }
     }
 }

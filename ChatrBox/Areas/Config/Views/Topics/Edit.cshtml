@@ -12,37 +12,44 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+            <div class="form-group text-white">
+                <label asp-for="Name" class="control-label text-white"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="form-group text-white">
+                <label asp-for="Description" class="control-label text-white"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
+                <label asp-for="DisplayOrder" class="control-label"></label>
+                <input asp-for="DisplayOrder" class="form-control" />
+                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <!-- Hidden field not yet implemented -->
                 <label asp-for="PostPermission" class="control-label"></label>
-                <select asp-for="PostPermission" class="form-control"></select>
+                <select asp-for="PostPermission" class="form-control">
+                    <option value="0" selected>Open</option>
+                    <option value="1">Closed</option>
+                </select>
                 <span asp-validation-for="PostPermission" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="LastPost" class="control-label"></label>
                 <input asp-for="LastPost" class="form-control" />
                 <span asp-validation-for="LastPost" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="CommunityId" class="control-label"></label>
-                <select asp-for="CommunityId" class="form-control" asp-items="ViewBag.CommunityId"></select>
-                <span asp-validation-for="CommunityId" class="text-danger"></span>
+                <input asp-for="CommunityId" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
             <div>
-                <a asp-action="Index">Back to List</a>
+                <a asp-action="Index" asp-route-communityId="@Model.CommunityId">Back to List</a>
             </div>
         </form>
         
