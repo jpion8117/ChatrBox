@@ -73,7 +73,7 @@ namespace ChatrBox.Areas.Config.Controllers
 
             viewModel.AddGroup("all", _context.Communities.ToList());
 
-            return View(viewModel);
+            return View("Index", viewModel);
         }
 
         // GET: Config/Communities/Details/5
