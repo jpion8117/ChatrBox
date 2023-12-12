@@ -13,13 +13,13 @@
     ViewData["Title"] = userCommunities ? username : "All" + " Communities";
 }
 
+<h1>My Communities</h1>
+<h3>Here you will find any communities you manage</h3>
+<p>
+    <a asp-action="Create">Create New Community</a>
+</p>
 @if (myCommunities.Any())
 {
-    <h1>My Communities</h1>
-    <h3>Here you will find any communities you manage</h3>
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
     <table class="table">
         <thead>
             <tr>
