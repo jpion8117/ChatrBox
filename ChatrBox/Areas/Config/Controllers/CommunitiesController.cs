@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using ChatrBox.Areas.Config.Models;
 using ChatrBox.Models.CommunityControls;
 using ChatrBox.Models;
+using ChatrBox.CoreComponents;
+using System.Runtime.CompilerServices;
 
 namespace ChatrBox.Areas.Config.Controllers
 {
@@ -71,7 +73,7 @@ namespace ChatrBox.Areas.Config.Controllers
 
             viewModel.AddGroup("all", _context.Communities.ToList());
 
-            return View(viewModel);
+            return View("Index", viewModel);
         }
 
         // GET: Config/Communities/Details/5
@@ -257,6 +259,37 @@ namespace ChatrBox.Areas.Config.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Yeah... That's all fine and well, but Imma head out now. Good luck with whatever... That is...
+        /// 
+        /// Lisa: If you happen to notice this one comment, for this one little method, in the sea of code here let me know. Lol
+        /// </summary>
+        /// <param name="communityId">Id of the community you are peacin out from.</param>
+        /// <returns>Some kinda voodoo magic that makes a webpage display.</returns>
+        [HttpPost]
+        public IActionResult LeaveCommunity(int communityId)
+        {
+            var user = GetUser();
+            var comTools = CommunityTools.Create(_context);
+            var community = comTools.GetCommunity(communityId, user.Id, out var role);
+
+            if (role == CommunityRole.Owner)
+                return Problem("You are the community owner and may not leave the community. You may delete the community if you wish.");
+            else if (role == CommunityRole.Nonmember)
+                return Problem($"You are not currently a member of community #{community.Id} '{community.Name}'.");
+
+            //user is either a member or a moderator of the community and can now exit
+            var comUser = comTools.GetCommunityUser(communityId, user.Id);
+
+            if (comUser.Id == -1)
+                return NotFound("could not locate community user");
+            
+            _context.CommunityUsers.Remove(comUser);
+            _context.SaveChanges();
+
+            return RedirectToActionPermanent("Index");
+        }
+
         private bool CommunityExists(int id)
         {
           return (_context.Communities?.Any(e => e.Id == id)).GetValueOrDefault();
@@ -267,6 +300,20 @@ namespace ChatrBox.Areas.Config.Controllers
             if (User.Identity == null) return false;
 
             return community.Owner.UserName == User.Identity.Name; 
+        }
+
+        private Chatr GetUser()
+        {
+            Chatr chatr = new Chatr();
+
+            if (User.Identity != null)
+            {
+                return _context.Users
+                    .FirstOrDefault(u => u.UserName == User.Identity.Name) ??
+                        throw new InvalidOperationException("Failed to locate account of currently logged in user");
+            }
+
+            return chatr;
         }
     }
 }

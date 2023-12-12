@@ -72,31 +72,39 @@ namespace ChatrBox.CoreComponents
             return community;
         }
 
-        public CommunityUser GetCommunityUser(int communityId, string userId, out CommunityRole role) 
+        public CommunityUser GetCommunityUser(int communityId, string userId)
         {
             var user = _context.CommunityUsers
-                .FirstOrDefault(cu => cu.CommunityId == communityId && cu.ChatrId == userId);
+                .FirstOrDefault(cu => cu.CommunityId == communityId && cu.ChatrId == userId) ??
+                new CommunityUser
+                {
+                    Id = -1,
+                    CommunityId = -1,
+                    ChatrId = "NOT FOUND"
+                };
 
-            role = CommunityRole.Nonmember; //default state
+            return user;
+        }
 
-            if (user != null)
+        public CommunityUser GetCommunityUser(int communityId, string userId, out CommunityRole role) 
+        {
+            var user = GetCommunityUser(communityId, userId);
+
+            //failed to find community user
+            if (user.Id == -1)
             {
-                if (GetCommunity(communityId).OwnerId == userId)
-                    role = CommunityRole.Owner;
-                else if (user.IsModerator)
-                    role = CommunityRole.Moderator;
-                else
-                    role = CommunityRole.Member;
-
+                role = CommunityRole.Nonmember;
                 return user;
             }
 
-            return new CommunityUser
-            {
-                Id = -1,
-                CommunityId = -1,
-                ChatrId = "NOT FOUND"
-            };
+            if (GetCommunity(communityId).OwnerId == userId)
+                role = CommunityRole.Owner;
+            else if (user.IsModerator)
+                role = CommunityRole.Moderator;
+            else
+                role = CommunityRole.Member;
+
+            return user;
         }
     }
 

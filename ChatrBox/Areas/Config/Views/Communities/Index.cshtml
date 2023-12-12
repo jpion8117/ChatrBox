@@ -203,6 +203,7 @@
                         @Html.DisplayFor(modelItem => item.ContentFilter)
                     </td>
                     <td>
+                        <a href="" class="peace-out-link" data-communityId="@item.Id">leave</a>
                     </td>
                 </tr>
             }
@@ -265,6 +266,8 @@
                         @Html.DisplayFor(modelItem => item.ContentFilter)
                     </td>
                     <td>
+
+                        <a href="" class="peace-out-link" data-communityId="@item.Id">leave</a> | 
                         <a asp-action="Index" asp-controller="CommunityUsers" asp-route-communityId="@item.Id">Users</a> | 
                         <a asp-action="Index" asp-controller="Topics" asp-route-communityId="@item.Id">View Topics</a> 
                     </td>
@@ -273,6 +276,10 @@
         </tbody>
     </table>
 }
+
+<form asp-action="LeaveCommunity" id="peace-out-form" method="post" hidden>
+    <input id="peace-out-target" name="communityId" type="text" />
+</form>
 
 @section Scripts {
     <script>
@@ -283,6 +290,13 @@
             var shareLink = `${window.location.origin}/Share/CommunityTopic/${communityId}/public`;
             navigator.clipboard.writeText(shareLink);
             window.alert(`${communityName} link coppied to clipboard!`);
+        });
+        $('.peace-out-link').on("click", function (event) {
+            event.preventDefault();
+            console.log("clicked peace out");
+            var communityId = event.target.attributes['data-communityId'].value;
+            $('#peace-out-target').val(communityId);
+            $('#peace-out-form').trigger("submit");
         });
     </script>
 }
