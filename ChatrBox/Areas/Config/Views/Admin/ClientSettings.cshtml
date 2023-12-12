@@ -1,0 +1,47 @@
+﻿@using ChatrBox.Areas.Config.Models
+@model ClientSettingsViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@section Scripts{
+    <script>
+        $('#banner').on("click", function (event) {
+            $(event.target).remove();
+        });
+    </script>
+}
+@if(Model.SaveSuccessful)
+{
+    <div id="banner" class="bg-success text-white text-center fw-bold w-100">Settings successfully saved! Click to dismiss.</div>    
+}
+<h1>Client Settings</h1>
+<p>Use the sliders to balance user experience (left) and server performance (right)</p>
+
+<form asp-action="SaveConfig" method="post">
+    <div class="form-group">
+        <span asp-validation-for="MessageUpdateSpeed" class="text-danger"></span>
+        <label class="form-label" asp-for="MessageUpdateSpeed"></label>
+        <input class="form-range" style="" asp-for="MessageUpdateSpeed" type="range" min="3000" max="60000" step="1000" list="MessageSpeedLabels" />
+        <datalist id="MessageSpeedLabels">
+            <option value="3000" label="Quicker Delivery"></option>
+            <option value="28500" label="Balanced Performance"></option>
+            <option value="60000" label="High Stablity"></option>
+        </datalist>
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="StatusUpdateSpeed" class="text-danger"></span>
+        <label class="form-label" asp-for="StatusUpdateSpeed"></label>
+        <input class="form-range" asp-for="StatusUpdateSpeed" type="range" min="20000" max="180000" step="1000" />
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="TimeUntilOffline" class="text-danger"></span>
+        <label class="form-label" asp-for="TimeUntilOffline"></label>
+        <input class="form-range" asp-for="TimeUntilOffline" type="range" min="30" max="180" step="10" />
+    </div>
+    <div class="form-group">
+        <span asp-validation-for="MessageDownloadQty" class="text-danger"></span>
+        <label class="form-label" asp-for="MessageDownloadQty"></label>
+        <input class="form-range" style="direction: rtl;" asp-for="MessageDownloadQty" type="range" min="50" max="500" step="10" />
+    </div>
+    <button class="btn btn-primary" type="submit">Save Configuration</button>
+</form>
